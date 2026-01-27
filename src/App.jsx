@@ -1,12 +1,14 @@
-import Navbar from "./components/Navbar";
+import Navbar from "./components/navbar";
+import Home from "./pages/Home";
+import Services from "./pages/Services";
 
-function App() {
+export default function App() {
   return (
     <>
       <Navbar />
-      {/* other components */}
+      <Home />
+      <Services />
+      
     </>
   );
 }
-
-export default App
