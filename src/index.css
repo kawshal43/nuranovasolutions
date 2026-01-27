@@ -10,9 +10,19 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
+/* ================================
+   GLOBAL RESET & FULL-WIDTH FIX
+   ================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
+html,
 body {
+<<<<<<< HEAD
   font-family: "Roboto", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
   background: #ffffff;
   color: #0f172a;
@@ -26,4 +36,33 @@ a {
 }
 a:hover {
   text-decoration: underline;
+=======
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* ❌ Remove Vite default flex-centering
+   ✅ Allow normal full-width layout */
+body {
+  display: block;
+  background: #ffffff;
+  color: #111827;
+  font-family: "Roboto", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* React root must fill screen */
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Media defaults */
+img,
+video,
+canvas {
+  max-width: 100%;
+  display: block;
+>>>>>>> 0f308a3dfb31cd320eee7eabc183d2e1c0cf475b
 }
