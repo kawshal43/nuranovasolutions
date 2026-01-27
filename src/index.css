@@ -1,3 +1,15 @@
+/* Global reset */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 /* ================================
    GLOBAL RESET & FULL-WIDTH FIX
    ================================ */
@@ -10,6 +22,21 @@
 
 html,
 body {
+<<<<<<< HEAD
+  font-family: "Roboto", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+  background: #ffffff;
+  color: #0f172a;
+  overflow-x: hidden;
+}
+
+/* optional: links */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+=======
   width: 100%;
   height: 100%;
   margin: 0;
@@ -37,4 +64,5 @@ video,
 canvas {
   max-width: 100%;
   display: block;
+>>>>>>> 0f308a3dfb31cd320eee7eabc183d2e1c0cf475b
 }
