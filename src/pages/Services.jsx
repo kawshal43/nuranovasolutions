@@ -3,7 +3,7 @@ import "./Services.css";
 import ServiceCard from "../components/ServiceCard";
 
 export default function Services() {
-  /* ========== SLIDES ========== */
+  /* ========== SLIDES ==========*/
   const slides = useMemo(() => ["/hero/a.png", "/hero/b.png", "/hero/c.png"], []);
 
   /* ========== LOOP CLONES (last + real slides + first) ========== */

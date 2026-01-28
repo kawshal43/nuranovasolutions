@@ -50,7 +50,7 @@
   object-position: center;
   display: block;
 
-  filter: brightness(0.92);     /* Slight cinematic darkening */
+  filter: brightness(0.92);     /*Slight cinematic darkening */
   user-select: none;
 }
 
