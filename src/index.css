@@ -22,12 +22,12 @@ a:hover {
   color: #535bf2;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+body{
+  display: block;        
+  min-height: 100%;
+  background: #fff;
+  color: #0f172a;
+  overflow-x: hidden;
 }
 
 h1 {
@@ -65,4 +65,13 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+  html, body, #root {
+  height: 100%;
+  margin: 0;
+  }
+
+  #root {
+    width: 100%;
+  }
+
 }

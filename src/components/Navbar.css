@@ -1,8 +1,18 @@
-.navbar {
-  width: 100%;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
+.navbar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 72px;          /* must match --navH */
+  background: #fff;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 0 rgba(0,0,0,.05);
 }
+
+
+
 
 .navbar-container {
   max-width: 1200px;
