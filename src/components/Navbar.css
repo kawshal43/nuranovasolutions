@@ -79,6 +79,7 @@
   padding: 8px;
   cursor: pointer;
   border-radius: 10px;
+  z-index: 10;
 }
 
 .menu-btn:focus {
