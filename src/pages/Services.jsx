@@ -128,7 +128,7 @@ export default function Services() {
     : "translateX(0%)";
 
   return (
-    <div className="services-page">
+    <div className="services-page" id="service-page">
       {/* ========= HERO SLIDER ========= */}
       <section className="hero">
         <div
