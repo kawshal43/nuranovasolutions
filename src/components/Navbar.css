@@ -1,14 +1,15 @@
-.navbar{
+.navbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: 72px;          /* must match --navH */
+  height: 72px;
+  /* must match --navH */
   background: #fff;
   z-index: 1000;
   display: flex;
   align-items: center;
-  box-shadow: 0 1px 0 rgba(0,0,0,.05);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, .05);
 }
 
 
@@ -57,28 +58,57 @@
   color: #1f2937;
 }
 
-/* LINKS (desktop default) */
+/* LINKS */
 .nav-links {
-  list-style: none;
   display: flex;
-  gap: 28px;
+  gap: 30px;
+  list-style: none;
+  position: relative;
+  /* For highlighter positioning */
   margin: 0;
+  /* Keep existing margin/padding if not explicitly removed */
   padding: 0;
   align-items: center;
 }
 
+/* Fluid Highlight Pill */
+.nav-links .nav-highlight {
+  position: absolute;
+  height: 100%;
+  background: #1f2937;
+  /* Dark background */
+  border-radius: 999px;
+  /* Pill shape */
+  z-index: 1;
+  /* Move above navbar background */
+  transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  bottom: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: block;
+}
+
+.nav-links li {
+  position: relative;
+  z-index: 2;
+  /* Ensure text is above highlight */
+}
+
 .nav-links a {
   text-decoration: none;
-  color: #111827;
-  padding: 8px 16px;
-  border-radius: 999px;
+  font-size: 16px;
   font-weight: 500;
-  display: inline-block;
+  color: #333;
+  padding: 10px 24px;
+  /* Larger click area for pill feel */
+  border-radius: 999px;
+  transition: color 0.2s;
+  display: block;
 }
 
 .nav-links a.active {
-  background-color: #1f2937;
-  color: #ffffff;
+  color: #ffffff !important;
+  /* White text on dark pill */
+  font-weight: 600;
 }
 
 /* HAMBURGER BUTTON (hidden on desktop) */

@@ -6,8 +6,10 @@
 /* ================= HERO (Fluid Slider) ================= */
 .hero {
   position: relative;
-  height: 80vh;                 /* Full viewport height */
-  overflow: hidden;              /* Hide slide overflow */
+  height: 80vh;
+  /* Full viewport height */
+  overflow: hidden;
+  /* Hide slide overflow */
   background: #e5e5e5;
 }
 
@@ -17,7 +19,8 @@
   inset: 0;
   display: flex;
   height: 100%;
-  will-change: transform;        /* Smooth GPU animation */
+  will-change: transform;
+  /* Smooth GPU animation */
   z-index: 1;
 }
 
@@ -44,13 +47,15 @@
 
 /* ✅ KEY: Fit any photo, any screen, no warp, no crop */
 .hero-img {
-  width: 100vh;
-  height: 100vh;
-  object-fit: contain;          /* FULL image visible, no distortion */
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* Image scales to fit, ensuring full visibility */
   object-position: center;
   display: block;
 
-  filter: brightness(0.92);     /* Slight cinematic darkening */
+  filter: brightness(0.92);
+  /* Slight cinematic darkening */
   user-select: none;
 }
 
@@ -149,26 +154,15 @@
 /* ================= SERVICES GRID ================= */
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  justify-items: center;
 
-  column-gap: 32px;
-  row-gap: 32px;
+  gap: 80px;
 
-  max-width: 1200px;
+  max-width: 1400px;
+  /* Slightly wider to accommodate large screens better */
   padding: 0 16px;
   margin: 0 auto;
 }
 
-/* Tablets → 2 cards */
-@media (max-width: 1024px) {
-  .services-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* Mobile → 1 card */
-@media (max-width: 640px) {
-  .services-grid {
-    grid-template-columns: 1fr;
-  }
-}
+/* Media queries for columns removed as auto-fit handles it */

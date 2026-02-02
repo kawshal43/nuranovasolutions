@@ -79,9 +79,9 @@ export default function Home() {
   const activeDot = index % dotsCount;
 
   return (
-    <div className="page">
+    <div className="home-container" id="home">
       {/* HERO */}
-      <section className="hero" id="home">
+      <section className="hero">
         <div className="heroOverlay" aria-hidden="true" />
 
         <div className="decor" aria-hidden="true">
@@ -149,7 +149,7 @@ export default function Home() {
           <div className="servicesBlobs" aria-hidden="true">
             <img src={b} className="blob blob1" alt="" />
             <img src={g} className="blob blob2" alt="" />
-            <img src={ relationalImageFallback(i)} className="blob blob3" alt="" />
+            <img src={relationalImageFallback(i)} className="blob blob3" alt="" />
           </div>
 
           <div className="servicesHead">
@@ -194,44 +194,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* WHY */}
-      <section className="whyWrap" id="about">
-        <div ref={whyRef} data-id="why" className={`whyGrid reveal ${inView.why ? "show" : ""}`}>
-          <div>
-            <h3 className="whyTitle">Why choose Nuranova ?</h3>
-            <p className="whySub">
-              Innovative Solutions build on <b>Trust</b> and expertise.
-            </p>
 
-            <div className="tickList">
-              <div className="tickItem">
-                <span className="tick">✓</span>
-                One team for technology, creativity & education
-              </div>
-              <div className="tickItem">
-                <span className="tick">✓</span>
-                Reliable, real-world digital solutions
-              </div>
-              <div className="tickItem">
-                <span className="tick">✓</span>
-                Ethical, student-friendly support
-              </div>
-              <div className="tickItem">
-                <span className="tick">✓</span>
-                Local roots with a global mindset
-              </div>
-            </div>
-          </div>
-
-          <div className="cta" id="contact">
-            <h4 className="ctaTitle">Ready to build Something Meaningful ?</h4>
-            <p className="ctaSub">Let's work together to bring ideas to life.</p>
-            <div className="ctaBtnRow">
-              <button className="btnSmall">Contact Us</button>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
