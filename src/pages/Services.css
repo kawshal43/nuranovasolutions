@@ -149,6 +149,8 @@
 .services-section {
   background: #f3f4f6;
   padding: 64px 24px;
+  display: flex;
+  justify-content: center;
 }
 
 /* ================= SERVICES GRID ================= */
@@ -163,6 +165,7 @@
   /* Slightly wider to accommodate large screens better */
   padding: 0 16px;
   margin: 0 auto;
+  width: 100%;
 }
 
 /* Media queries for columns removed as auto-fit handles it */
