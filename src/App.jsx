@@ -1,14 +1,11 @@
-import Navbar from "./components/navbar";
-import Home from "./pages/Home";
-import Services from "./pages/Services";
+import AppRoutes from "./routes";
+import Navbar from "./components/Navbar";
 
 export default function App() {
   return (
     <>
       <Navbar />
-      <Home />
-      <Services />
-      
+      <AppRoutes />
     </>
   );
 }

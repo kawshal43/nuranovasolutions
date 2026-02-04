@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import "./Navbar.css";
 
 const Navbar = () => {
-  const currentPath = window.location.pathname;
+  const location = useLocation();
+  const currentPath = location.pathname;
   const [menuOpen, setMenuOpen] = useState(false);
 
   // Close menu when route changes (because <a> reloads) or when resizing to desktop
@@ -44,16 +46,16 @@ const Navbar = () => {
         {/* LINKS */}
         <ul className={`nav-links ${menuOpen ? "open" : ""}`}>
           <li>
-            <a href="/" className={linkClass("/")}>Home</a>
+            <Link to="/" className={linkClass("/")}>Home</Link>
           </li>
           <li>
-            <a href="/services" className={linkClass("/services")}>Services</a>
+            <Link to="/services" className={linkClass("/services")}>Services</Link>
           </li>
           <li>
-            <a href="/about" className={linkClass("/about")}>About Us</a>
+            <Link to="/about" className={linkClass("/about")}>About Us</Link>
           </li>
           <li>
-            <a href="/contact" className={linkClass("/contact")}>Contact</a>
+            <Link to="/contact" className={linkClass("/contact")}>Contact</Link>
           </li>
         </ul>
       </div>

@@ -6,8 +6,10 @@
 /* ================= HERO (Fluid Slider) ================= */
 .hero {
   position: relative;
-  height: 80vh;                 /* Full viewport height */
-  overflow: hidden;              /* Hide slide overflow */
+  height: 80vh;
+  /* Full viewport height */
+  overflow: hidden;
+  /* Hide slide overflow */
   background: #e5e5e5;
 }
 
@@ -17,7 +19,8 @@
   inset: 0;
   display: flex;
   height: 100%;
-  will-change: transform;        /* Smooth GPU animation */
+  will-change: transform;
+  /* Smooth GPU animation */
   z-index: 1;
 }
 
@@ -46,11 +49,13 @@
 .hero-img {
   width: 100vh;
   height: 100vh;
-  object-fit: contain;          /* FULL image visible, no distortion */
+  object-fit: contain;
+  /* FULL image visible, no distortion */
   object-position: center;
   display: block;
 
-  filter: brightness(0.92);     /* Slight cinematic darkening */
+  filter: brightness(0.92);
+  /* Slight cinematic darkening */
   user-select: none;
 }
 
@@ -144,19 +149,22 @@
 .services-section {
   background: #f3f4f6;
   padding: 64px 24px;
+  display: flex;
+  justify-content: center;
 }
 
 /* ================= SERVICES GRID ================= */
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 
-  column-gap: 32px;
-  row-gap: 32px;
+  column-gap: 40px;
+  row-gap: 40px;
 
-  max-width: 1200px;
+  max-width: 1400px;
   padding: 0 16px;
   margin: 0 auto;
+  width: 100%;
 }
 
 /* Tablets → 2 cards */
