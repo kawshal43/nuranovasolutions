@@ -1,11 +1,17 @@
-import AppRoutes from "./routes";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/navbar";
+import Home from "./pages/Home";
+import Services from "./pages/Services";
+import About from "./pages/About";
+import Footer from "./components/Footer";
 
 export default function App() {
   return (
     <>
       <Navbar />
-      <AppRoutes />
+      <Home />
+      <Services />
+      <About />
+      <Footer />
     </>
   );
 }

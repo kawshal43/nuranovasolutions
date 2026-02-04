@@ -47,10 +47,10 @@
 
 /* ✅ KEY: Fit any photo, any screen, no warp, no crop */
 .hero-img {
-  width: 100vh;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  /* FULL image visible, no distortion */
+  /* Image scales to fit, ensuring full visibility */
   object-position: center;
   display: block;
 
@@ -156,27 +156,16 @@
 /* ================= SERVICES GRID ================= */
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  justify-items: center;
 
-  column-gap: 40px;
-  row-gap: 40px;
+  gap: 80px;
 
   max-width: 1400px;
+  /* Slightly wider to accommodate large screens better */
   padding: 0 16px;
   margin: 0 auto;
   width: 100%;
 }
 
-/* Tablets → 2 cards */
-@media (max-width: 1024px) {
-  .services-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* Mobile → 1 card */
-@media (max-width: 640px) {
-  .services-grid {
-    grid-template-columns: 1fr;
-  }
-}
+/* Media queries for columns removed as auto-fit handles it */
