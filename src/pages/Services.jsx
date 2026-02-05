@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./Services.css";
 import ServiceCard from "../components/ServiceCard";
 
@@ -6,20 +6,21 @@ export default function Services() {
   /* ========== SLIDES ========== */
   const slides = useMemo(() => ["/hero/a.png", "/hero/b.png", "/hero/c.png"], []);
 
-  /* ========== LOOP CLONES ========== */
+  /* ========== LOOP CLONES (last + real slides + first) ========== */
   const loopSlides = useMemo(() => {
-    if (slides.length === 0) return [];
+    if (!slides.length) return [];
     return [slides[slides.length - 1], ...slides, slides[0]];
   }, [slides]);
 
-  const [index, setIndex] = useState(0);  // which real slide is active
-  const [pos, setPos] = useState(1);      // position in loopSlides
+  const [index, setIndex] = useState(0); // active REAL slide (0..slides.length-1)
+  const [pos, setPos] = useState(1);     // active position in loopSlides (starts at 1)
   const [enableAnim, setEnableAnim] = useState(true);
 
   /* ========== AUTOPLAY ========== */
   const timerRef = useRef(null);
   const SLIDE_MS = 4500;
 
+  // Preload images (prevents flicker)
   useEffect(() => {
     slides.forEach((src) => {
       const im = new Image();
@@ -27,48 +28,52 @@ export default function Services() {
     });
   }, [slides]);
 
-  const stop = () => {
+  const stop = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = null;
-  };
+  }, []);
 
-  const next = () => {
+  const next = useCallback(() => {
+    if (!slides.length) return;
     setEnableAnim(true);
     setPos((p) => p + 1);
     setIndex((i) => (i + 1) % slides.length);
-  };
+  }, [slides.length]);
 
-  const prev = () => {
+  const prev = useCallback(() => {
+    if (!slides.length) return;
     setEnableAnim(true);
     setPos((p) => p - 1);
     setIndex((i) => (i - 1 + slides.length) % slides.length);
-  };
+  }, [slides.length]);
 
-  const start = () => {
+  const start = useCallback(() => {
     stop();
     timerRef.current = setInterval(next, SLIDE_MS);
-  };
+  }, [next, stop]);
 
+  // Start once on mount, cleanup on unmount
   useEffect(() => {
     start();
     return () => stop();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pos]);
+  }, [start, stop]);
 
   const goTo = (i) => {
+    if (!slides.length) return;
     setEnableAnim(true);
     setIndex(i);
-    setPos(i + 1);
+    setPos(i + 1); // because loopSlides has 1 clone at the start
     start();
   };
 
   const onTransitionEnd = () => {
     // handle infinite loop jumps
     if (pos === slides.length + 1) {
+      // reached "first clone" (after last real)
       setEnableAnim(false);
       setPos(1);
-    }
-    if (pos === 0) {
+    } else if (pos === 0) {
+      // reached "last clone" (before first real)
       setEnableAnim(false);
       setPos(slides.length);
     }
@@ -116,33 +121,43 @@ export default function Services() {
     },
   ];
 
+  // Safety: if slides empty, avoid divide-by-zero
+  const trackWidth = loopSlides.length ? `${loopSlides.length * 100}%` : "100%";
+  const translate = loopSlides.length
+    ? `translateX(-${pos * (100 / loopSlides.length)}%)`
+    : "translateX(0%)";
+
   return (
-    <div className="services-page">
+    <div className="services-page" id="service-page">
       {/* ========= HERO SLIDER ========= */}
       <section className="hero">
         <div
           className={`hero-track ${enableAnim ? "anim" : "no-anim"}`}
           style={{
-            width: `${loopSlides.length * 100}%`,
-            transform: `translateX(-${pos * (100 / loopSlides.length)}%)`,
+            width: trackWidth,
+            transform: translate,
           }}
           onTransitionEnd={onTransitionEnd}
         >
           {loopSlides.map((src, i) => (
-            <div
-              key={i}
-              className="hero-slide"
-              style={{ backgroundImage: `url(${src})` }}
-            />
+            <div key={`${src}-${i}`} className="hero-slide">
+              <img
+                src={src}
+                alt=""
+                className="hero-img"
+                draggable="false"
+                loading="eager"
+              />
+            </div>
           ))}
         </div>
 
         <div className="hero-overlay" />
 
-        <button className="hero-arrow left" onClick={prev}>
+        <button className="hero-arrow left" onClick={prev} aria-label="Previous">
           ‹
         </button>
-        <button className="hero-arrow right" onClick={next}>
+        <button className="hero-arrow right" onClick={next} aria-label="Next">
           ›
         </button>
 
