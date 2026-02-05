@@ -2,103 +2,81 @@ import { useEffect, useState, useRef } from "react";
 import "./Navbar.css";
 
 const Navbar = () => {
-  const [activeLink, setActiveLink] = useState("home");
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
+  const [pillStyle, setPillStyle] = useState({ opacity: 0 });
+  const navRefs = useRef([]);
 
-  const navRef = useRef(null);
-  const itemRefs = useRef({});
-
-  // 1. Observer for Scroll Highlighting
+  // Close menu when resizing to desktop
   useEffect(() => {
-    const sections = ["home", "service-page", "about", "contact"];
-    const ratios = {};
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        // Update ratios for changed entries
-        entries.forEach((entry) => {
-          ratios[entry.target.id] = entry.intersectionRatio;
-        });
-
-        // Find section with highest ratio
-        const best = Object.keys(ratios).reduce((a, b) => {
-          return (ratios[a] || 0) > (ratios[b] || 0) ? a : b;
-        }, activeLink);
-
-        // Only update if significantly visible (e.g. > 10%)
-        if (ratios[best] > 0.1) {
-          setActiveLink(best);
-        }
-      },
-      {
-        root: null,
-        rootMargin: "0px", // Use full viewport
-        threshold: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0] // Granular updates
-      }
-    );
-
-    sections.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
+    const onResize = () => {
+      if (window.innerWidth >= 768) setMenuOpen(false);
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  // 2. Update Fluid Highlight Pill Position
-  useEffect(() => {
-    const updateIndicator = () => {
-      const activeItem = itemRefs.current[activeLink];
-      if (activeItem) {
-        const { offsetLeft, offsetWidth } = activeItem;
-        setIndicatorStyle({
-          left: offsetLeft,
-          width: offsetWidth,
+  const items = [
+    { name: "Home", path: "/" },
+    { name: "Services", path: "/services" },
+    { name: "About Us", path: "/about" },
+    { name: "Contact", path: "/contact" },
+  ];
+
+  // Logic to move the pill
+  const movePill = () => {
+    const activeIndex = items.findIndex((item) => item.path === currentPath);
+    const activeLi = navRefs.current[activeIndex];
+
+    if (activeLi) {
+      const link = activeLi.querySelector("a");
+      if (link) {
+        // ADJUST THESE VALUES TO CHANGE PILL SIZE
+        const widthModifier = 0; // Add or subtract width (e.g., 10 or -10)
+        const heightModifier = -4; // Add or subtract height
+
+        setPillStyle({
+          left: activeLi.offsetLeft + link.offsetLeft - widthModifier / 2,
+          top: activeLi.offsetTop + link.offsetTop - heightModifier / 2,
+          width: link.offsetWidth + widthModifier,
+          height: link.offsetHeight + heightModifier,
           opacity: 1,
         });
       }
-    };
-
-    // Run immediately
-    updateIndicator();
-
-    // Run after a small delay to ensure layout is settled (fixes initial load)
-    const timer = setTimeout(updateIndicator, 100);
-
-    // Run on resize
-    window.addEventListener("resize", updateIndicator);
-
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("resize", updateIndicator);
-    };
-  }, [activeLink, menuOpen]);
-
-  const handleScroll = (e, id) => {
-    e.preventDefault();
-    setMenuOpen(false);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-      // Instant update for better feel, though observer will confirm
-      setActiveLink(id);
+    } else {
+      setPillStyle({ opacity: 0 });
     }
   };
 
-  const navItems = [
-    { id: "home", label: "Home" },
-    { id: "service-page", label: "Services" },
-    { id: "about", label: "About Us" },
-    { id: "contact", label: "Contact" },
-  ];
+  // Update pill position when currentPath changes AND on window resize
+  useEffect(() => {
+    // Initial calculate
+    requestAnimationFrame(movePill);
+
+    // Listen for resize to re-calculate position
+    const onResize = () => requestAnimationFrame(movePill);
+    window.addEventListener("resize", onResize);
+
+    return () => window.removeEventListener("resize", onResize);
+  }, [currentPath, menuOpen]);
+
+  // Handle click to prevent reload for demo
+  const handleLinkClick = (e, path) => {
+    e.preventDefault();
+    window.history.pushState({}, "", path);
+    setCurrentPath(path);
+    setMenuOpen(false);
+  };
+
+  const linkClass = (path) => (currentPath === path ? "active" : "");
 
   return (
     <header className="navbar">
       <div className="navbar-container">
         {/* BRAND */}
-        <div className="brand" onClick={(e) => handleScroll(e, "home")} style={{ cursor: "pointer" }}>
-          <img src="/Logo.PNG" alt="NuraNova Logo" className="brand-logo" />
+        <div className="brand">
+          {/* Vite public folder image path */}
+          <img src="public/Logo.png" alt="NuraNova Logo" className="brand-logo" />
           <div className="brand-text">
             <span className="brand-main">NuraNova</span>
             <span className="brand-sub">SOLUTIONS</span>
@@ -118,26 +96,22 @@ const Navbar = () => {
           <span className="bar" />
         </button>
 
-        {/* LINKS */}
-        <ul className={`nav-links ${menuOpen ? "open" : ""}`} ref={navRef}>
-          {/* Fluid Indicator */}
-          <li
-            className="nav-highlight"
-            style={{
-              left: indicatorStyle.left,
-              width: indicatorStyle.width,
-              opacity: indicatorStyle.opacity
-            }}
-          />
-
-          {navItems.map((item) => (
-            <li key={item.id} ref={(el) => (itemRefs.current[item.id] = el)}>
+        {/* NAV LINKS */}
+        <ul className={`nav-links ${menuOpen ? "open" : ""}`}>
+          <div className="nav-pill" style={pillStyle} />
+          {items.map((item, i) => (
+            <li
+              key={item.path}
+              className="nav-item"
+              ref={(el) => (navRefs.current[i] = el)}
+              style={{ "--d": `${i * 90}ms` }} // stagger delay
+            >
               <a
-                href={`#${item.id}`}
-                onClick={(e) => handleScroll(e, item.id)}
-                className={activeLink === item.id ? "active" : ""}
+                href={item.path}
+                className={linkClass(item.path)}
+                onClick={(e) => handleLinkClick(e, item.path)}
               >
-                {item.label}
+                {item.name}
               </a>
             </li>
           ))}
