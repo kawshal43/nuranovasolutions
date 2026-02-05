@@ -105,17 +105,17 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* HAMBURGER (mobile) */}
+        {/* HAMBURGER */}
         <button
-          className="menu-btn"
+          className={`menu-btn ${menuOpen ? "is-open" : ""}`}
           aria-label="Toggle menu"
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((v) => !v)}
           type="button"
         >
-          <span className={`bar ${menuOpen ? "open" : ""}`} />
-          <span className={`bar ${menuOpen ? "open" : ""}`} />
-          <span className={`bar ${menuOpen ? "open" : ""}`} />
+          <span className="bar" />
+          <span className="bar" />
+          <span className="bar" />
         </button>
 
         {/* LINKS */}

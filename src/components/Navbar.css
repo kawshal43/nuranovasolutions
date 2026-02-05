@@ -1,3 +1,4 @@
+/* ================= NAVBAR BASE ================= */
 .navbar {
   position: fixed;
   top: 0;
@@ -18,23 +19,31 @@
 .navbar-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 16px 24px;
+  padding: 10px 18px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+
   position: relative;
 }
 
-/* BRAND (LOGO + TEXT) */
+/* ================= BRAND (LOGO + TEXT) ================= */
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  cursor: pointer;
+  transition: opacity 180ms ease;
+}
+
+.brand:hover {
+  opacity: 0.88;
 }
 
 .brand-logo {
-  height: 42px;
+  height: 36px;
   width: auto;
   display: block;
 }
@@ -46,16 +55,17 @@
 }
 
 .brand-main {
-  font-size: 20px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 800;
   color: #111827;
 }
 
 .brand-sub {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 8px;
+  font-weight: 700;
   letter-spacing: 3px;
-  color: #1f2937;
+  color: #111827;
+  opacity: 0.9;
 }
 
 /* LINKS */
@@ -69,6 +79,29 @@
   /* Keep existing margin/padding if not explicitly removed */
   padding: 0;
   align-items: center;
+  position: relative;
+  /* Added for pill context */
+}
+
+/* Animated Pill */
+.nav-pill {
+  position: absolute;
+  background-color: #1f2937;
+  /* Match original active color */
+  border-radius: 999px;
+  /* Match original border-radius */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* z-index: 1 (will put links at z-index 2) */
+  z-index: 1;
+}
+
+.nav-links li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 2;
+  /* Ensure links are above pill */
 }
 
 /* Fluid Highlight Pill */
@@ -111,61 +144,102 @@
   font-weight: 600;
 }
 
-/* HAMBURGER BUTTON (hidden on desktop) */
+/* Disable hover on touch devices */
+@media (hover: none) {
+  .nav-links a:hover {
+    background-color: transparent;
+    transform: none;
+  }
+}
+
+/* ================= HAMBURGER ================= */
 .menu-btn {
   display: none;
-  border: none;
-  background: transparent;
-  padding: 8px;
+  width: 44px;
+  height: 44px;
+
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  border-radius: 14px;
+
   cursor: pointer;
   border-radius: 10px;
   z-index: 10;
 }
 
-.menu-btn:focus {
-  outline: 2px solid #e5e7eb;
-  outline-offset: 2px;
+.menu-btn:hover {
+  background: #f9fafb;
 }
 
-.bar {
+.menu-btn .bar {
   display: block;
-  width: 26px;
+  width: 22px;
   height: 2px;
   background: #111827;
-  margin: 6px 0;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  border-radius: 2px;
+  margin: 5px auto;
+  transition: transform 220ms ease, opacity 220ms ease;
 }
 
-/* MOBILE STYLES */
+/* Hamburger → X */
+.menu-btn.is-open .bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.menu-btn.is-open .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-btn.is-open .bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ================= MOBILE ================= */
 @media (max-width: 767px) {
   .menu-btn {
     display: inline-block;
   }
 
-  /* hide desktop links */
-  .nav-links {
+  /* Hide pill on mobile */
+  .nav-pill {
     display: none;
   }
 
-  /* show dropdown when open */
-  .nav-links.open {
-    display: flex;
+  /* Dropdown (glass blur) */
+  .nav-links {
     position: absolute;
-    top: 72px;
-    right: 24px;
-    left: 24px;
+    top: 63px;
+    right: 112px;
+    left: 112px;
+
+    display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 12px;
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 14px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    gap: 14px;
+
+    padding: 18px;
+
+    background: rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border: 1px solid rgba(229, 231, 235, 0.55);
+    border-radius: 24px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.14);
+
+    transform: translateY(-18px) scale(0.96);
+    opacity: 0;
+    pointer-events: none;
+
+    transition:
+      transform 420ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 260ms ease;
+
+    z-index: 1050;
   }
 
-  .nav-links.open a {
-    width: 100%;
-    padding: 10px 12px;
-    border-radius: 12px;
+  .nav-links.open {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    pointer-events: auto;
   }
 }
