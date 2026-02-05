@@ -1,67 +1,87 @@
 import { useEffect, useState, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
 import "./Navbar.css";
 
 const Navbar = () => {
-  const location = useLocation();
-  const [activeLink, setActiveLink] = useState("/");
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
+  const [pillStyle, setPillStyle] = useState({ opacity: 0 });
+  const navRefs = useRef([]);
 
-  const navRef = useRef(null);
-  const itemRefs = useRef({});
-
-  // Sync activeLink with URL path
+  // Close menu when resizing to desktop
   useEffect(() => {
-    setActiveLink(location.pathname);
-    setMenuOpen(false); // Close menu on route change
-  }, [location]);
+    const onResize = () => {
+      if (window.innerWidth >= 768) setMenuOpen(false);
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
-  // Update Fluid Highlight Pill Position
-  useEffect(() => {
-    const updateIndicator = () => {
-      const activeItem = itemRefs.current[activeLink];
-      if (activeItem) {
-        const { offsetLeft, offsetWidth } = activeItem;
-        setIndicatorStyle({
-          left: offsetLeft,
-          width: offsetWidth,
+  const items = [
+    { name: "Home", path: "/" },
+    { name: "Services", path: "/services" },
+    { name: "About Us", path: "/about" },
+    { name: "Contact", path: "/contact" },
+  ];
+
+  // Logic to move the pill
+  const movePill = () => {
+    const activeIndex = items.findIndex((item) => item.path === currentPath);
+    const activeLi = navRefs.current[activeIndex];
+
+    if (activeLi) {
+      const link = activeLi.querySelector("a");
+      if (link) {
+        // ADJUST THESE VALUES TO CHANGE PILL SIZE
+        const widthModifier = 0; // Add or subtract width (e.g., 10 or -10)
+        const heightModifier = -4; // Add or subtract height
+
+        setPillStyle({
+          left: activeLi.offsetLeft + link.offsetLeft - widthModifier / 2,
+          top: activeLi.offsetTop + link.offsetTop - heightModifier / 2,
+          width: link.offsetWidth + widthModifier,
+          height: link.offsetHeight + heightModifier,
           opacity: 1,
         });
-      } else {
-        // Fallback or hide if no match
-        setIndicatorStyle(prev => ({ ...prev, opacity: 0 }));
       }
-    };
+    } else {
+      setPillStyle({ opacity: 0 });
+    }
+  };
 
-    updateIndicator();
-    const timer = setTimeout(updateIndicator, 100);
-    window.addEventListener("resize", updateIndicator);
+  // Update pill position when currentPath changes AND on window resize
+  useEffect(() => {
+    // Initial calculate
+    requestAnimationFrame(movePill);
 
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("resize", updateIndicator);
-    };
-  }, [activeLink, menuOpen]);
+    // Listen for resize to re-calculate position
+    const onResize = () => requestAnimationFrame(movePill);
+    window.addEventListener("resize", onResize);
 
-  const navItems = [
-    { path: "/", label: "Home" },
-    { path: "/services", label: "Services" },
-    { path: "/about", label: "About Us" },
-    { path: "/contact", label: "Contact" },
-  ];
+    return () => window.removeEventListener("resize", onResize);
+  }, [currentPath, menuOpen]);
+
+  // Handle click to prevent reload for demo
+  const handleLinkClick = (e, path) => {
+    e.preventDefault();
+    window.history.pushState({}, "", path);
+    setCurrentPath(path);
+    setMenuOpen(false);
+  };
+
+  const linkClass = (path) => (currentPath === path ? "active" : "");
 
   return (
     <header className="navbar">
       <div className="navbar-container">
         {/* BRAND */}
-        <Link to="/" className="brand">
-          <img src="/Logo.PNG" alt="NuraNova Logo" className="brand-logo" />
+        <div className="brand">
+          {/* Vite public folder image path */}
+          <img src="public/Logo.png" alt="NuraNova Logo" className="brand-logo" />
           <div className="brand-text">
             <span className="brand-main">NuraNova</span>
             <span className="brand-sub">SOLUTIONS</span>
           </div>
-        </Link>
+        </div>
 
         {/* HAMBURGER */}
         <button
@@ -76,26 +96,23 @@ const Navbar = () => {
           <span className="bar" />
         </button>
 
-        {/* LINKS */}
-        <ul className={`nav-links ${menuOpen ? "open" : ""}`} ref={navRef}>
-          {/* Fluid Indicator */}
-          <li
-            className="nav-highlight"
-            style={{
-              left: indicatorStyle.left,
-              width: indicatorStyle.width,
-              opacity: indicatorStyle.opacity
-            }}
-          />
-
-          {navItems.map((item) => (
-            <li key={item.path} ref={(el) => (itemRefs.current[item.path] = el)}>
-              <Link
-                to={item.path}
-                className={activeLink === item.path ? "active" : ""}
+        {/* NAV LINKS */}
+        <ul className={`nav-links ${menuOpen ? "open" : ""}`}>
+          <div className="nav-pill" style={pillStyle} />
+          {items.map((item, i) => (
+            <li
+              key={item.path}
+              className="nav-item"
+              ref={(el) => (navRefs.current[i] = el)}
+              style={{ "--d": `${i * 90}ms` }} // stagger delay
+            >
+              <a
+                href={item.path}
+                className={linkClass(item.path)}
+                onClick={(e) => handleLinkClick(e, item.path)}
               >
-                {item.label}
-              </Link>
+                {item.name}
+              </a>
             </li>
           ))}
         </ul>

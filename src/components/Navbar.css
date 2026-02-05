@@ -1,20 +1,13 @@
 /* ================= NAVBAR BASE ================= */
 .navbar {
-  position: fixed;
+  width: 100%;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
-  height: 72px;
-  /* must match --navH */
-  background: #fff;
   z-index: 1000;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, .05);
 }
-
-
-
 
 .navbar-container {
   max-width: 1200px;
@@ -68,15 +61,12 @@
   opacity: 0.9;
 }
 
-/* LINKS */
+/* ================= LINKS (DESKTOP) ================= */
 .nav-links {
-  display: flex;
-  gap: 30px;
   list-style: none;
-  position: relative;
-  /* For highlighter positioning */
+  display: flex;
+  gap: 28px;
   margin: 0;
-  /* Keep existing margin/padding if not explicitly removed */
   padding: 0;
   align-items: center;
   position: relative;
@@ -104,44 +94,26 @@
   /* Ensure links are above pill */
 }
 
-/* Fluid Highlight Pill */
-.nav-links .nav-highlight {
-  position: absolute;
-  height: 100%;
-  background: #1f2937;
-  /* Dark background */
-  border-radius: 999px;
-  /* Pill shape */
-  z-index: 1;
-  /* Move above navbar background */
-  transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
-  bottom: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  display: block;
-}
-
-.nav-links li {
-  position: relative;
-  z-index: 2;
-  /* Ensure text is above highlight */
-}
-
 .nav-links a {
   text-decoration: none;
-  font-size: 16px;
-  font-weight: 500;
-  color: #333;
-  padding: 10px 24px;
-  /* Larger click area for pill feel */
+  color: #111827;
+  font-size: 13px;
+  padding: 6px 16px;
   border-radius: 999px;
-  transition: color 0.2s;
-  display: block;
+  font-weight: 700;
+  display: inline-block;
+  transition: background-color 180ms ease, transform 180ms ease;
+}
+
+.nav-links a:hover {
+  background-color: #f3f4f6;
+  transform: translateY(-1px);
 }
 
 .nav-links a.active {
-  color: #ffffff !important;
-  /* White text on dark pill */
-  font-weight: 600;
+  /* background-color: #1f2937; REMOVED static bg, pill takes over */
+  background-color: transparent;
+  color: #ffffff;
 }
 
 /* Disable hover on touch devices */
@@ -163,8 +135,9 @@
   border-radius: 14px;
 
   cursor: pointer;
-  border-radius: 10px;
-  z-index: 10;
+  padding: 10px;
+  position: relative;
+  z-index: 1100;
 }
 
 .menu-btn:hover {
@@ -241,5 +214,68 @@
     transform: translateY(0) scale(1);
     opacity: 1;
     pointer-events: auto;
+  }
+
+  /* ✅ No bullets */
+  .nav-links,
+  .nav-links li {
+    list-style: none;
+    margin: 0;
+    padding: 3;
+  }
+
+  /* ✅ Stagger animation for each item */
+  .nav-item {
+    opacity: 0;
+    transform: translateX(40px);
+    transition:
+      transform 420ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 280ms ease;
+    transition-delay: var(--d);
+  }
+
+  .nav-links.open .nav-item {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* ✅ FIXED SAME SIZE PILLS (IMPORTANT PART) */
+  .nav-links a {
+    width: 90px;
+    /* ✅ all same width */
+    height: 30px;
+    /* ✅ all same height */
+    margin: 0 auto;
+
+    display: flex;
+    /* ✅ perfect center */
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+    text-align: center;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    background: rgba(253, 253, 253, 0.6);
+
+    padding: 0;
+    /* ✅ remove padding that causes size changes */
+  }
+
+  /* Tap feedback */
+  .nav-links a:active {
+    transform: scale(0.97);
+    background: rgba(229, 231, 235, 0.9);
+  }
+
+  .nav-links a.active {
+    background-color: #1f2937;
+    color: #ffffff;
+  }
+
+  .nav-links a.active:active {
+    transform: scale(0.97);
   }
 }
