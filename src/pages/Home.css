@@ -101,14 +101,31 @@
   letter-spacing:-0.02em;
 }
 
-.arrowImg{
-  display:block;
-  width:170px;
-  height:auto;
-  margin:15px auto 12px;
-  opacity:.95;
-  pointer-events:none;
-  transform: translateX(18px);
+/* =========================
+   ✅ ARROW (FINAL STABLE)
+   - anchored to end of "Experiences"
+   - uses EM units (responsive)
+========================= */
+.exp-wrap{
+  position: relative;
+  display: inline-block;
+  padding-bottom: 2.8em;         /* space under word */
+}
+
+.arrow-holder{
+  position: absolute;
+  left: 100%;                    /* start from end of text */
+  top: 0.55em;                   /* near letters (not too low) */
+  transform: translate(-3.4em, 1.15em);
+
+  pointer-events: none;
+}
+
+.arrow-holder img{
+  width: clamp(170px, 19vw, 240px);
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,.18));
 }
 
 .btnRow{
@@ -154,7 +171,7 @@
 }
 
 /* =========================
-   ✅ SERVICES (BIG CARD + 3s STEP RIGHT)
+   ✅ SERVICES (BIG CARD + STEP RIGHT)
 ========================= */
 .sectionWrap{
   min-height: 100vh;
@@ -165,7 +182,6 @@
   background:#fff;
 }
 
-/* BIG card */
 .servicesCard{
   position: relative;
   width: 100%;
@@ -184,7 +200,6 @@
   justify-content:center;
 }
 
-/* background blur blobs */
 .servicesBlobs{
   position:absolute;
   inset:0;
@@ -224,7 +239,6 @@
   color:#64748b;
 }
 
-/* 3-card viewport */
 .servicesCarousel{
   position: relative;
   z-index: 1;
@@ -233,21 +247,18 @@
   max-width: 920px;
 
   --gap: 22px;
-  --cardW: 250px; /* 3 cards visible */
+  --cardW: 250px;
 
   overflow:hidden;
   padding: 14px 10px 8px;
 }
 
-/* moving row */
 .servicesTrack{
   display:flex;
   gap: var(--gap);
   align-items: stretch;
   width: max-content;
   will-change: transform;
-
-  /* ✅ step feel */
   transition: transform .62s cubic-bezier(.22,.8,.2,1);
 }
 
@@ -255,7 +266,6 @@
   transition: none;
 }
 
-/* one card */
 .serviceMiniCard{
   width: var(--cardW);
   background:#fff;
@@ -272,15 +282,13 @@
   gap: 10px;
 }
 
-/* ✅ ICON WITHOUT extra background card */
 .miniIcon{
-  width: 130px;     /* bigger icon */
+  width: 130px;
   height: 130px;
   object-fit: contain;
   display:block;
 }
 
-/* title */
 .miniTitle{
   font-size: 12px;
   font-weight: 900;
@@ -288,7 +296,6 @@
   line-height: 1.25;
 }
 
-/* dots */
 .servicesDots{
   position: relative;
   z-index: 1;
@@ -310,7 +317,6 @@
   background:#111827;
 }
 
-/* button */
 .servicesBtnRow{
   position: relative;
   z-index: 1;
@@ -325,106 +331,7 @@
   box-shadow: 0 18px 34px rgba(37,99,235,.25);
 }
 
-/* =========================
-   WHY
-========================= */
-.whyWrap{
-  padding: 28px 18px 52px;
-  background:#fff;
-}
-
-.whyGrid{
-  max-width:1100px;
-  margin:0 auto;
-  display:grid;
-  grid-template-columns: 1.1fr .9fr;
-  gap:22px;
-  align-items:start;
-}
-
-.whyTitle{
-  margin:0;
-  font-size:22px;
-  font-weight:900;
-}
-
-.whySub{
-  margin:8px 0 0;
-  color: var(--muted);
-  font-size:12px;
-}
-
-.tickList{
-  margin-top:14px;
-  display:grid;
-  gap:10px;
-}
-
-.tickItem{
-  display:flex;
-  gap:10px;
-  align-items:flex-start;
-  color:#4b5563;
-  font-size:12px;
-}
-
-.tick{
-  width:18px;
-  height:18px;
-  border-radius:999px;
-  background:#10b981;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  font-size:12px;
-  flex:0 0 auto;
-  margin-top:1px;
-}
-
-.cta{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:22px;
-  box-shadow: var(--shadow2);
-  padding:22px;
-}
-
-.ctaTitle{
-  margin:0;
-  font-size:16px;
-  font-weight:900;
-  text-align:center;
-}
-
-.ctaSub{
-  margin:10px 0 0;
-  color: var(--muted);
-  font-size:12px;
-  line-height:1.6;
-  text-align:center;
-}
-
-.ctaBtnRow{
-  margin-top:14px;
-  display:flex;
-  justify-content:center;
-}
-
-.btnSmall{
-  border:0;
-  background: var(--blue);
-  color:#fff;
-  padding:10px 18px;
-  border-radius:999px;
-  font-weight:900;
-  cursor:pointer;
-  box-shadow: 0 12px 22px rgba(37,99,235,.2);
-}
-
-/* =========================
-   REVEAL
-========================= */
+/* REVEAL */
 .reveal{
   opacity:0;
   transform: translateY(18px);
@@ -435,9 +342,7 @@
   transform: translateY(0);
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* RESPONSIVE */
 @media (max-width: 920px){
   .whyGrid{ grid-template-columns: 1fr; }
 }
@@ -445,18 +350,16 @@
 @media (max-width: 768px){
   .posRT, .posRB{ display:none; }
 
-  .arrowImg{
-    width:140px;
-    margin:8px auto 10px;
-    transform: translateX(12px);
-  }
+  /* Arrow responsive */
+  .exp-wrap{ padding-bottom: 2.3em; }
+  .arrow-holder{ transform: translate(-3.0em, 1.35em); }
+  .arrow-holder img{ width: clamp(140px, 26vw, 200px); }
 
   .sectionWrap{
     min-height:auto;
     padding: 18px 14px 34px;
   }
 
-  /* 1 card view on mobile */
   .servicesCarousel{
     --cardW: 260px;
     max-width: 290px;

@@ -57,7 +57,7 @@ export default function Home() {
     { title: "Product & Brand Marketing", icon: "/services/marketing.png" },
   ];
 
-  // ✅ 3s STEP carousel (right), hover pause
+  // ✅ STEP carousel (right), hover pause
   const [paused, setPaused] = useState(false);
   const [index, setIndex] = useState(0);
 
@@ -65,8 +65,8 @@ export default function Home() {
     if (paused) return;
 
     const id = setInterval(() => {
-      setIndex((prev) => (prev + 1) % services.length); // ✅ step right
-    }, 1000); // ✅ 3 seconds
+      setIndex((prev) => (prev + 1) % services.length);
+    }, 1000);
 
     return () => clearInterval(id);
   }, [paused, services.length]);
@@ -74,7 +74,7 @@ export default function Home() {
   // duplicates for smooth loop
   const trackItems = useMemo(() => [...services, ...services, ...services], [services]);
 
-  // dots like example
+  // dots
   const dotsCount = 5;
   const activeDot = index % dotsCount;
 
@@ -112,12 +112,16 @@ export default function Home() {
           <div className="heroInner">
             <div className="kicker">It all starts with innovation</div>
 
+            {/* ✅ Title stays. Arrow is inside exp-wrap */}
             <h1 className="title">
               Building Digital <br />
-              Experiences
+              <span className="exp-wrap">
+                Experiences
+                <span className="arrow-holder">
+                  <img src={ar} alt="arrow" />
+                </span>
+              </span>
             </h1>
-
-            <img className="arrowImg" src={ar} alt="" aria-hidden="true" />
 
             <div className="btnRow">
               <button
@@ -137,7 +141,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ✅ SERVICES (BIG + icon NO background box) */}
+      {/* ✅ SERVICES */}
       <section className="sectionWrap" id="services">
         <div
           ref={servicesRef}
@@ -164,7 +168,6 @@ export default function Home() {
             >
               {trackItems.map((s, idx) => (
                 <div className="serviceMiniCard" key={`${s.title}-${idx}`}>
-                  {/* ✅ NO extra icon background box */}
                   <img className="miniIcon" src={s.icon} alt="" />
 
                   <div className="miniTitle">
@@ -193,14 +196,10 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-
     </div>
   );
 }
 
-/* Helper: if you ever remove i import, this prevents crash.
-   (You can delete this helper if not needed) */
 function relationalImageFallback(img) {
   return img;
 }
