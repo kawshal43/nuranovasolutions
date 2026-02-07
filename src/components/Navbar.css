@@ -22,13 +22,14 @@
   position: relative;
 }
 
-/* ================= BRAND (LOGO + TEXT) ================= */
+/* ================= BRAND ================= */
 .brand {
   display: flex;
   align-items: center;
   gap: 10px;
   cursor: pointer;
   transition: opacity 180ms ease;
+  user-select: none;
 }
 
 .brand:hover {
@@ -70,19 +71,22 @@
   padding: 0;
   align-items: center;
   position: relative;
-  /* Added for pill context */
+  /* pill context */
 }
 
 /* Animated Pill */
 .nav-pill {
   position: absolute;
   background-color: #1f2937;
-  /* Match original active color */
   border-radius: 999px;
-  /* Match original border-radius */
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  /* z-index: 1 (will put links at z-index 2) */
   z-index: 1;
+
+  transition:
+    left 320ms cubic-bezier(0.16, 1, 0.3, 1),
+    top 320ms cubic-bezier(0.16, 1, 0.3, 1),
+    width 320ms cubic-bezier(0.16, 1, 0.3, 1),
+    height 320ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 200ms ease;
 }
 
 .nav-links li {
@@ -91,7 +95,7 @@
   padding: 0;
   position: relative;
   z-index: 2;
-  /* Ensure links are above pill */
+  /* links above pill */
 }
 
 .nav-links a {
@@ -111,12 +115,12 @@
 }
 
 .nav-links a.active {
-  /* background-color: #1f2937; REMOVED static bg, pill takes over */
   background-color: transparent;
+  /* pill handles background */
   color: #ffffff;
 }
 
-/* Disable hover on touch devices */
+/* Disable hover on touch */
 @media (hover: none) {
   .nav-links a:hover {
     background-color: transparent;
@@ -173,18 +177,29 @@
     display: inline-block;
   }
 
+  /* Overlay blur/dim background */
+  .nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(17, 24, 39, 0.25);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 1040;
+  }
+
   /* Hide pill on mobile */
   .nav-pill {
     display: none;
   }
 
-  /* Dropdown (glass blur) */
+  /* Dropdown (glass blur) - centered + responsive */
   .nav-links {
     position: absolute;
-    top: 63px;
-    right: 112px;
-    left: 112px;
+    top: 64px;
+    left: 50%;
+    right: auto;
 
+    width: min(420px, calc(100vw - 32px));
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -199,7 +214,7 @@
     border-radius: 24px;
     box-shadow: 0 18px 45px rgba(0, 0, 0, 0.14);
 
-    transform: translateY(-18px) scale(0.96);
+    transform: translateX(-50%) translateY(-18px) scale(0.96);
     opacity: 0;
     pointer-events: none;
 
@@ -211,20 +226,20 @@
   }
 
   .nav-links.open {
-    transform: translateY(0) scale(1);
+    transform: translateX(-50%) translateY(0) scale(1);
     opacity: 1;
     pointer-events: auto;
   }
 
-  /* ✅ No bullets */
+  /* No bullets */
   .nav-links,
   .nav-links li {
     list-style: none;
     margin: 0;
-    padding: 3;
+    padding: 0;
   }
 
-  /* ✅ Stagger animation for each item */
+  /* Stagger animation */
   .nav-item {
     opacity: 0;
     transform: translateX(40px);
@@ -239,16 +254,13 @@
     transform: translateX(0);
   }
 
-  /* ✅ FIXED SAME SIZE PILLS (IMPORTANT PART) */
+  /* Same size pill buttons */
   .nav-links a {
-    width: 90px;
-    /* ✅ all same width */
-    height: 30px;
-    /* ✅ all same height */
+    width: 150px;
+    height: 38px;
     margin: 0 auto;
 
     display: flex;
-    /* ✅ perfect center */
     align-items: center;
     justify-content: center;
 
@@ -258,10 +270,10 @@
     font-size: 15px;
     font-weight: 700;
 
-    background: rgba(253, 253, 253, 0.6);
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.45);
 
     padding: 0;
-    /* ✅ remove padding that causes size changes */
   }
 
   /* Tap feedback */
@@ -273,9 +285,20 @@
   .nav-links a.active {
     background-color: #1f2937;
     color: #ffffff;
+    border-color: rgba(31, 41, 55, 0.55);
   }
 
   .nav-links a.active:active {
     transform: scale(0.97);
   }
+
+  .nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(17, 24, 39, 0.25);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 1040;
+  }
+
 }
