@@ -1,11 +1,21 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./Navbar.css";
 
 const Navbar = () => {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [active, setActive] = useState("home");
   const [pillStyle, setPillStyle] = useState({ opacity: 0 });
+
   const navRefs = useRef([]);
+  const headerRef = useRef(null);
+
+  // ✅ IMPORTANT: Contact id must match your Contact.jsx section id
+  const items = [
+    { name: "Home", id: "home" },
+    { name: "Services", id: "services" },
+    { name: "About Us", id: "about" },
+    { name: "Contact", id: "get-in-touch" }, // <-- YOUR CONTACT SECTION ID
+  ];
 
   // Close menu when resizing to desktop
   useEffect(() => {
@@ -16,67 +26,112 @@ const Navbar = () => {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  const items = [
-    { name: "Home", path: "/" },
-    { name: "Services", path: "/services" },
-    { name: "About Us", path: "/about" },
-    { name: "Contact", path: "/contact" },
-  ];
+  // ESC close + body lock when menu open
+  useEffect(() => {
+    if (!menuOpen) return;
 
-  // Logic to move the pill
-  const movePill = () => {
-    const activeIndex = items.findIndex((item) => item.path === currentPath);
-    const activeLi = navRefs.current[activeIndex];
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
 
-    if (activeLi) {
-      const link = activeLi.querySelector("a");
-      if (link) {
-        // ADJUST THESE VALUES TO CHANGE PILL SIZE
-        const widthModifier = 0; // Add or subtract width (e.g., 10 or -10)
-        const heightModifier = -4; // Add or subtract height
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
 
-        setPillStyle({
-          left: activeLi.offsetLeft + link.offsetLeft - widthModifier / 2,
-          top: activeLi.offsetTop + link.offsetTop - heightModifier / 2,
-          width: link.offsetWidth + widthModifier,
-          height: link.offsetHeight + heightModifier,
-          opacity: 1,
-        });
-      }
-    } else {
-      setPillStyle({ opacity: 0 });
-    }
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [menuOpen]);
+
+  // Smooth scroll with sticky navbar offset
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (!el) return false;
+
+    const navH = headerRef.current?.offsetHeight || 70;
+    const y = el.getBoundingClientRect().top + window.scrollY - navH - 10;
+
+    window.scrollTo({ top: y, behavior: "smooth" });
+    return true;
   };
 
-  // Update pill position when currentPath changes AND on window resize
-  useEffect(() => {
-    // Initial calculate
-    requestAnimationFrame(movePill);
+  // Click handler
+  const handleClick = (id) => {
+    // If user is not on home route, go home with hash
+    if (window.location.pathname !== "/") {
+      window.location.href = `/#${id}`;
+      return;
+    }
 
-    // Listen for resize to re-calculate position
-    const onResize = () => requestAnimationFrame(movePill);
-    window.addEventListener("resize", onResize);
+    window.history.pushState({}, "", `#${id}`);
 
-    return () => window.removeEventListener("resize", onResize);
-  }, [currentPath, menuOpen]);
+    // Retry until element exists (for safety)
+    let tries = 0;
+    const timer = setInterval(() => {
+      tries++;
+      const ok = scrollToSection(id);
+      if (ok || tries > 40) clearInterval(timer);
+    }, 50);
 
-  // Handle click to prevent reload for demo
-  const handleLinkClick = (e, path) => {
-    e.preventDefault();
-    window.history.pushState({}, "", path);
-    setCurrentPath(path);
+    setActive(id);
     setMenuOpen(false);
   };
 
-  const linkClass = (path) => (currentPath === path ? "active" : "");
+  // On refresh / direct link #hash
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    if (!hash) return;
+
+    let tries = 0;
+    const timer = setInterval(() => {
+      tries++;
+      const ok = scrollToSection(hash);
+      if (ok || tries > 60) clearInterval(timer);
+    }, 50);
+
+    setActive(hash);
+  }, []);
+
+  // Desktop pill movement
+  const movePill = () => {
+    if (window.innerWidth < 768) {
+      setPillStyle({ opacity: 0 });
+      return;
+    }
+
+    const index = items.findIndex((i) => i.id === active);
+    const li = navRefs.current[index];
+    if (!li) return;
+
+    const a = li.querySelector("a");
+    if (!a) return;
+
+    // modify size if needed
+    const widthModifier = 0;
+    const heightModifier = -4;
+
+    setPillStyle({
+      left: li.offsetLeft + a.offsetLeft - widthModifier / 2,
+      top: li.offsetTop + a.offsetTop - heightModifier / 2,
+      width: a.offsetWidth + widthModifier,
+      height: a.offsetHeight + heightModifier,
+      opacity: 1,
+    });
+  };
+
+  useLayoutEffect(() => {
+    requestAnimationFrame(movePill);
+    window.addEventListener("resize", movePill);
+    return () => window.removeEventListener("resize", movePill);
+  }, [active, menuOpen]);
 
   return (
-    <header className="navbar">
+    <header className="navbar" ref={headerRef}>
       <div className="navbar-container">
         {/* BRAND */}
-        <div className="brand">
-          {/* Vite public folder image path */}
-          <img src="public/Logo.png" alt="NuraNova Logo" className="brand-logo" />
+        <div className="brand" onClick={() => handleClick("home")}>
+          <img src="public/Logo.png" alt="Logo" className="brand-logo" />
           <div className="brand-text">
             <span className="brand-main">NuraNova</span>
             <span className="brand-sub">SOLUTIONS</span>
@@ -96,20 +151,27 @@ const Navbar = () => {
           <span className="bar" />
         </button>
 
+        {/* OVERLAY (optional - needs CSS .nav-overlay) */}
+        {menuOpen && <div className="nav-overlay" onClick={() => setMenuOpen(false)} />}
+
         {/* NAV LINKS */}
         <ul className={`nav-links ${menuOpen ? "open" : ""}`}>
           <div className="nav-pill" style={pillStyle} />
+
           {items.map((item, i) => (
             <li
-              key={item.path}
+              key={item.id}
               className="nav-item"
               ref={(el) => (navRefs.current[i] = el)}
-              style={{ "--d": `${i * 90}ms` }} // stagger delay
+              style={{ "--d": `${i * 90}ms` }}
             >
               <a
-                href={item.path}
-                className={linkClass(item.path)}
-                onClick={(e) => handleLinkClick(e, item.path)}
+                href={`#${item.id}`}
+                className={active === item.id ? "active" : ""}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleClick(item.id);
+                }}
               >
                 {item.name}
               </a>
