@@ -50,12 +50,12 @@
 }
 
 .about-desc {
-  font-size: 16px;
-  line-height: 1.65;
-  color: #3b3b3b;
+  min-height: unset;          /* critical */
+  width: 100%;
   max-width: 560px;
-  margin: 0 0 26px;
-  min-height: 56px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .caret {
@@ -194,9 +194,10 @@
 }
 
 .philosophy-brand-img {
-  width: clamp(620px, 75vw, 900px); /* ✅ MUCH BIGGER */
-  max-width: 70%;
-  height: 60%;
+  
+  width: min(900px, 100%);
+  max-width: 100%;
+  height: auto;
   object-fit: contain;
   display: block;
   margin: 0 auto;
@@ -377,22 +378,18 @@
 }
 
 /* RESPONSIVE */
-@media (max-width: 980px) {
+@media (max-width: 768px) {
   .about-hero {
-    grid-template-columns: 1fr;
-    padding: 70px 7%;
-    gap: 30px;
+    padding: 60px 6%;
   }
-
-  .about-hero-img {
-    justify-content: flex-start;
+  .mv-card h3 {
+    font-size: 24px;
   }
-
-  .mv-cards {
-    grid-template-columns: 1fr;
+  .mv-card p {
+    font-size: 16px;
+    line-height: 1.7;
   }
-
-  .team-grid {
-    grid-template-columns: 1fr;
+  .ph-card-sub {
+    font-size: 16px;
   }
 }
