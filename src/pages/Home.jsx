@@ -47,36 +47,7 @@ export default function Home() {
     return { a: y * 0.04, b: y * 0.03, c: y * 0.035 };
   }, [scrollY]);
 
-  // ✅ Services icons in /public/services/*
-  const services = [
-    { title: "Software Development &\nWeb Solutions", icon: "/services/software.png" },
-    { title: "Video production &\nEditing", icon: "/services/video.png" },
-    { title: "Education & Tutorials", icon: "/services/education.png" },
-    { title: "Design & Creative Media", icon: "/services/design.png" },
-    { title: "Photography Services", icon: "/services/photography.png" },
-    { title: "Product & Brand Marketing", icon: "/services/marketing.png" },
-  ];
 
-  // ✅ STEP carousel (right), hover pause
-  const [paused, setPaused] = useState(false);
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    if (paused) return;
-
-    const id = setInterval(() => {
-      setIndex((prev) => (prev + 1) % services.length);
-    }, 1000);
-
-    return () => clearInterval(id);
-  }, [paused, services.length]);
-
-  // duplicates for smooth loop
-  const trackItems = useMemo(() => [...services, ...services, ...services], [services]);
-
-  // dots
-  const dotsCount = 5;
-  const activeDot = index % dotsCount;
 
   return (
     <div className="home-container" id="home">
@@ -141,61 +112,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ✅ SERVICES */}
-      <section className="sectionWrap" id="services">
-        <div
-          ref={servicesRef}
-          data-id="services"
-          className={`servicesCard reveal ${inView.services ? "show" : ""}`}
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-        >
-          <div className="servicesBlobs" aria-hidden="true">
-            <img src={b} className="blob blob1" alt="" />
-            <img src={g} className="blob blob2" alt="" />
-            <img src={relationalImageFallback(i)} className="blob blob3" alt="" />
-          </div>
 
-          <div className="servicesHead">
-            <h2 className="servicesTitle">Our Services</h2>
-            <p className="servicesSub">Smart solutions for a digital world.</p>
-          </div>
-
-          <div className="servicesCarousel">
-            <div
-              className={`servicesTrack ${paused ? "paused" : ""}`}
-              style={{ transform: `translateX(calc(-1 * var(--cardW) * ${index}))` }}
-            >
-              {trackItems.map((s, idx) => (
-                <div className="serviceMiniCard" key={`${s.title}-${idx}`}>
-                  <img className="miniIcon" src={s.icon} alt="" />
-
-                  <div className="miniTitle">
-                    {s.title.split("\n").map((line, i2) => (
-                      <span key={i2}>
-                        {line}
-                        {i2 === 0 ? <br /> : null}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="servicesDots" aria-hidden="true">
-            {Array.from({ length: dotsCount }).map((_, d) => (
-              <span key={d} className={`sDot ${d === activeDot ? "active" : ""}`} />
-            ))}
-          </div>
-
-          <div className="servicesBtnRow">
-            <button className="btn servicesBtn">
-              View All Services <span style={{ marginLeft: 8 }}>→</span>
-            </button>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
