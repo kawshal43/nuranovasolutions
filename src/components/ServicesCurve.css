@@ -1,0 +1,71 @@
+/* Container spans the full width of the hero section */
+.services-curve-container {
+    position: absolute;
+    top: 0;
+    /* Position it completely at the top of the hero page */
+    left: 0;
+    width: 100%;
+    height: 350px;
+    /* Slightly less height to keep it out of the text */
+    z-index: 2;
+    /* Sits above the interactive canvas background, but behind the text */
+    pointer-events: none;
+    /* Let clicks pass through to the canvas */
+    overflow: hidden;
+}
+
+/* Make SVG stretch to fill container width, but maintain defined height */
+.services-curve-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+    /* Let icons travel slightly outside the exact viewbox */
+}
+
+/* 
+  Depth of Field Blur Effect 
+  We apply a masking gradient or filter to make icons blurrier at the edges.
+*/
+
+/* Base state for all icons: add depth drop shadow, baseline blur, and floating animation */
+.animating-icon {
+    filter: drop-shadow(0 15px 15px rgba(0, 0, 0, 0.15)) blur(3px);
+    transform-origin: center;
+    animation: randomFloat 12s ease-in-out infinite alternate;
+}
+
+@keyframes randomFloat {
+    0% {
+        transform: translate(0px, 0px) rotate(0deg) scale(1);
+    }
+
+    33% {
+        transform: translate(-15px, -25px) rotate(-5deg) scale(1.05);
+    }
+
+    66% {
+        transform: translate(20px, 10px) rotate(4deg) scale(0.95);
+    }
+
+    100% {
+        transform: translate(-10px, 20px) rotate(-2deg) scale(1);
+    }
+}
+
+/* 
+   We apply a horizontal mask to the entire container to fade/blur the edges.
+   Increased the fade zones (up to 30% on each side) to make the corners blurrier and softer.
+*/
+.services-curve-container {
+    -webkit-mask-image: linear-gradient(to right,
+            transparent 0%,
+            black 30%,
+            black 70%,
+            transparent 100%);
+    mask-image: linear-gradient(to right,
+            transparent 0%,
+            black 30%,
+            black 70%,
+            transparent 100%);
+}
