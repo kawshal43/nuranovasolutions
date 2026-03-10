@@ -1,0 +1,53 @@
+.aurora-bg {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+
+    background-color: #ffffff;
+    background-image:
+        radial-gradient(ellipse 70% 60% at 8% 6%, hsla(182, 78%, 86%, 0.75) 0%, transparent 65%),
+        radial-gradient(ellipse 65% 55% at 30% 48%, hsla(272, 72%, 84%, 0.65) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 50% at 80% 80%, hsla(315, 68%, 87%, 0.50) 0%, transparent 65%);
+
+    animation: auroraDrift 60s ease-in-out infinite alternate;
+}
+
+@keyframes auroraDrift {
+    0% {
+        background-image:
+            radial-gradient(ellipse 70% 60% at 8% 6%, hsla(182, 78%, 86%, 0.75) 0%, transparent 65%),
+            radial-gradient(ellipse 65% 55% at 30% 48%, hsla(272, 72%, 84%, 0.65) 0%, transparent 65%),
+            radial-gradient(ellipse 55% 50% at 80% 80%, hsla(315, 68%, 87%, 0.50) 0%, transparent 65%);
+    }
+
+    25% {
+        background-image:
+            radial-gradient(ellipse 72% 58% at 12% 10%, hsla(192, 75%, 84%, 0.70) 0%, transparent 65%),
+            radial-gradient(ellipse 68% 58% at 26% 52%, hsla(262, 74%, 82%, 0.68) 0%, transparent 65%),
+            radial-gradient(ellipse 58% 48% at 84% 76%, hsla(325, 65%, 88%, 0.48) 0%, transparent 65%);
+    }
+
+    50% {
+        background-image:
+            radial-gradient(ellipse 68% 62% at 5% 12%, hsla(170, 80%, 88%, 0.72) 0%, transparent 65%),
+            radial-gradient(ellipse 62% 60% at 34% 44%, hsla(280, 70%, 86%, 0.62) 0%, transparent 65%),
+            radial-gradient(ellipse 52% 52% at 76% 84%, hsla(305, 70%, 86%, 0.55) 0%, transparent 65%);
+    }
+
+    75% {
+        background-image:
+            radial-gradient(ellipse 74% 56% at 10% 4%, hsla(185, 76%, 85%, 0.73) 0%, transparent 65%),
+            radial-gradient(ellipse 66% 54% at 28% 50%, hsla(268, 73%, 83%, 0.66) 0%, transparent 65%),
+            radial-gradient(ellipse 57% 51% at 82% 78%, hsla(320, 66%, 87%, 0.52) 0%, transparent 65%);
+    }
+
+    100% {
+        background-image:
+            radial-gradient(ellipse 70% 60% at 6% 8%, hsla(178, 79%, 87%, 0.74) 0%, transparent 65%),
+            radial-gradient(ellipse 64% 57% at 32% 46%, hsla(275, 71%, 85%, 0.64) 0%, transparent 65%),
+            radial-gradient(ellipse 56% 49% at 78% 82%, hsla(310, 69%, 88%, 0.51) 0%, transparent 65%);
+    }
+}
