@@ -1,86 +1,36 @@
 // src/pages/About.jsx
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./About.css";
-
-import s1 from "../assets/s1.png";
-import s2 from "../assets/s2.png";
-import s3 from "../assets/s3.png";
-import meImg from "../assets/me.png";
-import pusiImg from "../assets/pusi.png";
-import asiyaImg from "../assets/asiya.png";
-
 
 import heroImg from "../assets/first.png";
 import blurImg from "../assets/h.png";
 
-import nuranovaImg from "../assets/nuranova.png";
 import missionIcon from "../assets/mission.png";
 import visionIcon from "../assets/vision.png";
 
-import bBlur from "../assets/b.png";
-import iBlur from "../assets/i.png";
-
-
+import meImg from "../assets/me.png";
+import pusiImg from "../assets/pusi.png";
+import asiyaImg from "../assets/asiya.png";
 
 export default function About() {
-  const wrapRef = useRef(null);
+  const fullTitle = "MORE THAN JUST CODE";
+  const fullDesc =
+    "NuraNova helps you build digital solutions, craft visual stories, and bring your ideas to life.";
 
-  // typing starts when About is visible
-  const [started, setStarted] = useState(false);
+  // ✅ typing controls (you can change speed here)
+  const typing = useMemo(
+    () => ({
+      titleSpeed: 55, // smaller = faster
+      descSpeed: 16,  // smaller = faster
+      startDelay: 200,
+    }),
+    []
+  );
 
-  const titleFull = "More Than\nJust Code.";
-  const paraFull =
-    'NuraNova Solutions is not just a company; It\'s a philosophy, a mindset, and a promise regarding "The Code".';
-
-  const [tTitle, setTTitle] = useState("");
-  const [tPara, setTPara] = useState("");
-
-  useEffect(() => {
-    const el = wrapRef.current;
-    if (!el) return;
-
-    const obs = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting) {
-          setStarted(true);
-          obs.disconnect();
-        }
-      },
-      { threshold: 0.25 }
-    );
-
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!started) return;
-
-    let i = 0;
-    let j = 0;
-    setTTitle("");
-    setTPara("");
-
-    const titleTimer = setInterval(() => {
-      i++;
-      setTTitle(titleFull.slice(0, i));
-
-      if (i >= titleFull.length) {
-        clearInterval(titleTimer);
-
-        const paraTimer = setInterval(() => {
-          j++;
-          setTPara(paraFull.slice(0, j));
-          if (j >= paraFull.length) clearInterval(paraTimer);
-        }, 20);
-      }
-    }, 45);
-
-    return () => clearInterval(titleTimer);
-  }, [started]);
+  const { title, desc, showCursor } = useTypewriter(fullTitle, fullDesc, typing);
 
   return (
-    <div className="about-page" id="about" ref={wrapRef}>
+    <div className="about-page">
       {/* HERO */}
       <section className="about-hero">
         <div
@@ -91,47 +41,23 @@ export default function About() {
 
         <div className="about-hero-content">
           <h1 className="about-title">
-            {tTitle}
-            {started && <span className="caret">|</span>}
+            {title}
+            {showCursor ? <span className="caret">|</span> : null}
           </h1>
 
-          <p className="about-desc">
-            {tPara}
-            {started && <span className="caret">|</span>}
-          </p>
+          <p className="about-desc">{desc}</p>
 
-          <button className="about-btn">Contact US</button>
+          <button className="about-btn">Contact Us</button>
         </div>
 
         <div className="about-hero-img">
-          <img
-            src={heroImg}
-            alt="NuraNova intro"
-            className={`hero-illustration ${started ? "floating" : ""}`}
-            draggable="false"
-          />
+          <img src={heroImg} alt="Hero" className="hero-illustration floating" />
         </div>
       </section>
 
-      {/* PHILOSOPHY (TEXT INSIDE CARD + BIG IMAGE + TIGHT SPACE) */}
-      <section className="philosophy-section">
-        <div className="about-bubbles" aria-hidden="true">
-          <img src={bBlur} className="bubble b1" alt="" />
-          <img src={iBlur} className="bubble b2" alt="" />
-          <img src={bBlur} className="bubble b3" alt="" />
-        </div>
+      {/* ✅ PHILOSOPHY TEMPORARILY REMOVED */}
 
-        <div className="philosophy-card">
-          <h2 className="ph-card-title">The Philosophy Behind the Name</h2>
-          <p className="ph-card-sub">
-            Combining Intelligence with the spark of new creation
-          </p>
-
-          <img className="philosophy-brand-img" src={nuranovaImg} alt="NuraNova" />
-        </div>
-      </section>
-
-      {/* MISSION & VISION (CENTER + BIG ICONS) */}
+      {/* ✅ MISSION & VISION */}
       <section className="mission-vision-section">
         <h2 className="section-title">Our Mission & Vision</h2>
 
@@ -140,11 +66,10 @@ export default function About() {
             <div className="mv-icon-box">
               <img className="mv-icon-img" src={missionIcon} alt="Mission" />
             </div>
-            <h3>Our Mission:</h3>
+            <h3>Our Mission</h3>
             <p>
-              To empower businesses and students alike by building reliable,
-              ethical and innovative digital solutions that bridge the gap
-              between imagination and reality.
+              To empower businesses and students alike by building reliable, ethical and
+              innovative digital solutions that bridge the gap between imagination and reality.
             </p>
           </div>
 
@@ -152,53 +77,114 @@ export default function About() {
             <div className="mv-icon-box">
               <img className="mv-icon-img" src={visionIcon} alt="Vision" />
             </div>
-            <h3>Our Vision:</h3>
+            <h3>Our Vision</h3>
             <p>
-              To become a trusted global ecosystem where digital solutions,
-              creative media, and technology education converge to inspire new
-              beginnings.
+              To become a trusted global ecosystem where digital solutions, creative media, and
+              technology education converge to inspire new beginnings.
             </p>
           </div>
         </div>
       </section>
 
-
-      {/* INNOVATORS */}
+      {/* ✅ INNOVATORS */}
       <section className="innovators-section">
         <h2 className="section-title">Meet the Innovators</h2>
 
         <div className="team-grid">
-          <div className="team-card team-pop">
-            <div className="team-img-wrapper">
-              <img src={meImg}  alt="Team member 1" className="team-img" />
-            </div>
-            <h3>S.T.Weerathunga (CEO)</h3>
-            <p className="team-role">Software Engineer (OUSL)</p>
-            <p className="team-desc">Visionary leader guiding innovation</p>
-            <button className="team-btn">More</button>
-          </div>
-
-          <div className="team-card team-pop">
-            <div className="team-img-wrapper">
-               <img src={pusiImg} alt="Team member 1" className="team-img" />
-            </div>
-            <h3>R.K.D.S.Rajapaksha (COO)</h3>
-            <p className="team-role">Software Engineer (OUSL)</p>
-            <p className="team-desc">Operational excellence driver</p>
-            <button className="team-btn">More</button>
-          </div>
-
-          <div className="team-card team-pop">
-            <div className="team-img-wrapper">
-              <img src={asiyaImg} alt="Team member 3" className="team-img" />
-            </div>
-            <h3>R.M.Kawshal (CTO)</h3>
-            <p className="team-role">Software Engineer (OUSL)</p>
-            <p className="team-desc">Tech architect and strategist</p>
-            <button className="team-btn">More</button>
-          </div>
+          <TeamCard
+            img={meImg}
+            name="S.T.Weerathunga (CEO)"
+            role="Software Engineer (OUSL)"
+            desc="Visionary leader guiding innovation"
+          />
+          <TeamCard
+            img={pusiImg}
+            name="R.K.D.S.Rajapaksha (COO)"
+            role="Software Engineer (OUSL)"
+            desc="Operational excellence driver"
+          />
+          <TeamCard
+            img={asiyaImg}
+            name="R.M.Kawshal (CTO)"
+            role="Software Engineer (OUSL)"
+            desc="Tech architect and strategist"
+          />
         </div>
       </section>
+    </div>
+  );
+}
+
+/* ✅ Typewriter (typing ALWAYS works unless user has Reduce Motion ON) */
+function useTypewriter(fullTitle, fullDesc, cfg) {
+  const [title, setTitle] = useState("");
+  const [desc, setDesc] = useState("");
+  const [showCursor, setShowCursor] = useState(true);
+
+  useEffect(() => {
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // ✅ Only if user REALLY wants reduced motion, skip typing
+    if (reduced) {
+      setTitle(fullTitle);
+      setDesc(fullDesc);
+      setShowCursor(false);
+      return;
+    }
+
+    let t1 = 0;
+    let t2 = 0;
+    let startT = 0;
+    let i = 0;
+    let j = 0;
+
+    const typeDesc = () => {
+      t2 = window.setInterval(() => {
+        j++;
+        setDesc(fullDesc.slice(0, j));
+        if (j >= fullDesc.length) {
+          window.clearInterval(t2);
+          setTimeout(() => setShowCursor(false), 400);
+        }
+      }, cfg.descSpeed);
+    };
+
+    const typeTitle = () => {
+      t1 = window.setInterval(() => {
+        i++;
+        setTitle(fullTitle.slice(0, i));
+        if (i >= fullTitle.length) {
+          window.clearInterval(t1);
+          typeDesc();
+        }
+      }, cfg.titleSpeed);
+    };
+
+    startT = window.setTimeout(typeTitle, cfg.startDelay);
+
+    return () => {
+      window.clearTimeout(startT);
+      window.clearInterval(t1);
+      window.clearInterval(t2);
+    };
+  }, [fullTitle, fullDesc, cfg]);
+
+  return { title, desc, showCursor };
+}
+
+function TeamCard({ img, name, role, desc }) {
+  return (
+    <div className="team-card team-pop">
+      <div className="team-img-wrapper">
+        <img src={img} alt={name} className="team-img" />
+      </div>
+      <h3>{name}</h3>
+      <p className="team-role">{role}</p>
+      <p className="team-desc">{desc}</p>
+      <button className="team-btn">More</button>
     </div>
   );
 }
