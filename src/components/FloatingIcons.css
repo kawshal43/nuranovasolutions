@@ -1,0 +1,123 @@
+.floating-icons-container {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    /* Behind the main content blocks */
+    pointer-events: none;
+    /* Let clicks pass through */
+    overflow: hidden;
+}
+
+.floating-base {
+    position: absolute;
+    /* Size and initial fixed position are set inline */
+}
+
+/* Independent axes for more chaotic, wandering motion */
+.move-x {
+    width: 100%;
+    height: 100%;
+    animation-name: floatX;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+.move-y {
+    width: 100%;
+    height: 100%;
+    animation-name: floatY;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+/* The actual image handles the Z-axis (scale/blur/opacity) */
+.depth-z {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    animation-name: depthZ;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    will-change: transform, filter, opacity;
+}
+
+/* Move randomly across large portions of the viewport */
+@keyframes floatX {
+    0% {
+        transform: translateX(-40vw) rotate(-20deg);
+    }
+
+    25% {
+        transform: translateX(10vw) rotate(10deg);
+    }
+
+    50% {
+        transform: translateX(40vw) rotate(30deg);
+    }
+
+    75% {
+        transform: translateX(10vw) rotate(10deg);
+    }
+
+    100% {
+        transform: translateX(-40vw) rotate(-20deg);
+    }
+}
+
+@keyframes floatY {
+    0% {
+        transform: translateY(-40vh);
+    }
+
+    33% {
+        transform: translateY(30vh);
+    }
+
+    66% {
+        transform: translateY(-10vh);
+    }
+
+    100% {
+        transform: translateY(40vh);
+    }
+}
+
+/* Depth of field effect: Far away -> Focus -> Up close -> Focus -> Far away 
+   (Since we use alternate, it just goes 0 to 100 then bounces back)
+*/
+@keyframes depthZ {
+    0% {
+        /* Very Far backward */
+        transform: scale(0.3);
+        filter: blur(12px) brightness(0.8);
+        opacity: 0.15;
+    }
+
+    25% {
+        /* Medium Far */
+        transform: scale(0.6);
+        filter: blur(4px) brightness(0.9);
+        opacity: 0.5;
+    }
+
+    50% {
+        /* Subject in focus (Center) */
+        transform: scale(1.0);
+        filter: blur(0px) brightness(1);
+        opacity: 1;
+    }
+
+    75% {
+        /* Medium Close */
+        transform: scale(1.4);
+        filter: blur(4px) brightness(1.05);
+        opacity: 0.85;
+    }
+
+    100% {
+        /* Very Close forward (Macro Blur) */
+        transform: scale(2.0);
+        filter: blur(16px) brightness(1.1);
+        opacity: 0.3;
+    }
+}
