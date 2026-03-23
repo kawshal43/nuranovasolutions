@@ -1,22 +1,24 @@
+import { useState } from "react";
+import { Route, Routes } from "react-router-dom";
+import AppBootOverlay from "./components/AppBootOverlay";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Home from "./pages/Home";
-import Services from "./pages/Services";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
 import Background from "./components/Background";
+import LandingPage from "./pages/LandingPage";
+import ServiceDetail from "./pages/ServiceDetail";
 
 export default function App() {
+  const [bootReady, setBootReady] = useState(false);
+
   return (
     <>
       <Background />
+      {!bootReady && <AppBootOverlay onComplete={() => setBootReady(true)} />}
       <Navbar />
-      <div className="main-content">
-        <Home />
-        <Services />
-        <About />
-        <Contact />
-      </div>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/services/:slug" element={<ServiceDetail />} />
+      </Routes>
       <Footer />
     </>
   );
