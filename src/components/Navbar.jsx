@@ -1,175 +1,265 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getCurrentUser, logoutUser, resolveApiAssetUrl } from "../lib/educationApi";
 import "./Navbar.css";
 
-const Navbar = () => {
+const ITEMS = [
+  { name: "Home", id: "home" },
+  { name: "Services", id: "service-page" },
+  { name: "About Us", id: "about" },
+  { name: "Contact", id: "contact" },
+];
+
+function getInitials(user) {
+  const source = user?.fullName || user?.username || "NN";
+  return source
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("");
+}
+
+function isAdminUser(user) {
+  return user?.role === "ADMIN";
+}
+
+export default function Navbar() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState("home");
   const [pillStyle, setPillStyle] = useState({ opacity: 0 });
+  const [user, setUser] = useState(null);
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
 
   const navRefs = useRef([]);
   const headerRef = useRef(null);
+  const accountMenuRef = useRef(null);
 
-  // ✅ IMPORTANT: Contact id must match your Contact.jsx section id
-  const items = [
-    { name: "Home", id: "home" },
-    { name: "Services", id: "services" },
-    { name: "About Us", id: "about" },
-    { name: "Contact", id: "get-in-touch" }, // <-- YOUR CONTACT SECTION ID
-  ];
+  const loadSession = useCallback(async () => {
+    try {
+      const currentUser = await getCurrentUser();
+      setUser(currentUser);
+    } catch (error) {
+      if (error.status === 401) {
+        setUser(null);
+        return;
+      }
+    }
+  }, []);
 
-  // Close menu when resizing to desktop
+  useEffect(() => {
+    loadSession();
+
+    const handleAuthChanged = () => {
+      loadSession();
+    };
+
+    window.addEventListener("nuranova-auth-changed", handleAuthChanged);
+    return () => window.removeEventListener("nuranova-auth-changed", handleAuthChanged);
+  }, [loadSession]);
+
   useEffect(() => {
     const onResize = () => {
       if (window.innerWidth >= 768) setMenuOpen(false);
     };
+
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  // ESC close + body lock when menu open
   useEffect(() => {
-    if (!menuOpen) return;
+    if (!menuOpen) return undefined;
 
-    const onKeyDown = (e) => {
-      if (e.key === "Escape") setMenuOpen(false);
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") setMenuOpen(false);
     };
 
-    const prev = document.body.style.overflow;
+    const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKeyDown);
 
     return () => {
-      document.body.style.overflow = prev;
+      document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [menuOpen]);
 
-  // Smooth scroll with sticky navbar offset
-  const scrollToSection = (id) => {
-    const el = document.getElementById(id);
-    if (!el) return false;
+  useEffect(() => {
+    if (!accountMenuOpen) {
+      return undefined;
+    }
 
-    const navH = headerRef.current?.offsetHeight || 70;
-    const y = el.getBoundingClientRect().top + window.scrollY - navH - 10;
+    const handlePointerDown = (event) => {
+      if (accountMenuRef.current?.contains(event.target)) {
+        return;
+      }
 
-    window.scrollTo({ top: y, behavior: "smooth" });
-    return true;
-  };
+      setAccountMenuOpen(false);
+    };
 
-  // Click handler
-  const handleClick = (id) => {
-    // If user is not on home route, go home with hash
-    if (window.location.pathname !== "/") {
-      window.location.href = `/#${id}`;
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setAccountMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [accountMenuOpen]);
+
+  useEffect(() => {
+    if (location.pathname.startsWith("/services/")) {
+      setActive("service-page");
       return;
     }
 
-    window.history.pushState({}, "", `#${id}`);
+    const hash = location.hash.replace("#", "");
+    setActive(hash || "home");
+  }, [location.hash, location.pathname]);
 
-    // Retry until element exists (for safety)
-    let tries = 0;
-    const timer = setInterval(() => {
-      tries++;
-      const ok = scrollToSection(id);
-      if (ok || tries > 40) clearInterval(timer);
-    }, 50);
+  const scrollToSection = useCallback((id) => {
+    const el = document.getElementById(id);
+    if (!el) return false;
 
-    setActive(id);
-    setMenuOpen(false);
-  };
+    const navHeight = headerRef.current?.offsetHeight || 70;
+    const y = el.getBoundingClientRect().top + window.scrollY - navHeight - 10;
 
-  // On refresh / direct link #hash
+    window.scrollTo({ top: y, behavior: "smooth" });
+    return true;
+  }, []);
+
+  const handleClick = useCallback(
+    (id) => {
+      if (location.pathname !== "/") {
+        window.location.href = `/#${id}`;
+        return;
+      }
+
+      window.history.pushState({}, "", `#${id}`);
+
+      let tries = 0;
+      const timer = setInterval(() => {
+        tries += 1;
+        const ok = scrollToSection(id);
+        if (ok || tries > 40) clearInterval(timer);
+      }, 50);
+
+      setActive(id);
+      setMenuOpen(false);
+      setAccountMenuOpen(false);
+    },
+    [location.pathname, scrollToSection]
+  );
+
   useEffect(() => {
-    const hash = window.location.hash.replace("#", "");
-    if (!hash) return;
+    if (location.pathname !== "/") return undefined;
+
+    const hash = location.hash.replace("#", "");
+    if (!hash) return undefined;
 
     let tries = 0;
     const timer = setInterval(() => {
-      tries++;
+      tries += 1;
       const ok = scrollToSection(hash);
       if (ok || tries > 60) clearInterval(timer);
     }, 50);
 
-    setActive(hash);
-  }, []);
+    return () => clearInterval(timer);
+  }, [location.hash, location.pathname, scrollToSection]);
 
-  // Desktop pill movement
-  const movePill = () => {
+  const movePill = useCallback(() => {
     if (window.innerWidth < 768) {
       setPillStyle({ opacity: 0 });
       return;
     }
 
-    const index = items.findIndex((i) => i.id === active);
+    const index = ITEMS.findIndex((item) => item.id === active);
     const li = navRefs.current[index];
     if (!li) return;
 
-    const a = li.querySelector("a");
-    if (!a) return;
-
-    // modify size if needed
-    const widthModifier = 0;
-    const heightModifier = -4;
+    const anchor = li.querySelector("a");
+    if (!anchor) return;
 
     setPillStyle({
-      left: li.offsetLeft + a.offsetLeft - widthModifier / 2,
-      top: li.offsetTop + a.offsetTop - heightModifier / 2,
-      width: a.offsetWidth + widthModifier,
-      height: a.offsetHeight + heightModifier,
+      left: li.offsetLeft + anchor.offsetLeft,
+      top: li.offsetTop + anchor.offsetTop + 2,
+      width: anchor.offsetWidth,
+      height: anchor.offsetHeight - 4,
       opacity: 1,
     });
-  };
+  }, [active]);
 
   useLayoutEffect(() => {
-    requestAnimationFrame(movePill);
+    const frame = requestAnimationFrame(movePill);
     window.addEventListener("resize", movePill);
-    return () => window.removeEventListener("resize", movePill);
-  }, [active, menuOpen]);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", movePill);
+    };
+  }, [menuOpen, movePill]);
+
+  async function handleNavbarLogout() {
+    try {
+      await logoutUser();
+      setUser(null);
+      setAccountMenuOpen(false);
+      window.dispatchEvent(new Event("nuranova-auth-changed"));
+      navigate("/");
+    } catch {
+      setAccountMenuOpen(false);
+    }
+  }
+
+  function openProfile(tab = "information") {
+    setAccountMenuOpen(false);
+    setMenuOpen(false);
+    navigate(`/services/education-tutorials?panel=profile&tab=${tab}`);
+  }
+
+  function openEducationWorkspace(workspace) {
+    setAccountMenuOpen(false);
+    setMenuOpen(false);
+    navigate(`/services/education-tutorials?workspace=${workspace}`);
+  }
+
+  const avatarSrc = resolveApiAssetUrl(user?.avatarUrl);
 
   return (
     <header className="navbar" ref={headerRef}>
       <div className="navbar-container">
-        {/* BRAND */}
         <div className="brand" onClick={() => handleClick("home")}>
-          <img src="public/Logo.png" alt="Logo" className="brand-logo" />
+          <img src="/Logo.PNG" alt="Logo" className="brand-logo" />
           <div className="brand-text">
             <span className="brand-main">NuraNova</span>
             <span className="brand-sub">SOLUTIONS</span>
           </div>
         </div>
 
-        {/* HAMBURGER */}
-        <button
-          className={`menu-btn ${menuOpen ? "is-open" : ""}`}
-          aria-label="Toggle menu"
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((v) => !v)}
-          type="button"
-        >
-          <span className="bar" />
-          <span className="bar" />
-          <span className="bar" />
-        </button>
-
-        {/* OVERLAY (optional - needs CSS .nav-overlay) */}
-        {menuOpen && <div className="nav-overlay" onClick={() => setMenuOpen(false)} />}
-
-        {/* NAV LINKS */}
         <ul className={`nav-links ${menuOpen ? "open" : ""}`}>
           <div className="nav-pill" style={pillStyle} />
 
-          {items.map((item, i) => (
+          {ITEMS.map((item, index) => (
             <li
               key={item.id}
               className="nav-item"
-              ref={(el) => (navRefs.current[i] = el)}
-              style={{ "--d": `${i * 90}ms` }}
+              ref={(element) => {
+                navRefs.current[index] = element;
+              }}
+              style={{ "--d": `${index * 90}ms` }}
             >
               <a
                 href={`#${item.id}`}
                 className={active === item.id ? "active" : ""}
-                onClick={(e) => {
-                  e.preventDefault();
+                onClick={(event) => {
+                  event.preventDefault();
                   handleClick(item.id);
                 }}
               >
@@ -178,9 +268,73 @@ const Navbar = () => {
             </li>
           ))}
         </ul>
+
+        <div className="navbar-actions">
+          {user ? (
+            <div className="navbar-account" ref={accountMenuRef}>
+              <button
+                aria-expanded={accountMenuOpen}
+                aria-haspopup="menu"
+                className={`navbar-account-trigger ${accountMenuOpen ? "is-open" : ""}`}
+                onClick={() => setAccountMenuOpen((current) => !current)}
+                type="button"
+              >
+                <span className="navbar-account-avatar" aria-hidden="true">
+                  {avatarSrc ? <img alt="" src={avatarSrc} /> : <span>{getInitials(user)}</span>}
+                </span>
+              </button>
+
+              {accountMenuOpen ? (
+                <div className="navbar-account-menu" role="menu">
+                  <div className="navbar-account-menu-head">
+                    <strong>{getInitials(user)}</strong>
+                    <button aria-label="Close account menu" onClick={() => setAccountMenuOpen(false)} type="button">
+                      x
+                    </button>
+                  </div>
+
+                  <button className="navbar-account-item" onClick={() => openProfile("information")} role="menuitem" type="button">
+                    Go to profile
+                  </button>
+                  {isAdminUser(user) ? (
+                    <>
+                      <button className="navbar-account-item" onClick={() => openEducationWorkspace("admin")} role="menuitem" type="button">
+                        Admin Panel
+                      </button>
+                      <button className="navbar-account-item" onClick={() => openEducationWorkspace("learn")} role="menuitem" type="button">
+                        Learner View
+                      </button>
+                    </>
+                  ) : null}
+                  <button className="navbar-account-item" onClick={() => openProfile("password")} role="menuitem" type="button">
+                    Settings
+                  </button>
+                  <button className="navbar-account-item" onClick={() => handleClick("contact")} role="menuitem" type="button">
+                    Help
+                  </button>
+                  <button className="navbar-account-item is-danger" onClick={handleNavbarLogout} role="menuitem" type="button">
+                    Log Out
+                  </button>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+
+          <button
+            className={`menu-btn ${menuOpen ? "is-open" : ""}`}
+            aria-label="Toggle menu"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((value) => !value)}
+            type="button"
+          >
+            <span className="bar" />
+            <span className="bar" />
+            <span className="bar" />
+          </button>
+        </div>
+
+        {menuOpen ? <div className="nav-overlay" onClick={() => setMenuOpen(false)} /> : null}
       </div>
     </header>
   );
-};
-
-export default Navbar;
+}

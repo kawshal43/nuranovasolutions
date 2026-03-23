@@ -22,6 +22,12 @@
   position: relative;
 }
 
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 /* ================= BRAND ================= */
 .brand {
   display: flex;
@@ -72,6 +78,102 @@
   align-items: center;
   position: relative;
   /* pill context */
+}
+
+.navbar-account {
+  position: relative;
+  z-index: 1101;
+}
+
+.navbar-account-trigger {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.navbar-account-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #dbeafe 0%, #cffafe 100%);
+  color: #111827;
+  font-size: 15px;
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+}
+
+.navbar-account-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.navbar-account-menu {
+  position: absolute;
+  top: calc(100% + 14px);
+  right: 0;
+  width: min(320px, calc(100vw - 32px));
+  padding: 18px;
+  border: 1px solid rgba(229, 231, 235, 0.92);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.16);
+}
+
+.navbar-account-menu-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #d1d5db;
+}
+
+.navbar-account-menu-head strong {
+  color: #1d4ed8;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.navbar-account-menu-head button {
+  border: 0;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.navbar-account-item {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 10px;
+  border: 0;
+  background: transparent;
+  color: #1f2937;
+  font: inherit;
+  font-size: 18px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.navbar-account-item + .navbar-account-item {
+  margin-top: 4px;
+}
+
+.navbar-account-item:hover {
+  color: #2563eb;
+}
+
+.navbar-account-item.is-danger:hover {
+  color: #dc2626;
 }
 
 /* Animated Pill */
@@ -175,6 +277,16 @@
 @media (max-width: 767px) {
   .menu-btn {
     display: inline-block;
+  }
+
+  .navbar-account-trigger {
+    width: 42px;
+    height: 42px;
+  }
+
+  .navbar-account-avatar {
+    width: 42px;
+    height: 42px;
   }
 
   /* Overlay blur/dim background */

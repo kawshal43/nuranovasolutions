@@ -1,0 +1,194 @@
+.app-boot-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(248, 251, 255, 0.96) 0%, rgba(238, 245, 255, 0.96) 100%);
+  backdrop-filter: blur(14px);
+  transition: opacity 380ms ease, visibility 380ms ease;
+}
+
+.app-boot-overlay.is-leaving {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.app-boot-aurora {
+  position: absolute;
+  inset: -12%;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(59, 130, 246, 0.18) 0%, transparent 30%),
+    radial-gradient(circle at 82% 18%, rgba(79, 70, 229, 0.12) 0%, transparent 28%),
+    radial-gradient(circle at 50% 84%, rgba(14, 165, 233, 0.12) 0%, transparent 30%);
+  filter: blur(18px);
+  animation: bootAurora 8s ease-in-out infinite alternate;
+}
+
+.app-boot-shell {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 24px;
+  text-align: center;
+}
+
+.app-boot-logo-stage {
+  position: relative;
+  width: min(32vw, 180px);
+  min-width: 120px;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+
+.app-boot-logo-glow,
+.app-boot-logo-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: 40%;
+}
+
+.app-boot-logo-glow {
+  inset: 16%;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, rgba(37, 99, 235, 0.04) 52%, transparent 74%);
+  filter: blur(18px);
+  animation: logoPulse 2.8s ease-in-out infinite;
+}
+
+.app-boot-logo-shine {
+  inset: 8%;
+  background: conic-gradient(
+    from 180deg,
+    rgba(255, 255, 255, 0) 0deg,
+    rgba(255, 255, 255, 0.78) 56deg,
+    rgba(255, 255, 255, 0) 96deg
+  );
+  filter: blur(12px);
+  mix-blend-mode: screen;
+  opacity: 0.88;
+  animation: logoSweep 3.2s linear infinite;
+}
+
+.app-boot-logo {
+  position: relative;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 16px 28px rgba(37, 99, 235, 0.18));
+  animation: logoFloat 2.9s ease-in-out infinite;
+}
+
+.app-boot-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.app-boot-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #51627f;
+}
+
+.app-boot-copy p {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.app-boot-track {
+  width: min(220px, 56vw);
+  height: 4px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(148, 163, 184, 0.18);
+}
+
+.app-boot-track span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left center;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #4338ca 0%, #2563eb 52%, #06b6d4 100%);
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.28);
+  transition: transform 220ms ease;
+}
+
+@keyframes logoFloat {
+  0%,
+  100% {
+    transform: translateY(0) scale(0.98);
+  }
+
+  50% {
+    transform: translateY(-8px) scale(1.02);
+  }
+}
+
+@keyframes logoPulse {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scale(0.96);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes logoSweep {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bootAurora {
+  0% {
+    transform: translate3d(-1.5%, 0, 0) scale(1);
+  }
+
+  100% {
+    transform: translate3d(1.5%, -2%, 0) scale(1.04);
+  }
+}
+
+@media (max-width: 720px) {
+  .app-boot-shell {
+    gap: 20px;
+  }
+
+  .app-boot-title {
+    letter-spacing: 0.2em;
+  }
+
+  .app-boot-copy p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-boot-aurora,
+  .app-boot-logo,
+  .app-boot-logo-glow,
+  .app-boot-logo-shine {
+    animation: none;
+  }
+
+  .app-boot-track span {
+    transition: none;
+  }
+}
