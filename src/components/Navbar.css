@@ -1,12 +1,15 @@
 /* ================= NAVBAR BASE ================= */
 .navbar {
   width: 100%;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
+  background-color: var(--nav-bg);
+  border-bottom: 1px solid var(--nav-border);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 
   position: sticky;
   top: 0;
   z-index: 1000;
+  transition: background-color 220ms ease, border-color 220ms ease;
 }
 
 .navbar-container {
@@ -57,14 +60,14 @@
 .brand-main {
   font-size: 15px;
   font-weight: 800;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .brand-sub {
   font-size: 8px;
   font-weight: 700;
   letter-spacing: 3px;
-  color: #111827;
+  color: var(--text-primary);
   opacity: 0.9;
 }
 
@@ -102,11 +105,11 @@
   overflow: hidden;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #dbeafe 0%, #cffafe 100%);
+  background: linear-gradient(135deg, rgba(191, 219, 254, 0.95) 0%, rgba(165, 243, 252, 0.92) 100%);
   color: #111827;
   font-size: 15px;
   font-weight: 800;
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+  box-shadow: var(--surface-shadow-soft);
 }
 
 .navbar-account-avatar img {
@@ -121,10 +124,12 @@
   right: 0;
   width: min(320px, calc(100vw - 32px));
   padding: 18px;
-  border: 1px solid rgba(229, 231, 235, 0.92);
+  border: 1px solid var(--surface-border);
   border-radius: 26px;
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.16);
+  background: var(--surface-glass-strong);
+  box-shadow: var(--surface-shadow);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .navbar-account-menu-head {
@@ -133,11 +138,11 @@
   justify-content: space-between;
   padding-bottom: 16px;
   margin-bottom: 14px;
-  border-bottom: 1px solid #d1d5db;
+  border-bottom: 1px solid var(--surface-border-soft);
 }
 
 .navbar-account-menu-head strong {
-  color: #1d4ed8;
+  color: var(--primary);
   font-size: 18px;
   font-weight: 800;
 }
@@ -145,7 +150,7 @@
 .navbar-account-menu-head button {
   border: 0;
   background: transparent;
-  color: #9ca3af;
+  color: var(--text-muted);
   font-size: 24px;
   line-height: 1;
   cursor: pointer;
@@ -157,7 +162,7 @@
   padding: 0 10px;
   border: 0;
   background: transparent;
-  color: #1f2937;
+  color: var(--text-secondary);
   font: inherit;
   font-size: 18px;
   text-align: left;
@@ -169,7 +174,7 @@
 }
 
 .navbar-account-item:hover {
-  color: #2563eb;
+  color: var(--primary);
 }
 
 .navbar-account-item.is-danger:hover {
@@ -179,7 +184,7 @@
 /* Animated Pill */
 .nav-pill {
   position: absolute;
-  background-color: #1f2937;
+  background-color: var(--nav-pill-bg);
   border-radius: 999px;
   z-index: 1;
 
@@ -202,7 +207,7 @@
 
 .nav-links a {
   text-decoration: none;
-  color: #111827;
+  color: var(--nav-link);
   font-size: 13px;
   padding: 6px 16px;
   border-radius: 999px;
@@ -212,14 +217,54 @@
 }
 
 .nav-links a:hover {
-  background-color: #f3f4f6;
+  background-color: var(--nav-link-hover);
   transform: translateY(-1px);
 }
 
 .nav-links a.active {
   background-color: transparent;
   /* pill handles background */
-  color: #ffffff;
+  color: var(--primary-contrast);
+}
+
+.theme-toggle {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.theme-toggle-track {
+  width: 62px;
+  height: 36px;
+  padding: 4px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  background: var(--surface-glass-strong);
+  border: 1px solid var(--surface-border);
+  box-shadow: var(--surface-shadow-soft);
+  transition: background-color 220ms ease, border-color 220ms ease;
+}
+
+.theme-toggle-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #ffffff 0%, #dbeafe 100%);
+  color: #1e293b;
+  font-size: 11px;
+  font-weight: 900;
+  transform: translateX(0);
+  transition: transform 220ms ease, background 220ms ease, color 220ms ease;
+}
+
+.theme-toggle-thumb.is-dark {
+  transform: translateX(26px);
+  background: linear-gradient(135deg, #60a5fa 0%, #22d3ee 100%);
+  color: #031225;
 }
 
 /* Disable hover on touch */
@@ -236,8 +281,8 @@
   width: 44px;
   height: 44px;
 
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
+  border: 1px solid var(--surface-border);
+  background: var(--surface-glass-strong);
   border-radius: 14px;
 
   cursor: pointer;
@@ -247,14 +292,14 @@
 }
 
 .menu-btn:hover {
-  background: #f9fafb;
+  background: var(--nav-link-hover);
 }
 
 .menu-btn .bar {
   display: block;
   width: 22px;
   height: 2px;
-  background: #111827;
+  background: var(--text-primary);
   border-radius: 2px;
   margin: 5px auto;
   transition: transform 220ms ease, opacity 220ms ease;
@@ -294,6 +339,7 @@
     position: fixed;
     inset: 0;
     background: rgba(17, 24, 39, 0.25);
+    background: var(--overlay-bg);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     z-index: 1040;
@@ -318,11 +364,11 @@
 
     padding: 18px;
 
-    background: rgba(255, 255, 255, 0.22);
+    background: var(--menu-bg);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
 
-    border: 1px solid rgba(229, 231, 235, 0.55);
+    border: 1px solid var(--menu-border);
     border-radius: 24px;
     box-shadow: 0 18px 45px rgba(0, 0, 0, 0.14);
 
@@ -382,8 +428,8 @@
     font-size: 15px;
     font-weight: 700;
 
-    background: rgba(255, 255, 255, 0.55);
-    border: 1px solid rgba(255, 255, 255, 0.45);
+    background: var(--surface-glass-strong);
+    border: 1px solid var(--surface-border);
 
     padding: 0;
   }
@@ -391,13 +437,13 @@
   /* Tap feedback */
   .nav-links a:active {
     transform: scale(0.97);
-    background: rgba(229, 231, 235, 0.9);
+    background: var(--nav-link-hover);
   }
 
   .nav-links a.active {
-    background-color: #1f2937;
-    color: #ffffff;
-    border-color: rgba(31, 41, 55, 0.55);
+    background-color: var(--nav-pill-bg);
+    color: var(--primary-contrast);
+    border-color: transparent;
   }
 
   .nav-links a.active:active {
@@ -407,7 +453,7 @@
   .nav-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(17, 24, 39, 0.25);
+    background: var(--overlay-bg);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     z-index: 1040;

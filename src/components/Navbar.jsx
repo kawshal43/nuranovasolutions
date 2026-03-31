@@ -24,7 +24,7 @@ function isAdminUser(user) {
   return user?.role === "ADMIN";
 }
 
-export default function Navbar() {
+export default function Navbar({ theme, onToggleTheme }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -270,6 +270,19 @@ export default function Navbar() {
         </ul>
 
         <div className="navbar-actions">
+          <button
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            className="theme-toggle"
+            onClick={onToggleTheme}
+            type="button"
+          >
+            <span className="theme-toggle-track">
+              <span className={`theme-toggle-thumb ${theme === "dark" ? "is-dark" : ""}`}>
+                {theme === "dark" ? "M" : "N"}
+              </span>
+            </span>
+          </button>
+
           {user ? (
             <div className="navbar-account" ref={accountMenuRef}>
               <button

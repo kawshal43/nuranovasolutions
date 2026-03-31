@@ -21,7 +21,7 @@ export default function Contact() {
     };
 
     return (
-        <main className="contact-page">
+        <main className="contact-page landing-panel landing-contact-panel" id="contact">
             {/* soft blobs */}
             <span className="c-blob c-blob-1" />
             <span className="c-blob c-blob-2" />

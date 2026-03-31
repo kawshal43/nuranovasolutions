@@ -504,7 +504,7 @@ export default function About() {
   }, [mvActiveSide]);
 
   return (
-    <div className="about-page" id="about" ref={wrapRef}>
+    <div className="about-page landing-panel landing-about-panel" id="about" ref={wrapRef}>
       {/* HERO */}
       <section className="about-hero">
         <div

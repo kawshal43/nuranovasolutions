@@ -1,7 +1,7 @@
 .contact-page {
     position: relative;
     min-height: 100vh;
-    background: #ffffff;
+    background: transparent;
     overflow: hidden;
 }
 
@@ -57,13 +57,13 @@
 .c-title {
     margin: 0;
     font-size: 36px;
-    color: #0f172a;
+    color: var(--text-primary);
     letter-spacing: -0.02em;
 }
 
 .c-subtitle {
     margin: 10px 0 16px;
-    color: #64748b;
+    color: var(--text-muted);
     line-height: 1.5;
     font-size: 14px;
 }
@@ -75,8 +75,8 @@
     height: 40px;
     padding: 0 18px;
     border-radius: 999px;
-    background: #2f6bff;
-    color: #ffffff;
+    background: var(--primary);
+    color: var(--primary-contrast);
     text-decoration: none;
     font-weight: 700;
     font-size: 13px;
@@ -107,11 +107,11 @@
 
 .c-wrap {
     border-radius: 26px;
-    background: rgba(255, 255, 255, 0.78);
-    border: 1px solid rgba(226, 232, 240, 0.9);
-    box-shadow: 0 16px 50px rgba(2, 6, 23, 0.08);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: var(--surface-glass-soft);
+    border: 1px solid var(--surface-border);
+    box-shadow: var(--surface-shadow);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     padding: 22px;
 }
 
@@ -123,12 +123,12 @@
 .c-head-title {
     margin: 0;
     font-size: 28px;
-    color: #0f172a;
+    color: var(--text-primary);
 }
 
 .c-head-sub {
     margin: 6px 0 0;
-    color: #64748b;
+    color: var(--text-muted);
     font-size: 13px;
 }
 
@@ -142,18 +142,20 @@
 
 .c-card {
     border-radius: 18px;
-    background: rgba(255, 255, 255, 0.75);
-    border: 1px solid rgba(226, 232, 240, 0.95);
-    box-shadow: 0 12px 28px rgba(2, 6, 23, 0.06);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background: var(--surface-glass);
+    border: 1px solid var(--surface-border);
+    border-top: 1px solid var(--surface-border-strong);
+    border-left: 1px solid var(--surface-highlight);
+    box-shadow: 0 18px 40px -10px rgba(0, 0, 0, 0.10), inset 0 0 15px rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     padding: 16px;
 }
 
 .c-card-title {
     margin: 2px 0 12px;
     font-size: 15px;
-    color: #0f172a;
+    color: var(--text-primary);
 }
 
 /* info rows */
@@ -171,8 +173,8 @@
     align-items: center;
     padding: 10px 10px;
     border-radius: 14px;
-    background: rgba(248, 250, 252, 0.70);
-    border: 1px solid rgba(226, 232, 240, 0.95);
+    background: var(--surface-glass-soft);
+    border: 1px solid var(--surface-border);
 }
 
 .c-ico {
@@ -181,7 +183,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: #2f6bff;
+    color: var(--primary);
 }
 
 .c-ico svg {
@@ -192,12 +194,12 @@
 .c-info-label {
     font-weight: 700;
     font-size: 13px;
-    color: #0f172a;
+    color: var(--text-primary);
 }
 
 .c-info-value {
     font-size: 13px;
-    color: #64748b;
+    color: var(--text-muted);
     word-break: break-word;
 }
 
@@ -214,10 +216,10 @@
     gap: 8px;
     padding: 9px 12px;
     border-radius: 999px;
-    border: 1px solid rgba(226, 232, 240, 0.95);
-    background: rgba(248, 250, 252, 0.85);
+    border: 1px solid var(--surface-border);
+    background: var(--surface-glass-soft);
     text-decoration: none;
-    color: #0f172a;
+    color: var(--text-primary);
     font-weight: 700;
     font-size: 12px;
     transition: transform 160ms ease, box-shadow 160ms ease;
@@ -232,7 +234,7 @@
     width: 18px;
     height: 18px;
     display: inline-flex;
-    color: #2f6bff;
+    color: var(--primary);
 }
 
 .c-social-ico svg {
@@ -256,11 +258,12 @@
 .c-form input,
 .c-form textarea {
     width: 100%;
-    border: 1px solid rgba(226, 232, 240, 0.95);
-    background: rgba(248, 250, 252, 0.85);
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
     border-radius: 14px;
     padding: 11px 12px;
     font-size: 13px;
+    color: var(--text-primary);
     outline: none;
     transition: box-shadow 140ms ease, border-color 140ms ease;
 }
@@ -272,8 +275,8 @@
 
 .c-form input:focus,
 .c-form textarea:focus {
-    border-color: rgba(47, 107, 255, 0.45);
-    box-shadow: 0 0 0 4px rgba(47, 107, 255, 0.12);
+    border-color: color-mix(in srgb, var(--primary) 58%, transparent);
+    box-shadow: 0 0 0 4px var(--input-focus-ring);
 }
 
 .c-send {
@@ -281,8 +284,8 @@
     height: 42px;
     border: none;
     border-radius: 999px;
-    background: #2f6bff;
-    color: #fff;
+    background: var(--primary);
+    color: var(--primary-contrast);
     font-weight: 800;
     cursor: pointer;
     box-shadow: 0 12px 22px rgba(47, 107, 255, 0.22);
@@ -297,7 +300,7 @@
 .c-note {
     margin: 0;
     text-align: center;
-    color: #64748b;
+    color: var(--text-muted);
     font-size: 12px;
 }
 

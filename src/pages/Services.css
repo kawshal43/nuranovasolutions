@@ -3,18 +3,6 @@
   position: relative;
 }
 
-/* ================= HERO (Text + Animation) ================= */
-.hero {
-  position: relative;
-  min-height: 70vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  /* Animation draws the background */
-  overflow: hidden;
-}
-
 /* Keyframes for Hero Intro */
 @keyframes fadeInUp {
   from {
@@ -136,7 +124,7 @@
 
 
 /* ================= SERVICES SECTION ================= */
-.services-section {
+.services-catalog-section {
   background: transparent;
   padding: 64px 24px;
   display: flex;

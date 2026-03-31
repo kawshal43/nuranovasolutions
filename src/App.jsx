@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
+import "./App.css";
 import AppBootOverlay from "./components/AppBootOverlay";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -9,12 +10,24 @@ import ServiceDetail from "./pages/ServiceDetail";
 
 export default function App() {
   const [bootReady, setBootReady] = useState(false);
+  const [theme, setTheme] = useState(() => {
+    if (typeof window === "undefined") return "light";
+    return localStorage.getItem("nuranova-theme") || "light";
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("nuranova-theme", theme);
+  }, [theme]);
 
   return (
     <>
       <Background />
       {!bootReady && <AppBootOverlay onComplete={() => setBootReady(true)} />}
-      <Navbar />
+      <Navbar
+        theme={theme}
+        onToggleTheme={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
+      />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/services/:slug" element={<ServiceDetail />} />

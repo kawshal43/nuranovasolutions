@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./FloatingIcons.css";
 
 import b from "../assets/b.png";
@@ -12,39 +12,74 @@ const iconList = [b, c, f, g, h, i];
 const random = (min, max) => Math.random() * (max - min) + min;
 
 export default function FloatingIcons() {
+    const containerRef = useRef(null);
     const [icons, setIcons] = useState([]);
 
     useEffect(() => {
-        // Generate icons drifting around the page
-        const newIcons = Array.from({ length: 18 }).map((_, index) => {
-            const src = iconList[index % iconList.length];
+        const buildIcons = () => {
+            const parent = containerRef.current?.parentElement;
+            if (!parent) return;
 
-            const dirX = Math.random() > 0.5 ? "alternate" : "alternate-reverse";
-            const dirY = Math.random() > 0.5 ? "alternate" : "alternate-reverse";
-            const dirZ = Math.random() > 0.5 ? "alternate" : "alternate-reverse";
+            const width = parent.clientWidth || window.innerWidth;
+            const height = parent.scrollHeight || parent.clientHeight || window.innerHeight;
+            const columns = Math.max(4, Math.round(width / 260));
+            const rows = Math.max(6, Math.round(height / 240));
+            const cellWidth = 100 / columns;
+            const cellHeight = 100 / rows;
+            const nextIcons = [];
 
-            return {
-                id: index,
-                src,
-                left: `${random(-10, 100)}%`,
-                top: `${random(-10, 100)}%`,
-                durX: random(60, 120),
-                durY: random(60, 120),
-                durZ: random(30, 60),
-                delX: random(-60, 0),
-                delY: random(-60, 0),
-                delZ: random(-30, 0),
-                baseSize: random(80, 160),
-                dirX,
-                dirY,
-                dirZ,
-            };
+            for (let row = 0; row < rows; row += 1) {
+                for (let col = 0; col < columns; col += 1) {
+                    const index = row * columns + col;
+                    const src = iconList[index % iconList.length];
+                    const centerX = col * cellWidth + cellWidth / 2;
+                    const centerY = row * cellHeight + cellHeight / 2;
+
+                    nextIcons.push({
+                        id: `${row}-${col}`,
+                        src,
+                        left: `${centerX + random(-cellWidth * 0.22, cellWidth * 0.22)}%`,
+                        top: `${centerY + random(-cellHeight * 0.22, cellHeight * 0.22)}%`,
+                        durX: random(55, 95),
+                        durY: random(50, 90),
+                        durZ: random(24, 42),
+                        delX: random(-50, 0),
+                        delY: random(-50, 0),
+                        delZ: random(-24, 0),
+                        baseSize: random(72, 138),
+                        dirX: Math.random() > 0.5 ? "alternate" : "alternate-reverse",
+                        dirY: Math.random() > 0.5 ? "alternate" : "alternate-reverse",
+                        dirZ: Math.random() > 0.5 ? "alternate" : "alternate-reverse",
+                    });
+                }
+            }
+
+            setIcons(nextIcons);
+        };
+
+        buildIcons();
+
+        const parent = containerRef.current?.parentElement;
+        if (!parent || typeof ResizeObserver === "undefined") {
+            window.addEventListener("resize", buildIcons);
+            return () => window.removeEventListener("resize", buildIcons);
+        }
+
+        const observer = new ResizeObserver(() => {
+            buildIcons();
         });
-        setIcons(newIcons);
+
+        observer.observe(parent);
+        window.addEventListener("resize", buildIcons);
+
+        return () => {
+            observer.disconnect();
+            window.removeEventListener("resize", buildIcons);
+        };
     }, []);
 
     return (
-        <div className="floating-icons-container" aria-hidden="true">
+        <div ref={containerRef} className="floating-icons-container" aria-hidden="true">
             {icons.map((item) => (
                 <div
                     key={item.id}

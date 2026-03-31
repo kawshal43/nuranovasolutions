@@ -11,6 +11,7 @@
 .floating-base {
     position: absolute;
     /* Size and initial fixed position are set inline */
+    transform: translate(-50%, -50%);
 }
 
 /* Independent axes for more chaotic, wandering motion */
@@ -44,41 +45,41 @@
 /* Move randomly across large portions of the viewport */
 @keyframes floatX {
     0% {
-        transform: translateX(-40vw) rotate(-20deg);
+        transform: translateX(-18vw) rotate(-12deg);
     }
 
     25% {
-        transform: translateX(10vw) rotate(10deg);
+        transform: translateX(6vw) rotate(6deg);
     }
 
     50% {
-        transform: translateX(40vw) rotate(30deg);
+        transform: translateX(18vw) rotate(14deg);
     }
 
     75% {
-        transform: translateX(10vw) rotate(10deg);
+        transform: translateX(6vw) rotate(6deg);
     }
 
     100% {
-        transform: translateX(-40vw) rotate(-20deg);
+        transform: translateX(-18vw) rotate(-12deg);
     }
 }
 
 @keyframes floatY {
     0% {
-        transform: translateY(-40vh);
+        transform: translateY(-16vh);
     }
 
     33% {
-        transform: translateY(30vh);
+        transform: translateY(12vh);
     }
 
     66% {
-        transform: translateY(-10vh);
+        transform: translateY(-6vh);
     }
 
     100% {
-        transform: translateY(40vh);
+        transform: translateY(16vh);
     }
 }
 
@@ -88,9 +89,9 @@
 @keyframes depthZ {
     0% {
         /* Very Far backward */
-        transform: scale(0.3);
-        filter: blur(12px) brightness(0.8);
-        opacity: 0.15;
+        transform: scale(0.45);
+        filter: blur(8px) brightness(0.85);
+        opacity: 0.3;
     }
 
     25% {
@@ -116,8 +117,8 @@
 
     100% {
         /* Very Close forward (Macro Blur) */
-        transform: scale(2.0);
-        filter: blur(16px) brightness(1.1);
-        opacity: 0.3;
+        transform: scale(1.6);
+        filter: blur(10px) brightness(1.08);
+        opacity: 0.4;
     }
 }

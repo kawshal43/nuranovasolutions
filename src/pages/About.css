@@ -4,7 +4,7 @@
   width: 100%;
   background: transparent;
   overflow-x: hidden;
-  color: #0b0b0b;
+  color: var(--text-primary);
 }
 
 /* HERO */
@@ -143,9 +143,7 @@
   padding: 80px 0;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
-  background:
-    radial-gradient(70% 85% at 18% 20%, rgba(225, 240, 255, 0.34), transparent 72%),
-    radial-gradient(72% 88% at 82% 76%, rgba(214, 234, 255, 0.28), transparent 74%);
+  background: transparent;
 }
 
 /* PHILOSOPHY */
@@ -165,7 +163,7 @@
 
 .ph-card-sub {
   margin: 0;
-  color: #666;
+  color: var(--text-muted);
   font-size: 18px;
 }
 
@@ -191,7 +189,7 @@
   line-height: 1.05;
   font-weight: 900;
   letter-spacing: 0.01em;
-  color: #0f1f36;
+  color: var(--text-primary);
   cursor: inherit;
   transition: color 220ms ease, text-shadow 220ms ease;
   user-select: none;
@@ -207,7 +205,7 @@
 .philo-word-sub {
   margin: 8px 0 0;
   font-size: clamp(13px, 1.6vw, 16px);
-  color: rgba(15, 31, 54, 0.66);
+  color: color-mix(in srgb, var(--text-secondary) 72%, transparent);
   font-weight: 600;
   letter-spacing: 0.01em;
 }
@@ -333,7 +331,7 @@
   font-weight: 900;
   letter-spacing: 0.01em;
   line-height: 1.08;
-  color: #10284b;
+  color: color-mix(in srgb, var(--text-primary) 90%, #1d4ed8 10%);
   z-index: 4;
   pointer-events: none;
   transition: color 0.46s ease, text-shadow 0.46s ease, transform 0.46s ease;
@@ -357,7 +355,7 @@
   border-radius: 999px;
   display: grid;
   place-items: center;
-  background: rgba(255, 255, 255, 0.38);
+  background: var(--surface-glass-strong);
   box-shadow: 0 8px 22px rgba(20, 59, 116, 0.14);
   z-index: 5;
   opacity: 0;
@@ -604,9 +602,7 @@
 
 /* TEAM */
 .innovators-section {
-  background:
-    radial-gradient(62% 72% at 10% 8%, rgba(149, 196, 255, 0.16), transparent 72%),
-    radial-gradient(54% 66% at 88% 88%, rgba(162, 216, 255, 0.14), transparent 76%);
+  background: transparent;
 }
 
 .innovators-section .section-title {
@@ -628,13 +624,13 @@
   min-height: 350px;
   padding: 30px 26px 24px;
   border-radius: 24px;
-  background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.86), rgba(243, 250, 255, 0.72)),
-    rgba(255, 255, 255, 0.62);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(210, 231, 255, 0.72);
-  box-shadow: 0 14px 34px rgba(14, 40, 81, 0.1);
+  background: var(--surface-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--surface-border);
+  border-top: 1px solid var(--surface-border-strong);
+  border-left: 1px solid var(--surface-highlight);
+  box-shadow: 0 18px 40px -10px rgba(0, 0, 0, 0.12), inset 0 0 15px rgba(255, 255, 255, 0.16);
   text-align: left;
   display: flex;
   flex-direction: column;
@@ -668,7 +664,7 @@
   border-radius: 999px;
   margin: 0 0 18px;
   overflow: hidden;
-  background: linear-gradient(160deg, #f8fbff, #e9f3ff);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--surface-glass-strong) 78%, #ffffff 22%), color-mix(in srgb, var(--surface-glass-soft) 84%, #dbeafe 16%));
   box-shadow:
     0 10px 24px rgba(24, 74, 136, 0.16),
     inset 0 0 0 1px rgba(255, 255, 255, 0.65);
@@ -686,12 +682,12 @@
   font-size: clamp(20px, 1.5vw, 24px);
   font-weight: 900;
   letter-spacing: -0.01em;
-  color: #10284b;
+  color: var(--text-primary);
 }
 
 .team-role {
   margin: 0;
-  color: #2c74d5;
+  color: var(--primary);
   font-weight: 800;
   font-size: 12px;
   letter-spacing: 0.08em;
@@ -700,7 +696,7 @@
 
 .team-desc {
   margin: 13px 0 22px;
-  color: rgba(24, 45, 74, 0.82);
+  color: color-mix(in srgb, var(--text-secondary) 88%, transparent);
   line-height: 1.6;
   font-size: 15px;
   max-width: 30ch;
@@ -712,8 +708,8 @@
   padding: 0 18px;
   border: 1px solid rgba(96, 157, 245, 0.34);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.72);
-  color: #1759b2;
+  background: var(--surface-glass-strong);
+  color: color-mix(in srgb, var(--primary) 88%, white 12%);
   font-weight: 800;
   font-size: 13px;
   letter-spacing: 0.02em;
