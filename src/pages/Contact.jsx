@@ -1,7 +1,123 @@
 import { useEffect, useRef, useState } from "react";
 import "./Contact.css";
 
+function ContactHeroIllustration() {
+    return (
+        <svg
+            aria-labelledby="contact-hero-title contact-hero-desc"
+            className="c-hero-illu"
+            role="img"
+            viewBox="0 0 560 400"
+        >
+            <title id="contact-hero-title">Contact support illustration</title>
+            <desc id="contact-hero-desc">A glass-style contact illustration with a floating support card, message panels, a paper plane, and soft animated badges.</desc>
+            <defs>
+                <linearGradient id="heroGlassShell" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stopColor="#203454" stopOpacity="0.82" />
+                    <stop offset="100%" stopColor="#0b1730" stopOpacity="0.72" />
+                </linearGradient>
+                <linearGradient id="heroGlassInner" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stopColor="#263f69" stopOpacity="0.54" />
+                    <stop offset="100%" stopColor="#101c38" stopOpacity="0.42" />
+                </linearGradient>
+                <linearGradient id="heroAccentBlue" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stopColor="#8cc3ff" />
+                    <stop offset="100%" stopColor="#6287ff" />
+                </linearGradient>
+                <linearGradient id="heroAccentSoft" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stopColor="#90dbff" />
+                    <stop offset="100%" stopColor="#64b8ff" />
+                </linearGradient>
+                <linearGradient id="heroAccentMint" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stopColor="#9ef3e3" />
+                    <stop offset="100%" stopColor="#63d6c2" />
+                </linearGradient>
+                <linearGradient id="heroAccentPink" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stopColor="#ff9ec0" />
+                    <stop offset="100%" stopColor="#ff749e" />
+                </linearGradient>
+                <linearGradient id="heroPlane" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stopColor="#8bc8ff" />
+                    <stop offset="100%" stopColor="#5e86ff" />
+                </linearGradient>
+                <linearGradient id="heroBadgeBlue" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stopColor="#98bcff" />
+                    <stop offset="100%" stopColor="#6784ff" />
+                </linearGradient>
+                <linearGradient id="heroBadgePink" x1="0%" x2="100%" y1="0%" y2="100%">
+                    <stop offset="0%" stopColor="#ffa6c5" />
+                    <stop offset="100%" stopColor="#ff789f" />
+                </linearGradient>
+                <filter id="heroShadow" colorInterpolationFilters="sRGB" x="-40%" y="-40%" width="200%" height="200%">
+                    <feDropShadow dx="0" dy="20" floodColor="#102241" floodOpacity="0.18" stdDeviation="14" />
+                </filter>
+                <filter id="heroGlow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="22" />
+                </filter>
+            </defs>
+
+            <circle className="hero-orb hero-orb-a" cx="226" cy="176" r="84" fill="#6f96ff" fillOpacity="0.16" filter="url(#heroGlow)" />
+            <circle className="hero-orb hero-orb-b" cx="396" cy="124" r="72" fill="#ff9fca" fillOpacity="0.1" filter="url(#heroGlow)" />
+            <circle className="hero-orb hero-orb-c" cx="386" cy="290" r="80" fill="#6bded6" fillOpacity="0.09" filter="url(#heroGlow)" />
+
+            <g className="hero-layer hero-layer-main" filter="url(#heroShadow)">
+                <rect x="176" y="92" width="252" height="190" rx="36" fill="url(#heroGlassShell)" stroke="#d9e6ff" strokeOpacity="0.26" strokeWidth="2" />
+                <rect x="184" y="100" width="236" height="174" rx="30" fill="url(#heroGlassInner)" stroke="#d9e6ff" strokeOpacity="0.12" strokeWidth="1.5" />
+                <rect x="216" y="122" width="84" height="28" rx="14" fill="url(#heroAccentBlue)" fillOpacity="0.9" />
+                <rect x="316" y="126" width="74" height="10" rx="5" fill="#d8e8ff" fillOpacity="0.9" />
+                <rect x="316" y="144" width="52" height="8" rx="4" fill="#d8e8ff" fillOpacity="0.56" />
+                <rect x="214" y="164" width="132" height="52" rx="18" fill="url(#heroAccentBlue)" fillOpacity="0.74" />
+                <rect x="236" y="182" width="84" height="10" rx="5" fill="#f3f8ff" fillOpacity="0.92" />
+                <rect x="236" y="200" width="60" height="8" rx="4" fill="#dbe7ff" fillOpacity="0.7" />
+                <rect x="282" y="228" width="108" height="38" rx="16" fill="url(#heroAccentSoft)" fillOpacity="0.26" />
+                <rect x="222" y="236" width="44" height="10" rx="5" fill="#dbe7ff" fillOpacity="0.54" />
+                <rect x="222" y="254" width="70" height="10" rx="5" fill="#dbe7ff" fillOpacity="0.34" />
+            </g>
+
+            <g className="hero-layer hero-layer-plane" filter="url(#heroShadow)">
+                <path d="M286 248 438 286 340 338 314 302 272 294Z" fill="url(#heroPlane)" fillOpacity="0.9" />
+                <path d="M286 248 340 338" fill="none" stroke="#d8ecff" strokeLinecap="round" strokeWidth="5" strokeOpacity="0.8" />
+                <path d="M314 302 438 286" fill="none" stroke="#d8ecff" strokeLinecap="round" strokeWidth="5" strokeOpacity="0.8" />
+            </g>
+
+            <g className="hero-layer hero-layer-badge-a" filter="url(#heroShadow)">
+                <circle cx="176" cy="214" r="20" fill="url(#heroAccentMint)" fillOpacity="0.92" />
+                <path d="M176 194v24M164 206h24" fill="none" stroke="#ffffff" strokeLinecap="round" strokeWidth="5" />
+            </g>
+
+            <g className="hero-layer hero-layer-badge-b" filter="url(#heroShadow)">
+                <circle cx="438" cy="120" r="27" fill="url(#heroBadgeBlue)" fillOpacity="0.94" />
+                <circle cx="438" cy="112" r="9" fill="#ffffff" fillOpacity="0.96" />
+                <path d="M425 133c3-7 8-10 13-10s10 3 13 10" fill="#ffffff" fillOpacity="0.96" />
+            </g>
+
+            <g className="hero-layer hero-layer-badge-c" filter="url(#heroShadow)">
+                <circle cx="146" cy="290" r="21" fill="url(#heroBadgePink)" fillOpacity="0.9" />
+                <path d="M136 290h20M136 298h14" fill="none" stroke="#ffffff" strokeLinecap="round" strokeWidth="4.5" strokeOpacity="0.96" />
+            </g>
+
+            <path className="hero-layer hero-layer-trail-a" d="M182 116c7-3 13-8 16-15" fill="none" stroke="#ff9f70" strokeLinecap="round" strokeWidth="6.5" strokeOpacity="0.9" />
+            <path className="hero-layer hero-layer-trail-b" d="M454 214c9 2 15 7 20 13" fill="none" stroke="#7ea2ff" strokeLinecap="round" strokeWidth="6" strokeOpacity="0.92" />
+            <path className="hero-layer hero-layer-trail-c" d="M444 320c-9-2-15-7-20-14" fill="none" stroke="#7ea2ff" strokeLinecap="round" strokeWidth="6" strokeOpacity="0.88" />
+
+            <g className="hero-layer hero-layer-dots" opacity="0.84">
+                <circle cx="206" cy="100" r="4" fill="#ff7ea7" />
+                <circle cx="220" cy="92" r="5" fill="#7ef0d7" />
+                <circle cx="414" cy="104" r="5" fill="#ff7ea7" />
+                <circle cx="466" cy="252" r="5" fill="#7ef0d7" />
+                <circle cx="224" cy="312" r="4" fill="#ffa2bd" />
+                <circle cx="344" cy="342" r="4" fill="#ff7ea7" />
+            </g>
+        </svg>
+    );
+}
+
 export default function Contact() {
+    const heroTitleText = "Contact Us";
+    const heroSubtitleLineOne = "Get in touch with us for any";
+    const heroSubtitleLineTwo = "inquiries or collaborations.";
+    const heroButtonText = "Contact Us";
+
     const [form, setForm] = useState({
         name: "",
         email: "",
@@ -22,7 +138,14 @@ export default function Contact() {
     const [activeReplyId, setActiveReplyId] = useState(null);
     const [replyDrafts, setReplyDrafts] = useState({});
     const [likeAnimations, setLikeAnimations] = useState({});
+    const [typedHeroTitle, setTypedHeroTitle] = useState("");
+    const [typedHeroLineOne, setTypedHeroLineOne] = useState("");
+    const [typedHeroLineTwo, setTypedHeroLineTwo] = useState("");
+    const [typedHeroButton, setTypedHeroButton] = useState("");
+    const [isHeroButtonVisible, setIsHeroButtonVisible] = useState(false);
+    const [shouldStartHeroTyping, setShouldStartHeroTyping] = useState(false);
     const likeTimersRef = useRef(new Map());
+    const heroTypingHostRef = useRef(null);
 
     const onChange = (e) => {
         setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
@@ -135,6 +258,87 @@ export default function Contact() {
         };
     }, []);
 
+    useEffect(() => {
+        if (shouldStartHeroTyping) {
+            return undefined;
+        }
+
+        const node = heroTypingHostRef.current;
+        if (!node) {
+            return undefined;
+        }
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const entry = entries[0];
+                if (entry?.isIntersecting) {
+                    setShouldStartHeroTyping(true);
+                    observer.disconnect();
+                }
+            },
+            {
+                threshold: 0.35,
+                rootMargin: "0px 0px -12% 0px",
+            }
+        );
+
+        observer.observe(node);
+
+        return () => observer.disconnect();
+    }, [shouldStartHeroTyping]);
+
+    useEffect(() => {
+        if (!shouldStartHeroTyping) {
+            return undefined;
+        }
+
+        let cancelled = false;
+        const timers = [];
+
+        setTypedHeroTitle("");
+        setTypedHeroLineOne("");
+        setTypedHeroLineTwo("");
+        setTypedHeroButton("");
+        setIsHeroButtonVisible(false);
+
+        const queueTyping = (text, setter, startAt, speed) => {
+            for (let i = 1; i <= text.length; i += 1) {
+                timers.push(
+                    window.setTimeout(() => {
+                        if (!cancelled) {
+                            setter(text.slice(0, i));
+                        }
+                    }, startAt + i * speed)
+                );
+            }
+
+            return startAt + text.length * speed;
+        };
+
+        let cursor = 140;
+        cursor = queueTyping(heroTitleText, setTypedHeroTitle, cursor, 56);
+        cursor += 180;
+        cursor = queueTyping(heroSubtitleLineOne, setTypedHeroLineOne, cursor, 26);
+        cursor += 120;
+        cursor = queueTyping(heroSubtitleLineTwo, setTypedHeroLineTwo, cursor, 26);
+        cursor += 160;
+
+        timers.push(
+            window.setTimeout(() => {
+                if (!cancelled) {
+                    setIsHeroButtonVisible(true);
+                }
+            }, cursor)
+        );
+
+        queueTyping(heroButtonText, setTypedHeroButton, cursor + 40, 42);
+
+        return () => {
+            cancelled = true;
+            timers.forEach((timer) => window.clearTimeout(timer));
+        };
+    }, [shouldStartHeroTyping]);
+
     return (
         <main className="contact-page landing-panel landing-contact-panel" id="contact">
             {/* soft blobs */}
@@ -145,23 +349,20 @@ export default function Contact() {
             {/* HERO */}
             <section className="c-hero">
                 <div className="c-container c-hero-grid">
-                    <div className="c-hero-left">
-                        <h1 className="c-title">Contact Us</h1>
-                        <p className="c-subtitle">
-                            Get in touch with us for any inquiries <br /> or collaborations.
+                    <div className="c-hero-left" ref={heroTypingHostRef}>
+                        <h1 className="c-title c-title-typed">{typedHeroTitle}</h1>
+                        <p className="c-subtitle c-subtitle-typed">
+                            <span className="c-typed-line">{typedHeroLineOne}</span>
+                            <span className="c-typed-line">{typedHeroLineTwo}</span>
                         </p>
 
-                        <a className="c-btn" href="#get-in-touch">
-                            Contact Us
+                        <a className={`c-btn c-btn-typed ${isHeroButtonVisible ? "is-visible" : ""}`} href="#get-in-touch">
+                            <span className="c-btn-typed-label">{typedHeroButton}</span>
                         </a>
                     </div>
 
-                    <div className="illu-wrap">
-                        <div className="illu-drift">
-                            <div className="illu-float">
-                                <img className="c-hero-illu" src="public/contact.png" alt="Contact illustration" />
-                            </div>
-                        </div>
+                    <div className="c-hero-right">
+                        <ContactHeroIllustration />
                     </div>
                 </div>
             </section>
@@ -185,13 +386,13 @@ export default function Contact() {
                                 <div className="c-info-row">
                                     <span className="c-ico">{icons.mail}</span>
                                     <span className="c-info-label">Email</span>
-                                    <span className="c-info-value">Nuranova@gmail.com</span>
+                                    <span className="c-info-value">nuranovasolutions@gmail.com</span>
                                 </div>
 
                                 <div className="c-info-row">
                                     <span className="c-ico">{icons.phone}</span>
                                     <span className="c-info-label">Phone</span>
-                                    <span className="c-info-value">+94 XXXXXX</span>
+                                    <span className="c-info-value">+94 78 294 0117</span>
                                 </div>
 
                                 <div className="c-info-row">
