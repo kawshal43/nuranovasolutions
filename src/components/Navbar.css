@@ -1,3 +1,8 @@
+.navbar-spacer {
+  width: 100%;
+  flex: 0 0 auto;
+}
+
 /* ================= NAVBAR BASE ================= */
 .navbar {
   width: 100%;
@@ -6,21 +11,23 @@
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 1000;
+  left: 0;
+  right: 0;
+  z-index: 2400;
   transition: background-color 220ms ease, border-color 220ms ease;
 }
 
 .navbar-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 10px 18px;
+  padding: clamp(10px, 1.2vw, 14px) clamp(14px, 2vw, 20px);
 
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: clamp(10px, 1.8vw, 16px);
 
   position: relative;
 }
@@ -28,17 +35,19 @@
 .navbar-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: clamp(8px, 1.5vw, 12px);
+  flex-shrink: 0;
 }
 
 /* ================= BRAND ================= */
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: clamp(8px, 1vw, 10px);
   cursor: pointer;
   transition: opacity 180ms ease;
   user-select: none;
+  flex-shrink: 0;
 }
 
 .brand:hover {
@@ -46,7 +55,7 @@
 }
 
 .brand-logo {
-  height: 36px;
+  height: clamp(30px, 3vw, 36px);
   width: auto;
   display: block;
 }
@@ -58,15 +67,15 @@
 }
 
 .brand-main {
-  font-size: 15px;
+  font-size: clamp(13px, 1.15vw, 15px);
   font-weight: 800;
   color: var(--text-primary);
 }
 
 .brand-sub {
-  font-size: 8px;
+  font-size: clamp(7px, 0.65vw, 8px);
   font-weight: 700;
-  letter-spacing: 3px;
+  letter-spacing: clamp(2px, 0.28vw, 3px);
   color: var(--text-primary);
   opacity: 0.9;
 }
@@ -75,12 +84,14 @@
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 28px;
+  gap: clamp(14px, 2.6vw, 28px);
   margin: 0;
   padding: 0;
   align-items: center;
   position: relative;
-  /* pill context */
+  justify-content: center;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .navbar-account {
@@ -89,8 +100,8 @@
 }
 
 .navbar-account-trigger {
-  width: 48px;
-  height: 48px;
+  width: clamp(42px, 4vw, 48px);
+  height: clamp(42px, 4vw, 48px);
   padding: 0;
   border: 0;
   border-radius: 999px;
@@ -99,8 +110,8 @@
 }
 
 .navbar-account-avatar {
-  width: 48px;
-  height: 48px;
+  width: 100%;
+  height: 100%;
   border-radius: 999px;
   overflow: hidden;
   display: grid;
@@ -208,8 +219,8 @@
 .nav-links a {
   text-decoration: none;
   color: var(--nav-link);
-  font-size: 13px;
-  padding: 6px 16px;
+  font-size: clamp(12px, 0.95vw, 13px);
+  padding: 6px clamp(10px, 1.4vw, 16px);
   border-radius: 999px;
   font-weight: 700;
   display: inline-block;
@@ -235,8 +246,12 @@
 }
 
 .theme-toggle-track {
-  width: 62px;
-  height: 36px;
+  --toggle-track-width: clamp(56px, 5vw, 62px);
+  --toggle-track-height: clamp(32px, 3vw, 36px);
+  --toggle-thumb-size: calc(var(--toggle-track-height) - 10px);
+
+  width: var(--toggle-track-width);
+  height: var(--toggle-track-height);
   padding: 4px;
   border-radius: 999px;
   display: flex;
@@ -248,8 +263,8 @@
 }
 
 .theme-toggle-thumb {
-  width: 26px;
-  height: 26px;
+  width: var(--toggle-thumb-size);
+  height: var(--toggle-thumb-size);
   border-radius: 999px;
   display: grid;
   place-items: center;
@@ -262,7 +277,7 @@
 }
 
 .theme-toggle-thumb.is-dark {
-  transform: translateX(26px);
+  transform: translateX(calc(var(--toggle-track-width) - var(--toggle-thumb-size) - 10px));
   background: linear-gradient(135deg, #60a5fa 0%, #22d3ee 100%);
   color: #031225;
 }
@@ -278,8 +293,8 @@
 /* ================= HAMBURGER ================= */
 .menu-btn {
   display: none;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
 
   border: 1px solid var(--surface-border);
   background: var(--surface-glass-strong);
@@ -297,7 +312,7 @@
 
 .menu-btn .bar {
   display: block;
-  width: 22px;
+  width: 20px;
   height: 2px;
   background: var(--text-primary);
   border-radius: 2px;
@@ -316,6 +331,51 @@
 
 .menu-btn.is-open .bar:nth-child(3) {
   transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (max-width: 1024px) {
+  .navbar-container {
+    padding-inline: 14px;
+  }
+
+  .nav-links {
+    gap: 12px;
+  }
+
+  .nav-links a {
+    padding-inline: 10px;
+  }
+}
+
+@media (max-width: 880px) {
+  .brand {
+    gap: 7px;
+  }
+
+  .brand-logo {
+    height: 28px;
+  }
+
+  .brand-main {
+    font-size: 12px;
+  }
+
+  .brand-sub {
+    letter-spacing: 1.8px;
+  }
+
+  .nav-links {
+    gap: 8px;
+  }
+
+  .nav-links a {
+    font-size: 11px;
+    padding-inline: 8px;
+  }
+
+  .navbar-actions {
+    gap: 8px;
+  }
 }
 
 /* ================= MOBILE ================= */
@@ -353,7 +413,7 @@
   /* Dropdown (glass blur) - centered + responsive */
   .nav-links {
     position: absolute;
-    top: 64px;
+    top: calc(100% + 10px);
     left: 50%;
     right: auto;
 
@@ -381,6 +441,15 @@
       opacity 260ms ease;
 
     z-index: 1050;
+  }
+
+  .brand-main {
+    font-size: 13px;
+  }
+
+  .brand-sub {
+    font-size: 7px;
+    letter-spacing: 2px;
   }
 
   .nav-links.open {
@@ -414,8 +483,8 @@
 
   /* Same size pill buttons */
   .nav-links a {
-    width: 150px;
-    height: 38px;
+    width: min(180px, 100%);
+    height: 40px;
     margin: 0 auto;
 
     display: flex;
@@ -459,4 +528,26 @@
     z-index: 1040;
   }
 
+}
+
+@media (max-width: 520px) {
+  .navbar-container {
+    padding-inline: 12px;
+  }
+
+  .brand-text {
+    line-height: 0.95;
+  }
+
+  .brand-main {
+    font-size: 12px;
+  }
+
+  .brand-sub {
+    display: none;
+  }
+
+  .navbar-actions {
+    gap: 6px;
+  }
 }

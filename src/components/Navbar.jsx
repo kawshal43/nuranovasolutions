@@ -32,6 +32,7 @@ export default function Navbar({ theme, onToggleTheme }) {
   const [pillStyle, setPillStyle] = useState({ opacity: 0 });
   const [user, setUser] = useState(null);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const [headerHeight, setHeaderHeight] = useState(76);
 
   const navRefs = useRef([]);
   const headerRef = useRef(null);
@@ -206,6 +207,30 @@ export default function Navbar({ theme, onToggleTheme }) {
     };
   }, [menuOpen, movePill]);
 
+  useLayoutEffect(() => {
+    const header = headerRef.current;
+    if (!header) {
+      return undefined;
+    }
+
+    const updateHeaderHeight = () => {
+      setHeaderHeight(header.offsetHeight || 76);
+    };
+
+    updateHeaderHeight();
+
+    const resizeObserver =
+      typeof ResizeObserver !== "undefined" ? new ResizeObserver(updateHeaderHeight) : null;
+
+    resizeObserver?.observe(header);
+    window.addEventListener("resize", updateHeaderHeight);
+
+    return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", updateHeaderHeight);
+    };
+  }, []);
+
   async function handleNavbarLogout() {
     try {
       await logoutUser();
@@ -233,121 +258,125 @@ export default function Navbar({ theme, onToggleTheme }) {
   const avatarSrc = resolveApiAssetUrl(user?.avatarUrl);
 
   return (
-    <header className="navbar" ref={headerRef}>
-      <div className="navbar-container">
-        <div className="brand" onClick={() => handleClick("home")}>
-          <img src="/Logo.PNG" alt="Logo" className="brand-logo" />
-          <div className="brand-text">
-            <span className="brand-main">NuraNova</span>
-            <span className="brand-sub">SOLUTIONS</span>
+    <>
+      <div aria-hidden="true" className="navbar-spacer" style={{ height: `${headerHeight}px` }} />
+
+      <header className="navbar" ref={headerRef}>
+        <div className="navbar-container">
+          <div className="brand" onClick={() => handleClick("home")}>
+            <img src="/Logo.PNG" alt="Logo" className="brand-logo" />
+            <div className="brand-text">
+              <span className="brand-main">NuraNova</span>
+              <span className="brand-sub">SOLUTIONS</span>
+            </div>
           </div>
-        </div>
 
-        <ul className={`nav-links ${menuOpen ? "open" : ""}`}>
-          <div className="nav-pill" style={pillStyle} />
+          <ul className={`nav-links ${menuOpen ? "open" : ""}`}>
+            <div className="nav-pill" style={pillStyle} />
 
-          {ITEMS.map((item, index) => (
-            <li
-              key={item.id}
-              className="nav-item"
-              ref={(element) => {
-                navRefs.current[index] = element;
-              }}
-              style={{ "--d": `${index * 90}ms` }}
-            >
-              <a
-                href={`#${item.id}`}
-                className={active === item.id ? "active" : ""}
-                onClick={(event) => {
-                  event.preventDefault();
-                  handleClick(item.id);
+            {ITEMS.map((item, index) => (
+              <li
+                key={item.id}
+                className="nav-item"
+                ref={(element) => {
+                  navRefs.current[index] = element;
                 }}
+                style={{ "--d": `${index * 90}ms` }}
               >
-                {item.name}
-              </a>
-            </li>
-          ))}
-        </ul>
+                <a
+                  href={`#${item.id}`}
+                  className={active === item.id ? "active" : ""}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    handleClick(item.id);
+                  }}
+                >
+                  {item.name}
+                </a>
+              </li>
+            ))}
+          </ul>
 
-        <div className="navbar-actions">
-          <button
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            className="theme-toggle"
-            onClick={onToggleTheme}
-            type="button"
-          >
-            <span className="theme-toggle-track">
-              <span className={`theme-toggle-thumb ${theme === "dark" ? "is-dark" : ""}`}>
-                {theme === "dark" ? "M" : "N"}
-              </span>
-            </span>
-          </button>
-
-          {user ? (
-            <div className="navbar-account" ref={accountMenuRef}>
-              <button
-                aria-expanded={accountMenuOpen}
-                aria-haspopup="menu"
-                className={`navbar-account-trigger ${accountMenuOpen ? "is-open" : ""}`}
-                onClick={() => setAccountMenuOpen((current) => !current)}
-                type="button"
-              >
-                <span className="navbar-account-avatar" aria-hidden="true">
-                  {avatarSrc ? <img alt="" src={avatarSrc} /> : <span>{getInitials(user)}</span>}
+          <div className="navbar-actions">
+            <button
+              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              className="theme-toggle"
+              onClick={onToggleTheme}
+              type="button"
+            >
+              <span className="theme-toggle-track">
+                <span className={`theme-toggle-thumb ${theme === "dark" ? "is-dark" : ""}`}>
+                  {theme === "dark" ? "M" : "N"}
                 </span>
-              </button>
+              </span>
+            </button>
 
-              {accountMenuOpen ? (
-                <div className="navbar-account-menu" role="menu">
-                  <div className="navbar-account-menu-head">
-                    <strong>{getInitials(user)}</strong>
-                    <button aria-label="Close account menu" onClick={() => setAccountMenuOpen(false)} type="button">
-                      x
+            {user ? (
+              <div className="navbar-account" ref={accountMenuRef}>
+                <button
+                  aria-expanded={accountMenuOpen}
+                  aria-haspopup="menu"
+                  className={`navbar-account-trigger ${accountMenuOpen ? "is-open" : ""}`}
+                  onClick={() => setAccountMenuOpen((current) => !current)}
+                  type="button"
+                >
+                  <span className="navbar-account-avatar" aria-hidden="true">
+                    {avatarSrc ? <img alt="" src={avatarSrc} /> : <span>{getInitials(user)}</span>}
+                  </span>
+                </button>
+
+                {accountMenuOpen ? (
+                  <div className="navbar-account-menu" role="menu">
+                    <div className="navbar-account-menu-head">
+                      <strong>{getInitials(user)}</strong>
+                      <button aria-label="Close account menu" onClick={() => setAccountMenuOpen(false)} type="button">
+                        x
+                      </button>
+                    </div>
+
+                    <button className="navbar-account-item" onClick={() => openProfile("information")} role="menuitem" type="button">
+                      Go to profile
+                    </button>
+                    {isAdminUser(user) ? (
+                      <>
+                        <button className="navbar-account-item" onClick={() => openEducationWorkspace("admin")} role="menuitem" type="button">
+                          Admin Panel
+                        </button>
+                        <button className="navbar-account-item" onClick={() => openEducationWorkspace("learn")} role="menuitem" type="button">
+                          Learner View
+                        </button>
+                      </>
+                    ) : null}
+                    <button className="navbar-account-item" onClick={() => openProfile("password")} role="menuitem" type="button">
+                      Settings
+                    </button>
+                    <button className="navbar-account-item" onClick={() => handleClick("contact")} role="menuitem" type="button">
+                      Help
+                    </button>
+                    <button className="navbar-account-item is-danger" onClick={handleNavbarLogout} role="menuitem" type="button">
+                      Log Out
                     </button>
                   </div>
+                ) : null}
+              </div>
+            ) : null}
 
-                  <button className="navbar-account-item" onClick={() => openProfile("information")} role="menuitem" type="button">
-                    Go to profile
-                  </button>
-                  {isAdminUser(user) ? (
-                    <>
-                      <button className="navbar-account-item" onClick={() => openEducationWorkspace("admin")} role="menuitem" type="button">
-                        Admin Panel
-                      </button>
-                      <button className="navbar-account-item" onClick={() => openEducationWorkspace("learn")} role="menuitem" type="button">
-                        Learner View
-                      </button>
-                    </>
-                  ) : null}
-                  <button className="navbar-account-item" onClick={() => openProfile("password")} role="menuitem" type="button">
-                    Settings
-                  </button>
-                  <button className="navbar-account-item" onClick={() => handleClick("contact")} role="menuitem" type="button">
-                    Help
-                  </button>
-                  <button className="navbar-account-item is-danger" onClick={handleNavbarLogout} role="menuitem" type="button">
-                    Log Out
-                  </button>
-                </div>
-              ) : null}
-            </div>
-          ) : null}
+            <button
+              className={`menu-btn ${menuOpen ? "is-open" : ""}`}
+              aria-label="Toggle menu"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((value) => !value)}
+              type="button"
+            >
+              <span className="bar" />
+              <span className="bar" />
+              <span className="bar" />
+            </button>
+          </div>
 
-          <button
-            className={`menu-btn ${menuOpen ? "is-open" : ""}`}
-            aria-label="Toggle menu"
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((value) => !value)}
-            type="button"
-          >
-            <span className="bar" />
-            <span className="bar" />
-            <span className="bar" />
-          </button>
+          {menuOpen ? <div className="nav-overlay" onClick={() => setMenuOpen(false)} /> : null}
         </div>
-
-        {menuOpen ? <div className="nav-overlay" onClick={() => setMenuOpen(false)} /> : null}
-      </div>
-    </header>
+      </header>
+    </>
   );
 }
