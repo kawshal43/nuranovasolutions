@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Contact.css";
 
 export default function Contact() {
@@ -8,6 +8,21 @@ export default function Contact() {
         subject: "",
         message: "",
     });
+    const [comments, setComments] = useState([
+        {
+            id: 1,
+            author: "Amara Thennakoon",
+            time: "4 hours ago",
+            text: "This is a great initiative! Looking forward to collaborating with you.",
+            likes: 0,
+            replies: [],
+        },
+    ]);
+    const [newComment, setNewComment] = useState("");
+    const [activeReplyId, setActiveReplyId] = useState(null);
+    const [replyDrafts, setReplyDrafts] = useState({});
+    const [likeAnimations, setLikeAnimations] = useState({});
+    const likeTimersRef = useRef(new Map());
 
     const onChange = (e) => {
         setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
@@ -16,9 +31,109 @@ export default function Contact() {
     const onSubmit = (e) => {
         e.preventDefault();
         // Demo only. Later connect EmailJS/backend.
-        alert("✅ Message sent (demo).");
+        alert("Message sent (demo).");
         setForm({ name: "", email: "", subject: "", message: "" });
     };
+
+    const addComment = () => {
+        const text = newComment.trim();
+        if (!text) return;
+
+        setComments((prev) => [
+            ...prev,
+            {
+                id: Date.now(),
+                author: "Guest",
+                time: "Just now",
+                text,
+                likes: 0,
+                replies: [],
+            },
+        ]);
+        setNewComment("");
+    };
+
+    const onCommentSubmit = (e) => {
+        e.preventDefault();
+        addComment();
+    };
+
+    const triggerLikeAnimation = (id) => {
+        const existingTimer = likeTimersRef.current.get(id);
+        if (existingTimer) {
+            clearTimeout(existingTimer);
+        }
+
+        setLikeAnimations((prev) => ({ ...prev, [id]: true }));
+
+        const timer = window.setTimeout(() => {
+            setLikeAnimations((prev) => {
+                const next = { ...prev };
+                delete next[id];
+                return next;
+            });
+            likeTimersRef.current.delete(id);
+        }, 520);
+
+        likeTimersRef.current.set(id, timer);
+    };
+
+    const likeComment = (id) => {
+        setComments((prev) =>
+            prev.map((comment) =>
+                comment.id === id
+                    ? { ...comment, likes: comment.likes + 1 }
+                    : comment
+            )
+        );
+        triggerLikeAnimation(id);
+    };
+
+    const toggleReply = (id) => {
+        setActiveReplyId((current) => (current === id ? null : id));
+    };
+
+    const updateReplyDraft = (id, value) => {
+        setReplyDrafts((prev) => ({ ...prev, [id]: value }));
+    };
+
+    const submitReply = (id) => {
+        const text = (replyDrafts[id] || "").trim();
+        if (!text) return;
+
+        setComments((prev) =>
+            prev.map((comment) =>
+                comment.id === id
+                    ? {
+                        ...comment,
+                        replies: [
+                            ...(comment.replies || []),
+                            {
+                                id: Date.now(),
+                                author: "Guest",
+                                time: "Just now",
+                                text,
+                            },
+                        ],
+                    }
+                    : comment
+            )
+        );
+        setReplyDrafts((prev) => ({ ...prev, [id]: "" }));
+        setActiveReplyId(null);
+    };
+
+    const onReplySubmit = (e, id) => {
+        e.preventDefault();
+        submitReply(id);
+    };
+
+    useEffect(() => {
+        return () => {
+            likeTimersRef.current.forEach((timer) => clearTimeout(timer));
+            likeTimersRef.current.clear();
+        };
+    }, []);
 
     return (
         <main className="contact-page landing-panel landing-contact-panel" id="contact">
@@ -48,7 +163,6 @@ export default function Contact() {
                             </div>
                         </div>
                     </div>
-
                 </div>
             </section>
 
@@ -156,6 +270,123 @@ export default function Contact() {
                 </div>
             </section>
 
+            <section className="c-comments" aria-labelledby="comment-title">
+                <div className="c-container">
+                    <div className="c-comments-shell">
+                        <div className="c-comments-head">
+                            <h2 className="c-comments-title" id="comment-title">Leave a Comment</h2>
+                            <p className="c-comments-sub">We&apos;d love to hear your thought!</p>
+                        </div>
+
+                        <div className="c-comments-panel c-card">
+                            <div className="c-comments-list">
+                                {comments.map((comment) => (
+                                    <article className="c-comment-card c-card" key={comment.id}>
+                                        <div className="c-comment-avatar" aria-hidden="true">
+                                            <span>{getInitials(comment.author)}</span>
+                                        </div>
+
+                                        <div className="c-comment-body">
+                                            <div className="c-comment-author">{comment.author}</div>
+                                            <div className="c-comment-time">{comment.time}</div>
+                                            <p className="c-comment-text">{comment.text}</p>
+
+                                            <div className="c-comment-footer">
+                                                <button
+                                                    className={`c-comment-action ${activeReplyId === comment.id ? "is-active" : ""}`}
+                                                    onClick={() => toggleReply(comment.id)}
+                                                    type="button"
+                                                >
+                                                    Reply
+                                                </button>
+                                                <button
+                                                    className="c-comment-action"
+                                                    onClick={() => likeComment(comment.id)}
+                                                    type="button"
+                                                >
+                                                    Like
+                                                </button>
+                                                <div
+                                                    className={`c-comment-like-cluster ${likeAnimations[comment.id] ? "is-popping" : ""}`}
+                                                >
+                                                    <span className="c-comment-heart-display" aria-hidden="true">
+                                                        <span className="c-comment-heart-icon">{icons.heart}</span>
+                                                    </span>
+                                                    <span className="c-comment-like-count">{comment.likes}</span>
+                                                </div>
+                                            </div>
+
+                                            {comment.replies?.length > 0 ? (
+                                                <div className="c-reply-list">
+                                                    {comment.replies.map((reply) => (
+                                                        <article className="c-reply-card" key={reply.id}>
+                                                            <div className="c-reply-avatar" aria-hidden="true">
+                                                                <span>{getInitials(reply.author)}</span>
+                                                            </div>
+
+                                                            <div className="c-reply-body">
+                                                                <div className="c-reply-author">{reply.author}</div>
+                                                                <div className="c-reply-time">{reply.time}</div>
+                                                                <p className="c-reply-text">{reply.text}</p>
+                                                            </div>
+                                                        </article>
+                                                    ))}
+                                                </div>
+                                            ) : null}
+
+                                            {activeReplyId === comment.id ? (
+                                                <form className="c-reply-compose c-card" onSubmit={(e) => onReplySubmit(e, comment.id)}>
+                                                    <div className="c-reply-compose-avatar" aria-hidden="true">
+                                                        {icons.user}
+                                                    </div>
+
+                                                    <div className="c-reply-compose-main">
+                                                        <div className="c-reply-input-wrap">
+                                                            <input
+                                                                className="c-reply-input"
+                                                                onChange={(e) => updateReplyDraft(comment.id, e.target.value)}
+                                                                placeholder={`Reply to ${comment.author}...`}
+                                                                value={replyDrafts[comment.id] || ""}
+                                                            />
+                                                            <button className="c-reply-btn" type="submit">
+                                                                Reply
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            ) : null}
+                                        </div>
+                                    </article>
+                                ))}
+                            </div>
+
+                            <form className="c-comment-compose c-card" onSubmit={onCommentSubmit}>
+                                <div className="c-comment-compose-avatar" aria-hidden="true">
+                                    {icons.user}
+                                </div>
+
+                                <div className="c-comment-compose-main">
+                                    <div className="c-comment-input-wrap">
+                                        <input
+                                            className="c-comment-input"
+                                            onChange={(e) => setNewComment(e.target.value)}
+                                            placeholder="Write your comment..."
+                                            value={newComment}
+                                        />
+                                        <button className="c-comment-btn" type="submit">
+                                            Comment
+                                        </button>
+                                    </div>
+                                    <p className="c-comment-helper">
+                                        Be respectful, insightful and constructive in your comments.
+                                    </p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* Footer is NOT here. You will render <Footer /> separately */}
         </main>
     );
@@ -234,4 +465,37 @@ const icons = {
             />
         </svg>
     ),
+    user: (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+                d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    ),
+    heart: (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+                d="M12 20.2 5.8 14A4.3 4.3 0 0 1 12 8.1 4.3 4.3 0 0 1 18.2 14L12 20.2Z"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    ),
 };
+
+function getInitials(name) {
+    return name
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part.charAt(0).toUpperCase())
+        .join("");
+}
