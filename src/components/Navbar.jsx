@@ -24,6 +24,35 @@ function isAdminUser(user) {
   return user?.role === "ADMIN";
 }
 
+function ThemeIcon({ theme }) {
+  if (theme === "dark") {
+    return (
+      <svg aria-hidden="true" className="theme-toggle-icon" viewBox="0 0 24 24">
+        <path
+          d="M14.5 3.5c-1 1.4-1.5 3-1.5 4.8 0 4.5 3.7 8.2 8.2 8.2.5 0 1 0 1.5-.1-1.4 2.5-4 4.1-7 4.1-4.4 0-8-3.6-8-8 0-3 1.7-5.7 4.3-7z"
+          fill="currentColor"
+        />
+      </svg>
+    );
+  }
+
+  return (
+    <svg aria-hidden="true" className="theme-toggle-icon" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" fill="currentColor" r="4.5" />
+      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.8">
+        <path d="M12 2.75v2.5" />
+        <path d="M12 18.75v2.5" />
+        <path d="M2.75 12h2.5" />
+        <path d="M18.75 12h2.5" />
+        <path d="M5.45 5.45l1.8 1.8" />
+        <path d="M16.75 16.75l1.8 1.8" />
+        <path d="M5.45 18.55l1.8-1.8" />
+        <path d="M16.75 7.25l1.8-1.8" />
+      </g>
+    </svg>
+  );
+}
+
 export default function Navbar({ theme, onToggleTheme }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -37,6 +66,7 @@ export default function Navbar({ theme, onToggleTheme }) {
   const navRefs = useRef([]);
   const headerRef = useRef(null);
   const accountMenuRef = useRef(null);
+  const pendingScrollRef = useRef(null);
 
   const loadSession = useCallback(async () => {
     try {
@@ -125,6 +155,59 @@ export default function Navbar({ theme, onToggleTheme }) {
     setActive(hash || "home");
   }, [location.hash, location.pathname]);
 
+  const updateActiveSection = useCallback(() => {
+    if (location.pathname !== "/") {
+      return;
+    }
+
+    const sections = ITEMS.map(({ id }) => document.querySelector(`[id="${id}"]`)).filter(Boolean);
+    if (!sections.length) {
+      return;
+    }
+
+    const navHeight = headerRef.current?.offsetHeight || headerHeight || 70;
+    const viewportTrigger = Math.min(Math.max(window.innerHeight * 0.3, 120), 240);
+    const scrollMarker = window.scrollY + navHeight + viewportTrigger;
+    const pageHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+    const isNearBottom = window.scrollY + window.innerHeight >= pageHeight - 8;
+    const pendingTargetId = pendingScrollRef.current;
+
+    if (pendingTargetId) {
+      const pendingTarget = sections.find((section) => section.id === pendingTargetId);
+
+      if (!pendingTarget) {
+        pendingScrollRef.current = null;
+      } else {
+        const targetY = pendingTarget.getBoundingClientRect().top + window.scrollY - navHeight - 10;
+        const reachedTarget = Math.abs(window.scrollY - targetY) <= 24;
+
+        if (!reachedTarget) {
+          setActive((current) => (current === pendingTargetId ? current : pendingTargetId));
+          return;
+        }
+
+        pendingScrollRef.current = null;
+      }
+    }
+
+    let nextActive = sections[0].id;
+
+    for (const section of sections) {
+      if (scrollMarker >= section.offsetTop) {
+        nextActive = section.id;
+        continue;
+      }
+
+      break;
+    }
+
+    if (isNearBottom) {
+      nextActive = sections[sections.length - 1].id;
+    }
+
+    setActive((current) => (current === nextActive ? current : nextActive));
+  }, [headerHeight, location.pathname]);
+
   const scrollToSection = useCallback((id) => {
     const el = document.getElementById(id);
     if (!el) return false;
@@ -143,6 +226,7 @@ export default function Navbar({ theme, onToggleTheme }) {
         return;
       }
 
+      pendingScrollRef.current = id;
       window.history.pushState({}, "", `#${id}`);
 
       let tries = 0;
@@ -165,6 +249,7 @@ export default function Navbar({ theme, onToggleTheme }) {
     const hash = location.hash.replace("#", "");
     if (!hash) return undefined;
 
+    pendingScrollRef.current = hash;
     let tries = 0;
     const timer = setInterval(() => {
       tries += 1;
@@ -174,6 +259,42 @@ export default function Navbar({ theme, onToggleTheme }) {
 
     return () => clearInterval(timer);
   }, [location.hash, location.pathname, scrollToSection]);
+
+  useEffect(() => {
+    if (location.pathname !== "/") {
+      return undefined;
+    }
+
+    let frame = null;
+
+    const syncActiveSection = () => {
+      frame = null;
+      updateActiveSection();
+    };
+
+    const scheduleSync = () => {
+      if (frame !== null) {
+        return;
+      }
+
+      frame = window.requestAnimationFrame(syncActiveSection);
+    };
+
+    updateActiveSection();
+    window.addEventListener("scroll", scheduleSync, { passive: true });
+    window.addEventListener("resize", scheduleSync);
+    window.addEventListener("load", scheduleSync);
+
+    return () => {
+      if (frame !== null) {
+        window.cancelAnimationFrame(frame);
+      }
+
+      window.removeEventListener("scroll", scheduleSync);
+      window.removeEventListener("resize", scheduleSync);
+      window.removeEventListener("load", scheduleSync);
+    };
+  }, [location.pathname, updateActiveSection]);
 
   const movePill = useCallback(() => {
     if (window.innerWidth < 768) {
@@ -261,7 +382,7 @@ export default function Navbar({ theme, onToggleTheme }) {
     <>
       <div aria-hidden="true" className="navbar-spacer" style={{ height: `${headerHeight}px` }} />
 
-      <header className="navbar" ref={headerRef}>
+      <header className="navbar" ref={headerRef} style={{ "--navbar-height": `${headerHeight}px` }}>
         <div className="navbar-container">
           <div className="brand" onClick={() => handleClick("home")}>
             <img src="/Logo.PNG" alt="Logo" className="brand-logo" />
@@ -285,6 +406,7 @@ export default function Navbar({ theme, onToggleTheme }) {
               >
                 <a
                   href={`#${item.id}`}
+                  aria-current={active === item.id ? "page" : undefined}
                   className={active === item.id ? "active" : ""}
                   onClick={(event) => {
                     event.preventDefault();
@@ -304,12 +426,12 @@ export default function Navbar({ theme, onToggleTheme }) {
               onClick={onToggleTheme}
               type="button"
             >
-              <span className="theme-toggle-track">
-                <span className={`theme-toggle-thumb ${theme === "dark" ? "is-dark" : ""}`}>
-                  {theme === "dark" ? "M" : "N"}
+                <span className="theme-toggle-track">
+                  <span className={`theme-toggle-thumb ${theme === "dark" ? "is-dark" : ""}`}>
+                    <ThemeIcon theme={theme} />
+                  </span>
                 </span>
-              </span>
-            </button>
+              </button>
 
             {user ? (
               <div className="navbar-account" ref={accountMenuRef}>

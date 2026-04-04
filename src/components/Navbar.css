@@ -6,17 +6,42 @@
 /* ================= NAVBAR BASE ================= */
 .navbar {
   width: 100%;
-  background-color: var(--nav-bg);
-  border-bottom: 1px solid var(--nav-border);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--nav-bg) 68%, transparent) 0%,
+      color-mix(in srgb, var(--surface-glass-strong) 64%, transparent) 100%
+    );
+  border-bottom: 1px solid color-mix(in srgb, var(--nav-border) 84%, var(--surface-border-soft) 16%);
+  box-shadow:
+    0 10px 24px rgba(15, 23, 42, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(22px) saturate(155%);
+  -webkit-backdrop-filter: blur(22px) saturate(155%);
+  overflow: visible;
+  isolation: isolate;
 
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 2400;
-  transition: background-color 220ms ease, border-color 220ms ease;
+  transition: background 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.navbar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.28) 0%,
+      rgba(255, 255, 255, 0.08) 34%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  opacity: 0.82;
 }
 
 .navbar-container {
@@ -30,6 +55,7 @@
   gap: clamp(10px, 1.8vw, 16px);
 
   position: relative;
+  z-index: 1;
 }
 
 .navbar-actions {
@@ -195,8 +221,22 @@
 /* Animated Pill */
 .nav-pill {
   position: absolute;
-  background-color: var(--nav-pill-bg);
+  overflow: hidden;
   border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--surface-border-strong) 76%, transparent);
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--surface-glass-strong) 84%, white 16%) 0%,
+      color-mix(in srgb, var(--surface-glass) 88%, #bfdbfe 12%) 52%,
+      color-mix(in srgb, var(--surface-glass-soft) 90%, transparent) 100%
+    );
+  box-shadow:
+    0 14px 32px rgba(15, 23, 42, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42),
+    inset 0 -10px 18px rgba(148, 163, 184, 0.12);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
   z-index: 1;
 
   transition:
@@ -205,6 +245,41 @@
     width 320ms cubic-bezier(0.16, 1, 0.3, 1),
     height 320ms cubic-bezier(0.16, 1, 0.3, 1),
     opacity 200ms ease;
+}
+
+.nav-pill::before,
+.nav-pill::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.nav-pill::before {
+  inset: 1px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.5) 0%,
+      rgba(255, 255, 255, 0.16) 38%,
+      rgba(255, 255, 255, 0) 78%
+    );
+  opacity: 0.9;
+}
+
+.nav-pill::after {
+  left: 28%;
+  right: -12%;
+  top: 42%;
+  bottom: 8%;
+  background:
+    radial-gradient(
+      circle at center,
+      color-mix(in srgb, var(--primary) 24%, rgba(255, 255, 255, 0.6) 76%) 0%,
+      rgba(255, 255, 255, 0) 72%
+    );
+  filter: blur(12px);
+  opacity: 0.7;
 }
 
 .nav-links li {
@@ -235,7 +310,13 @@
 .nav-links a.active {
   background-color: transparent;
   /* pill handles background */
-  color: var(--primary-contrast);
+  color: var(--text-primary);
+  text-shadow: 0 1px 10px color-mix(in srgb, var(--surface-highlight) 65%, transparent);
+}
+
+.nav-links a.active:hover {
+  background-color: transparent;
+  transform: none;
 }
 
 .theme-toggle {
@@ -259,7 +340,7 @@
   background: var(--surface-glass-strong);
   border: 1px solid var(--surface-border);
   box-shadow: var(--surface-shadow-soft);
-  transition: background-color 220ms ease, border-color 220ms ease;
+  transition: background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
 }
 
 .theme-toggle-thumb {
@@ -270,16 +351,32 @@
   place-items: center;
   background: linear-gradient(135deg, #ffffff 0%, #dbeafe 100%);
   color: #1e293b;
-  font-size: 11px;
-  font-weight: 900;
   transform: translateX(0);
-  transition: transform 220ms ease, background 220ms ease, color 220ms ease;
+  box-shadow:
+    0 4px 10px rgba(15, 23, 42, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  transition: transform 220ms ease, background 220ms ease, color 220ms ease, box-shadow 220ms ease;
 }
 
 .theme-toggle-thumb.is-dark {
   transform: translateX(calc(var(--toggle-track-width) - var(--toggle-thumb-size) - 10px));
-  background: linear-gradient(135deg, #60a5fa 0%, #22d3ee 100%);
-  color: #031225;
+  background: linear-gradient(135deg, #bcd7ff 0%, #7cc7ff 100%);
+  color: #07233d;
+  box-shadow:
+    0 4px 12px rgba(96, 165, 250, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.48);
+}
+
+.theme-toggle-icon {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+.theme-toggle:hover .theme-toggle-track {
+  box-shadow:
+    0 10px 24px rgba(15, 23, 42, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
 }
 
 /* Disable hover on touch */
@@ -412,27 +509,38 @@
 
   /* Dropdown (glass blur) - centered + responsive */
   .nav-links {
-    position: absolute;
-    top: calc(100% + 10px);
+    position: fixed;
+    top: calc(var(--navbar-height, 76px) + 10px);
     left: 50%;
     right: auto;
 
-    width: min(420px, calc(100vw - 32px));
+    width: min(420px, calc(100vw - 24px));
+    max-height: calc(100dvh - var(--navbar-height, 76px) - 24px);
     display: flex;
     flex-direction: column;
     gap: 14px;
 
     padding: 18px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
 
-    background: var(--menu-bg);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--menu-bg) 74%, transparent) 0%,
+        color-mix(in srgb, var(--surface-glass-strong) 70%, transparent) 100%
+      );
+    backdrop-filter: blur(22px) saturate(150%);
+    -webkit-backdrop-filter: blur(22px) saturate(150%);
 
-    border: 1px solid var(--menu-border);
+    border: 1px solid color-mix(in srgb, var(--menu-border) 78%, var(--surface-border-strong) 22%);
     border-radius: 24px;
-    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.14);
+    box-shadow:
+      0 18px 42px rgba(15, 23, 42, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
 
     transform: translateX(-50%) translateY(-18px) scale(0.96);
+    transform-origin: top center;
     opacity: 0;
     pointer-events: none;
 
@@ -468,6 +576,9 @@
 
   /* Stagger animation */
   .nav-item {
+    width: 100%;
+    display: flex;
+    justify-content: center;
     opacity: 0;
     transform: translateX(40px);
     transition:
@@ -483,9 +594,13 @@
 
   /* Same size pill buttons */
   .nav-links a {
-    width: min(180px, 100%);
-    height: 40px;
-    margin: 0 auto;
+    width: min(220px, 100%);
+    height: 44px;
+    margin: 0;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
 
     display: flex;
     align-items: center;
@@ -497,8 +612,18 @@
     font-size: 15px;
     font-weight: 700;
 
-    background: var(--surface-glass-strong);
-    border: 1px solid var(--surface-border);
+    background:
+      linear-gradient(
+        145deg,
+        color-mix(in srgb, var(--surface-glass-strong) 72%, transparent) 0%,
+        color-mix(in srgb, var(--surface-glass) 68%, transparent) 100%
+      );
+    border: 1px solid color-mix(in srgb, var(--surface-border) 76%, var(--surface-border-strong) 24%);
+    box-shadow:
+      0 10px 22px rgba(15, 23, 42, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(15px) saturate(138%);
+    -webkit-backdrop-filter: blur(15px) saturate(138%);
 
     padding: 0;
   }
@@ -510,9 +635,58 @@
   }
 
   .nav-links a.active {
-    background-color: var(--nav-pill-bg);
-    color: var(--primary-contrast);
-    border-color: transparent;
+    background:
+      linear-gradient(
+        145deg,
+        color-mix(in srgb, var(--surface-glass-strong) 84%, white 16%) 0%,
+        color-mix(in srgb, var(--surface-glass) 88%, #bfdbfe 12%) 52%,
+        color-mix(in srgb, var(--surface-glass-soft) 90%, transparent) 100%
+      );
+    color: var(--text-primary);
+    border-color: color-mix(in srgb, var(--surface-border-strong) 76%, transparent);
+    box-shadow:
+      0 14px 32px rgba(15, 23, 42, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.42),
+      inset 0 -10px 18px rgba(148, 163, 184, 0.12);
+    text-shadow: 0 1px 10px color-mix(in srgb, var(--surface-highlight) 65%, transparent);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+  }
+
+  .nav-links a.active::before,
+  .nav-links a.active::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: -1;
+  }
+
+  .nav-links a.active::before {
+    inset: 1px;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.48) 0%,
+        rgba(255, 255, 255, 0.14) 38%,
+        rgba(255, 255, 255, 0) 78%
+      );
+    opacity: 0.9;
+  }
+
+  .nav-links a.active::after {
+    left: 28%;
+    right: -12%;
+    top: 42%;
+    bottom: 8%;
+    background:
+      radial-gradient(
+        circle at center,
+        color-mix(in srgb, var(--primary) 24%, rgba(255, 255, 255, 0.6) 76%) 0%,
+        rgba(255, 255, 255, 0) 72%
+      );
+    filter: blur(12px);
+    opacity: 0.72;
   }
 
   .nav-links a.active:active {
