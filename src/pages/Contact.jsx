@@ -117,6 +117,18 @@ export default function Contact() {
     const heroSubtitleLineOne = "Get in touch with us for any";
     const heroSubtitleLineTwo = "inquiries or collaborations.";
     const heroButtonText = "Contact Us";
+    const socialLinks = [
+        {
+            href: "https://www.linkedin.com/in/nuranova-solutions-b791403b4/",
+            icon: icons.linkedin,
+            label: "LinkedIn",
+        },
+        {
+            href: "https://github.com/nuranova-solutions",
+            icon: icons.github,
+            label: "GitHub",
+        },
+    ];
 
     const [form, setForm] = useState({
         name: "",
@@ -403,20 +415,18 @@ export default function Contact() {
                             </div>
 
                             <div className="c-social">
-                                <a className="c-social-pill" href="#" target="_blank" rel="noreferrer">
-                                    <span className="c-social-ico">{icons.linkedin}</span>
-                                    Linkedin
-                                </a>
-
-                                <a className="c-social-pill" href="#" target="_blank" rel="noreferrer">
-                                    <span className="c-social-ico">{icons.github}</span>
-                                    GitHub
-                                </a>
-
-                                <a className="c-social-pill" href="#" target="_blank" rel="noreferrer">
-                                    <span className="c-social-ico">{icons.twitter}</span>
-                                    Twitter
-                                </a>
+                                {socialLinks.map((socialLink) => (
+                                    <a
+                                        key={socialLink.label}
+                                        className="c-social-pill"
+                                        href={socialLink.href}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        <span className="c-social-ico">{socialLink.icon}</span>
+                                        {socialLink.label}
+                                    </a>
+                                ))}
                             </div>
                         </aside>
 
