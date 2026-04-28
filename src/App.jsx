@@ -22,7 +22,7 @@ export default function App() {
 
   return (
     <>
-      <Background />
+      <Background theme={theme} />
       {!bootReady && <AppBootOverlay onComplete={() => setBootReady(true)} />}
       <Navbar
         theme={theme}

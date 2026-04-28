@@ -8,46 +8,58 @@
 
     background-color: var(--app-bg);
     background-image:
-        radial-gradient(ellipse 70% 60% at 8% 6%, var(--aurora-1, hsla(182, 78%, 86%, 0.75)) 0%, transparent 65%),
-        radial-gradient(ellipse 65% 55% at 30% 48%, var(--aurora-2, hsla(272, 72%, 84%, 0.65)) 0%, transparent 65%),
-        radial-gradient(ellipse 55% 50% at 80% 80%, var(--aurora-3, hsla(315, 68%, 87%, 0.50)) 0%, transparent 65%);
+        radial-gradient(ellipse 74% 58% at 8% 6%, var(--aurora-1, hsla(182, 78%, 86%, 0.75)) 0%, transparent 68%),
+        radial-gradient(ellipse 66% 58% at 32% 42%, var(--aurora-2, hsla(272, 72%, 84%, 0.65)) 0%, transparent 68%),
+        radial-gradient(ellipse 58% 52% at 82% 82%, var(--aurora-3, hsla(315, 68%, 87%, 0.50)) 0%, transparent 68%);
 
     animation: auroraDrift 60s ease-in-out infinite alternate;
+}
+
+.aurora-bg__controller-layers {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+.aurora-bg__controller-layer {
+    position: absolute;
+    display: block;
+    pointer-events: none;
 }
 
 @keyframes auroraDrift {
     0% {
         background-image:
-            radial-gradient(ellipse 70% 60% at 8% 6%, var(--aurora-1, hsla(182, 78%, 86%, 0.75)) 0%, transparent 65%),
-            radial-gradient(ellipse 65% 55% at 30% 48%, var(--aurora-2, hsla(272, 72%, 84%, 0.65)) 0%, transparent 65%),
-            radial-gradient(ellipse 55% 50% at 80% 80%, var(--aurora-3, hsla(315, 68%, 87%, 0.50)) 0%, transparent 65%);
+            radial-gradient(ellipse 74% 58% at 8% 6%, var(--aurora-1, hsla(182, 78%, 86%, 0.75)) 0%, transparent 68%),
+            radial-gradient(ellipse 66% 58% at 32% 42%, var(--aurora-2, hsla(272, 72%, 84%, 0.65)) 0%, transparent 68%),
+            radial-gradient(ellipse 58% 52% at 82% 82%, var(--aurora-3, hsla(315, 68%, 87%, 0.50)) 0%, transparent 68%);
     }
 
     25% {
         background-image:
-            radial-gradient(ellipse 72% 58% at 12% 10%, var(--aurora-1b, hsla(192, 75%, 84%, 0.70)) 0%, transparent 65%),
-            radial-gradient(ellipse 68% 58% at 26% 52%, var(--aurora-2b, hsla(262, 74%, 82%, 0.68)) 0%, transparent 65%),
-            radial-gradient(ellipse 58% 48% at 84% 76%, var(--aurora-3b, hsla(325, 65%, 88%, 0.48)) 0%, transparent 65%);
+            radial-gradient(ellipse 76% 56% at 12% 10%, var(--aurora-1b, hsla(192, 75%, 84%, 0.70)) 0%, transparent 68%),
+            radial-gradient(ellipse 68% 58% at 28% 48%, var(--aurora-2b, hsla(262, 74%, 82%, 0.68)) 0%, transparent 68%),
+            radial-gradient(ellipse 58% 50% at 84% 76%, var(--aurora-3b, hsla(325, 65%, 88%, 0.48)) 0%, transparent 68%);
     }
 
     50% {
         background-image:
-            radial-gradient(ellipse 68% 62% at 5% 12%, var(--aurora-1c, hsla(170, 80%, 88%, 0.72)) 0%, transparent 65%),
-            radial-gradient(ellipse 62% 60% at 34% 44%, var(--aurora-2c, hsla(280, 70%, 86%, 0.62)) 0%, transparent 65%),
-            radial-gradient(ellipse 52% 52% at 76% 84%, var(--aurora-3c, hsla(305, 70%, 86%, 0.55)) 0%, transparent 65%);
+            radial-gradient(ellipse 70% 60% at 6% 10%, var(--aurora-1c, hsla(170, 80%, 88%, 0.72)) 0%, transparent 68%),
+            radial-gradient(ellipse 64% 60% at 36% 40%, var(--aurora-2c, hsla(280, 70%, 86%, 0.62)) 0%, transparent 68%),
+            radial-gradient(ellipse 54% 54% at 78% 84%, var(--aurora-3c, hsla(305, 70%, 86%, 0.55)) 0%, transparent 68%);
     }
 
     75% {
         background-image:
-            radial-gradient(ellipse 74% 56% at 10% 4%, var(--aurora-1d, hsla(185, 76%, 85%, 0.73)) 0%, transparent 65%),
-            radial-gradient(ellipse 66% 54% at 28% 50%, var(--aurora-2d, hsla(268, 73%, 83%, 0.66)) 0%, transparent 65%),
-            radial-gradient(ellipse 57% 51% at 82% 78%, var(--aurora-3d, hsla(320, 66%, 87%, 0.52)) 0%, transparent 65%);
+            radial-gradient(ellipse 76% 56% at 10% 4%, var(--aurora-1d, hsla(185, 76%, 85%, 0.73)) 0%, transparent 68%),
+            radial-gradient(ellipse 66% 56% at 30% 48%, var(--aurora-2d, hsla(268, 73%, 83%, 0.66)) 0%, transparent 68%),
+            radial-gradient(ellipse 58% 51% at 82% 78%, var(--aurora-3d, hsla(320, 66%, 87%, 0.52)) 0%, transparent 68%);
     }
 
     100% {
         background-image:
-            radial-gradient(ellipse 70% 60% at 6% 8%, var(--aurora-1e, hsla(178, 79%, 87%, 0.74)) 0%, transparent 65%),
-            radial-gradient(ellipse 64% 57% at 32% 46%, var(--aurora-2e, hsla(275, 71%, 85%, 0.64)) 0%, transparent 65%),
-            radial-gradient(ellipse 56% 49% at 78% 82%, var(--aurora-3e, hsla(310, 69%, 88%, 0.51)) 0%, transparent 65%);
+            radial-gradient(ellipse 74% 58% at 8% 8%, var(--aurora-1e, hsla(178, 79%, 87%, 0.74)) 0%, transparent 68%),
+            radial-gradient(ellipse 64% 57% at 34% 44%, var(--aurora-2e, hsla(275, 71%, 85%, 0.64)) 0%, transparent 68%),
+            radial-gradient(ellipse 56% 50% at 80% 82%, var(--aurora-3e, hsla(310, 69%, 88%, 0.51)) 0%, transparent 68%);
     }
 }

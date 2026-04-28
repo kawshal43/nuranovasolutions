@@ -2,48 +2,150 @@
     position: absolute;
     inset: 0;
     z-index: 0;
-    /* Behind the main content blocks */
     pointer-events: none;
-    /* Let clicks pass through */
     overflow: hidden;
+}
+
+.floating-icons-container--ambient {
+    inset: 0;
+}
+
+.floating-icons-container--hero {
+    -webkit-mask-image: radial-gradient(circle at 50% 48%, transparent 0%, transparent 18%, rgba(0, 0, 0, 0.48) 34%, #000 50%);
+    mask-image: radial-gradient(circle at 50% 48%, transparent 0%, transparent 18%, rgba(0, 0, 0, 0.48) 34%, #000 50%);
 }
 
 .floating-base {
     position: absolute;
-    /* Size and initial fixed position are set inline */
     transform: translate(-50%, -50%);
 }
 
-/* Independent axes for more chaotic, wandering motion */
-.move-x {
-    width: 100%;
-    height: 100%;
-    animation-name: floatX;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
+.floating-base--hero {
+    left: var(--left-desktop);
+    top: var(--top-desktop);
+    width: var(--size-desktop);
 }
 
-.move-y {
+.floating-sway {
     width: 100%;
     height: 100%;
-    animation-name: floatY;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
+    animation: heroIconSway calc(var(--motion-duration, 10.8s) * 1.18) ease-in-out infinite;
+    animation-delay: var(--motion-delay, 0s);
+    will-change: transform;
+    transform-origin: center;
 }
 
-/* The actual image handles the Z-axis (scale/blur/opacity) */
-.depth-z {
+.floating-orbit {
+    width: 100%;
+    height: 100%;
+    animation: heroIconDrift var(--motion-duration, 10.8s) ease-in-out infinite;
+    animation-delay: var(--motion-delay, 0s);
+    will-change: transform;
+    transform-origin: center;
+}
+
+.floating-depth {
     width: 100%;
     height: auto;
     object-fit: contain;
-    animation-name: depthZ;
+    animation: heroIconDepth var(--depth-duration, 8.6s) ease-in-out infinite;
+    animation-delay: var(--depth-delay, 0s);
+    will-change: transform, filter, opacity;
+    transform-origin: center;
+}
+
+@keyframes heroIconSway {
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0);
+    }
+
+    24% {
+        transform: translate3d(calc(var(--drift-x, 8px) * 0.3), calc(var(--drift-y, 7px) * -0.42), 0);
+    }
+
+    51% {
+        transform: translate3d(calc(var(--drift-x, 8px) * -0.38), calc(var(--drift-y, 7px) * 0.18), 0);
+    }
+
+    78% {
+        transform: translate3d(calc(var(--drift-x, 8px) * 0.16), calc(var(--drift-y, 7px) * 0.36), 0);
+    }
+}
+
+.ambient-move-x {
+    width: 100%;
+    height: 100%;
+    animation-name: ambientFloatX;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+.ambient-move-y {
+    width: 100%;
+    height: 100%;
+    animation-name: ambientFloatY;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+.ambient-depth {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    animation-name: ambientDepthZ;
     animation-timing-function: ease-in-out;
     animation-iteration-count: infinite;
     will-change: transform, filter, opacity;
 }
 
-/* Move randomly across large portions of the viewport */
-@keyframes floatX {
+@keyframes heroIconDrift {
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+    }
+
+    27% {
+        transform: translate3d(calc(var(--drift-x, 10px) * 0.46), calc(var(--drift-y, 8px) * -0.72), 0) rotate(calc(var(--tilt, 6deg) * 0.34)) scale(1.02);
+    }
+
+    59% {
+        transform: translate3d(calc(var(--drift-x, 10px) * -0.38), calc(var(--drift-y, 8px) * 0.48), 0) rotate(calc(var(--tilt, 6deg) * -0.31)) scale(0.985);
+    }
+
+    84% {
+        transform: translate3d(calc(var(--drift-x, 10px) * 0.22), calc(var(--drift-y, 8px) * -0.18), 0) rotate(calc(var(--tilt, 6deg) * 0.18)) scale(1.008);
+    }
+}
+
+@keyframes heroIconDepth {
+    0%,
+    100% {
+        transform: translateZ(0) scale(0.95);
+        filter: blur(5px) brightness(0.95) saturate(0.96);
+        opacity: 0.4;
+    }
+
+    34% {
+        transform: translateZ(0) scale(1.01);
+        filter: blur(1px) brightness(1.02) saturate(1.02);
+        opacity: 0.72;
+    }
+
+    66% {
+        transform: translateZ(0) scale(0.92);
+        filter: blur(6px) brightness(0.94) saturate(0.95);
+        opacity: 0.36;
+    }
+
+    86% {
+        transform: translateZ(0) scale(1.05);
+        filter: blur(0px) brightness(1) saturate(1);
+        opacity: 0.62;
+    }
+}
+
+@keyframes ambientFloatX {
     0% {
         transform: translateX(-18vw) rotate(-12deg);
     }
@@ -65,7 +167,7 @@
     }
 }
 
-@keyframes floatY {
+@keyframes ambientFloatY {
     0% {
         transform: translateY(-16vh);
     }
@@ -83,42 +185,75 @@
     }
 }
 
-/* Depth of field effect: Far away -> Focus -> Up close -> Focus -> Far away 
-   (Since we use alternate, it just goes 0 to 100 then bounces back)
-*/
-@keyframes depthZ {
+@keyframes ambientDepthZ {
     0% {
-        /* Very Far backward */
         transform: scale(0.45);
         filter: blur(8px) brightness(0.85);
         opacity: 0.3;
     }
 
     25% {
-        /* Medium Far */
         transform: scale(0.6);
         filter: blur(4px) brightness(0.9);
         opacity: 0.5;
     }
 
     50% {
-        /* Subject in focus (Center) */
-        transform: scale(1.0);
+        transform: scale(1);
         filter: blur(0px) brightness(1);
         opacity: 1;
     }
 
     75% {
-        /* Medium Close */
         transform: scale(1.4);
         filter: blur(4px) brightness(1.05);
         opacity: 0.85;
     }
 
     100% {
-        /* Very Close forward (Macro Blur) */
         transform: scale(1.6);
         filter: blur(10px) brightness(1.08);
         opacity: 0.4;
+    }
+}
+
+@media (max-width: 768px) {
+    .floating-icons-container--hero {
+        -webkit-mask-image: radial-gradient(circle at 50% 42%, transparent 0%, transparent 16%, rgba(0, 0, 0, 0.45) 30%, #000 46%);
+        mask-image: radial-gradient(circle at 50% 42%, transparent 0%, transparent 16%, rgba(0, 0, 0, 0.45) 30%, #000 46%);
+    }
+
+    .floating-base--hero {
+        left: var(--left-mobile, var(--left-desktop));
+        top: var(--top-mobile, var(--top-desktop));
+        width: var(--size-mobile, var(--size-desktop));
+    }
+}
+
+@media (max-width: 560px) {
+    .floating-base.hide-on-mobile {
+        display: none;
+    }
+
+    .floating-icons-container--hero {
+        opacity: 0.92;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ambient-move-x,
+    .ambient-move-y,
+    .ambient-depth,
+    .floating-sway,
+    .floating-orbit,
+    .floating-depth {
+        animation: none !important;
+    }
+
+    .ambient-depth,
+    .floating-depth {
+        opacity: 0.34;
+        filter: blur(3px);
+        transform: scale(0.94);
     }
 }

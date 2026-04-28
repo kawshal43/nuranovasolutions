@@ -7,11 +7,13 @@ import FloatingIcons from "../components/FloatingIcons";
 export default function LandingPage() {
   return (
     <div className="main-content landing-flow">
-      <FloatingIcons />
       <Home />
-      <Services />
-      <About />
-      <Contact />
+      <div className="landing-secondary-flow">
+        <FloatingIcons variant="ambient" />
+        <Services />
+        <About />
+        <Contact />
+      </div>
     </div>
   );
 }

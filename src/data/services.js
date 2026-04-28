@@ -1,7 +1,7 @@
 export const serviceCatalog = [
   {
     slug: "software-development-web-solutions",
-    title: "Software Development & Web Solutions",
+    title: "Software & Web Solutions",
     description:
       "Modern, scalable web and software solutions built for performance and security.",
     image: "/services/software.png",
@@ -137,7 +137,7 @@ export const serviceCatalog = [
   },
   {
     slug: "design-creative-media",
-    title: "Design & Creative Media",
+    title: "Design & Media",
     description:
       "Creative visuals and digital content that strengthen your brand identity.",
     image: "/services/design.png",
@@ -240,9 +240,9 @@ export const serviceCatalog = [
   },
   {
     slug: "video-production-editing",
-    title: "Video Production & 3D Animation",
+    title: "3D Animations & VFX",
     description:
-      "Professional video editing, animations, and visual storytelling.",
+      "3D animation, motion design, and visual effects for modern storytelling.",
     image: "/services/video.png",
     eyebrow: "Cinematic storytelling",
     subtitle:
@@ -549,9 +549,9 @@ export const serviceCatalog = [
   },
   {
     slug: "product-brand-marketing",
-    title: "Product & Brand Marketing",
+    title: "Product & Marketing",
     description:
-      "Strategic visuals and media to grow brand visibility and engagement.",
+      "Strategic visuals and media to grow product visibility and engagement.",
     image: "/services/marketing.png",
     eyebrow: "Visibility with intent",
     subtitle:

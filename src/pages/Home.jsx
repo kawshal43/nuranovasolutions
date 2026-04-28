@@ -1,12 +1,14 @@
 import "./Home.css";
 import heroTitleArrow from "../assets/hero-title-arrow.png";
 import heroTitleArrowDark from "../assets/hero-title-arrow-dark.png";
+import FloatingIcons from "../components/FloatingIcons";
 
 export default function Home() {
   return (
     <div className="home-container landing-panel landing-home-panel" id="home">
       <section className="home-hero home-section">
         <div className="heroOverlay" aria-hidden="true" />
+        <FloatingIcons variant="home" />
 
         <div className="container">
           <div className="heroInner">

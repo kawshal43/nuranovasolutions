@@ -1,139 +1,143 @@
 import { useEffect, useRef } from "react";
 import "./ServiceCard.css";
+import { serviceContraller } from "../controllers/serviceContraller";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Animation Control Panel
-// ─────────────────────────────────────────────────────────────────────────────
-const CONFIG = {
-  // Float smoothness: The lower the number, the slower/more liquid the glide.
-  // 0.08 = standard fluid glide, 0.008 = VERY slow heavy glide.
-  lerpSpeed: 0.05,
-
-  // Bounce / elastic overshoot amount (0 = no bounce, 1.4 = soft bounce, 2.0+ = strong)
-  bounceOvershoot: 0.7,
-
-  // How fast opacity fades in (1.0 = normal fade, 2.0 = fades in 2x as fast at the start)
-  fadeSpeed: 2,
-
-  // Entrance Travel Distance X (pixels left/right offscreen)
-  travelX: 200,
-
-  // Entrance Travel Distance Y (pixels downward drift)
-  driftY: 100,
-
-  // 3D Swivel amount (degrees of rotation like a door opening)
-  swivelDeg: 30,
-};
-
-export default function ServiceCard({ title, description, image, onLearnMore, index = 0 }) {
+export default function ServiceCard({
+  title,
+  description,
+  image,
+  onContact,
+  onLearnMore,
+  index = 0,
+}) {
+  const { cardBehavior } = serviceContraller;
   const cardRef = useRef(null);
-
-  // Track scroll target and current smooth value for fluid Lerping
   const animState = useRef({ targetProgress: 0, currentProgress: 0 });
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      if (cardRef.current) {
+        cardRef.current.style.opacity = "1";
+        cardRef.current.style.transform = "none";
+      }
+      return undefined;
+    }
+
     let rafId;
 
-    // 1. Update the TARGET progress purely based on scroll
     const updateTarget = () => {
       if (!cardRef.current) return;
+
       const rect = cardRef.current.getBoundingClientRect();
       const vHeight = window.innerHeight;
-
-      // Stagger right column
-      const stagger = (index % 2) * 80;
-
-      // Bottom Zone: Entrance (0 to 1 as it scrolls up from bottom)
-      const bottomZoneHeight = (vHeight * 0.45) + stagger;
+      const stagger = (index % 3) * cardBehavior.columnStagger;
+      const bottomZoneHeight = (vHeight * cardBehavior.entranceViewportFactor) + stagger;
       const pBottom = (vHeight - rect.top) / bottomZoneHeight;
-
-      // Top Zone: Exit (1 to 0 as it scrolls off the top)
-      // Starts leaving when card top is 20% from top of window
-      // Fully gone when card bottom passes top of window
-      const topZoneStart = vHeight * 0.20;
+      const topZoneStart = vHeight * cardBehavior.exitViewportStartFactor;
       const topZoneEnd = -rect.height;
       const pTop = (rect.top - topZoneEnd) / (topZoneStart - topZoneEnd);
 
-      // The card's progress is whichever is smaller (0 = invisible, 1 = fully visible)
-      // This means as it goes up, pBottom > 1 but pTop = 1. Then pTop drops to 0 at the top.
-      let p = Math.min(pBottom, pTop);
+      let progress = Math.min(pBottom, pTop);
+      if (progress < 0) progress = 0;
+      if (progress > 1) progress = 1;
 
-      // Clamp between 0 and 1
-      if (p < 0) p = 0;
-      if (p > 1) p = 1;
-
-      animState.current.targetProgress = p;
+      animState.current.targetProgress = progress;
     };
 
-    // 2. Continuously render and Lerp toward the target on every single frame
     const renderLoop = () => {
       const state = animState.current;
+      state.currentProgress += (state.targetProgress - state.currentProgress) * cardBehavior.lerpSpeed;
 
-      // Lerp (Linear Interpolation) for that glassy, floaty momentum
-      state.currentProgress += (state.targetProgress - state.currentProgress) * CONFIG.lerpSpeed;
-
-      // Only update DOM if the difference is noticeably large enough (optimizes performance)
       if (cardRef.current && Math.abs(state.targetProgress - state.currentProgress) > 0.0001) {
         const progress = state.currentProgress;
-
-        // Apply an 'easeOutBack' curve so it overshoots and bounces into place
-        const s = CONFIG.bounceOvershoot;
+        const overshoot = cardBehavior.bounceOvershoot;
         const pMod = progress - 1;
-        const eased = pMod * pMod * ((s + 1) * pMod + s) + 1;
-
-        // Pure smooth cubic for non-bouncing properties (opacity/scale/vertical drift)
+        const eased = pMod * pMod * ((overshoot + 1) * pMod + overshoot) + 1;
         const cubicEased = 1 - Math.pow(1 - progress, 3);
+        const scale = cardBehavior.scaleStart + cardBehavior.scaleRange * cubicEased;
+        const ty = cardBehavior.driftY * (1 - cubicEased);
+        const opacity = Math.min(progress * cardBehavior.fadeSpeed, 1);
 
-        const isLeft = index % 2 === 0;
-
-        // Calculate physics using the CONFIG variables
-        const tx = (isLeft ? -CONFIG.travelX : CONFIG.travelX) * (1 - eased);
-        const ty = CONFIG.driftY * (1 - cubicEased);
-        const rotY = (isLeft ? -CONFIG.swivelDeg : CONFIG.swivelDeg) * (1 - eased);
-
-        // Scale and Opacity don't bounce backward, they just smoothly lerp in
-        const scale = 0.90 + 0.10 * cubicEased;
-        const opac = Math.min(progress * CONFIG.fadeSpeed, 1);
-
-        cardRef.current.style.transform = `perspective(1200px) translate3d(${tx}px, ${ty}px, 0) rotateY(${rotY}deg) scale(${scale})`;
-        cardRef.current.style.opacity = opac;
+        cardRef.current.style.transform = `translate3d(0, ${ty}px, 0) scale(${scale})`;
+        cardRef.current.style.opacity = `${opacity}`;
+        cardRef.current.style.setProperty(
+          "--card-shadow-lift",
+          (1 + (1 - eased) * cardBehavior.shadowLiftRange).toFixed(3)
+        );
       }
 
       rafId = window.requestAnimationFrame(renderLoop);
     };
 
-    // Initialize
     window.addEventListener("scroll", updateTarget, { passive: true });
     window.addEventListener("resize", updateTarget, { passive: true });
-    updateTarget();     // Initial measurement
-    renderLoop();       // Start continuous animation engine
+    updateTarget();
+    renderLoop();
 
     return () => {
       window.removeEventListener("scroll", updateTarget);
       window.removeEventListener("resize", updateTarget);
       window.cancelAnimationFrame(rafId);
     };
-  }, [index]);
+  }, [cardBehavior, index]);
 
   return (
-    <div ref={cardRef} className="service-card">
+    <article ref={cardRef} className="service-card">
       <div className="service-img-wrap">
         <img className="service-image" src={image} alt={title} />
       </div>
 
       <div className="service-content">
-        <h3 className="service-title">{title}</h3>
-        <p className="service-desc">{description}</p>
+        <div className="service-copy">
+          <h3 className="service-title">{title}</h3>
+          <p className="service-desc">{description}</p>
+        </div>
 
         <div className="service-actions">
-          <button className="service-btn btn-primary" onClick={() => alert("Contact")}>
-            Contact
+          <button className="service-btn btn-primary" onClick={onContact} type="button">
+            <span className="service-btn-icon service-btn-icon--lead" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M22 2 11 13"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M22 2 15 22l-4-9-9-4Z"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                />
+              </svg>
+            </span>
+            <span className="service-btn-label">Contact</span>
           </button>
-          <button className="service-btn btn-secondary" onClick={onLearnMore}>
-            Learn More
+          <button className="service-btn btn-secondary" onClick={onLearnMore} type="button">
+            <span className="service-btn-label">Learn More</span>
+            <span className="service-btn-icon service-btn-icon--trail" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M5 12h14"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                />
+                <path
+                  d="m13 6 6 6-6 6"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                />
+              </svg>
+            </span>
           </button>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
