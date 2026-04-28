@@ -192,7 +192,6 @@ export default function FloatingIcons({ variant = "ambient", config = null }) {
 
   useEffect(() => {
     if (variant !== "ambient") {
-      setAmbientIcons([]);
       return undefined;
     }
 

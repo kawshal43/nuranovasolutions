@@ -19,6 +19,7 @@ export default function ServiceHero() {
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
+          setPhase((currentPhase) => (currentPhase === 0 ? 1 : currentPhase));
         }
       },
       {
@@ -45,17 +46,12 @@ export default function ServiceHero() {
       startObserver.disconnect();
       resetObserver.disconnect();
     };
-  }, []);
+  }, [hero.scrollTriggerViewportRatio]);
 
   useEffect(() => {
     if (!isVisible) return undefined;
 
     let timerId;
-
-    if (phase === 0) {
-      setPhase(1);
-      return undefined;
-    }
 
     if (phase === 1) {
       timerId = window.setTimeout(() => setPhase(2), hero.headingAnimationDuration);
@@ -72,7 +68,15 @@ export default function ServiceHero() {
     }
 
     return () => window.clearTimeout(timerId);
-  }, [isVisible, phase, typedText, subtitleText]);
+  }, [
+    hero.delayBetweenSteps,
+    hero.headingAnimationDuration,
+    hero.typingSpeed,
+    isVisible,
+    phase,
+    typedText,
+    subtitleText,
+  ]);
 
   return (
     <section ref={sectionRef} className={`service-hero ${isVisible ? "is-visible" : ""}`}>
