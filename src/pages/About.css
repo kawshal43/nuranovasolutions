@@ -124,8 +124,7 @@
 
 /* SECTIONS */
 .philosophy-section,
-.mission-vision-section,
-.innovators-section {
+.mission-vision-section {
   position: relative;
   padding: 80px 8%;
 }
@@ -167,59 +166,1113 @@
   font-size: 18px;
 }
 
-.philo-dual-layout {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(28px, 4vw, 74px);
-  align-items: start;
-}
-
-.philo-side {
+.philo-puzzle {
   position: relative;
   display: grid;
-  justify-items: center;
-  cursor: pointer;
-  outline: none;
+  grid-template-columns: minmax(260px, 0.82fr) minmax(420px, 1.18fr);
+  gap: clamp(24px, 4vw, 58px);
+  align-items: stretch;
+  width: min(1180px, 100%);
+  min-height: clamp(430px, 38vw, 520px);
+  margin: 0 auto;
+  padding: clamp(18px, 2.8vw, 34px);
+  border: 1px solid color-mix(in srgb, var(--text-primary) 10%, transparent);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 70% 18%, rgba(34, 211, 238, 0.18), transparent 32%),
+    radial-gradient(circle at 24% 82%, rgba(244, 114, 182, 0.13), transparent 30%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0.18));
+  box-shadow: 0 28px 80px rgba(37, 99, 235, 0.09);
+  overflow: hidden;
+  isolation: isolate;
 }
 
-.philo-word {
-  font-size: clamp(34px, 5.4vw, 56px);
-  line-height: 1.05;
+.philo-circuit {
+  background:
+    radial-gradient(circle at 72% 18%, rgba(34, 211, 238, 0.16), transparent 30%),
+    radial-gradient(circle at 25% 78%, rgba(37, 99, 235, 0.13), transparent 34%),
+    linear-gradient(135deg, rgba(248, 250, 252, 0.68), rgba(255, 255, 255, 0.22));
+}
+
+[data-theme="dark"] .philo-puzzle {
+  background:
+    radial-gradient(circle at 70% 18%, rgba(34, 211, 238, 0.2), transparent 32%),
+    radial-gradient(circle at 24% 82%, rgba(244, 114, 182, 0.15), transparent 30%),
+    linear-gradient(135deg, rgba(15, 23, 42, 0.68), rgba(15, 23, 42, 0.36));
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.22);
+}
+
+[data-theme="dark"] .philo-circuit {
+  background:
+    radial-gradient(circle at 72% 18%, rgba(34, 211, 238, 0.24), transparent 30%),
+    radial-gradient(circle at 25% 78%, rgba(37, 99, 235, 0.2), transparent 34%),
+    linear-gradient(135deg, rgba(8, 13, 28, 0.82), rgba(15, 23, 42, 0.4));
+}
+
+.philo-decoder {
+  background:
+    radial-gradient(circle at 76% 18%, rgba(236, 72, 153, 0.14), transparent 32%),
+    radial-gradient(circle at 22% 76%, rgba(34, 211, 238, 0.16), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(248, 250, 252, 0.2));
+}
+
+[data-theme="dark"] .philo-decoder {
+  background:
+    radial-gradient(circle at 76% 18%, rgba(236, 72, 153, 0.18), transparent 32%),
+    radial-gradient(circle at 22% 76%, rgba(34, 211, 238, 0.2), transparent 34%),
+    linear-gradient(135deg, rgba(15, 23, 42, 0.78), rgba(8, 13, 28, 0.42));
+}
+
+.philo-pathway {
+  background:
+    radial-gradient(circle at 80% 22%, rgba(34, 211, 238, 0.15), transparent 32%),
+    radial-gradient(circle at 24% 76%, rgba(245, 158, 11, 0.13), transparent 32%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.64), rgba(248, 250, 252, 0.22));
+}
+
+[data-theme="dark"] .philo-pathway {
+  background:
+    radial-gradient(circle at 80% 22%, rgba(34, 211, 238, 0.19), transparent 32%),
+    radial-gradient(circle at 24% 76%, rgba(245, 158, 11, 0.14), transparent 32%),
+    linear-gradient(135deg, rgba(15, 23, 42, 0.78), rgba(8, 13, 28, 0.44));
+}
+
+.philo-gridlock {
+  background:
+    radial-gradient(circle at 72% 20%, rgba(34, 211, 238, 0.14), transparent 30%),
+    radial-gradient(circle at 25% 78%, rgba(34, 197, 94, 0.12), transparent 32%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.64), rgba(248, 250, 252, 0.22));
+}
+
+[data-theme="dark"] .philo-gridlock {
+  background:
+    radial-gradient(circle at 72% 20%, rgba(34, 211, 238, 0.18), transparent 30%),
+    radial-gradient(circle at 25% 78%, rgba(34, 197, 94, 0.14), transparent 32%),
+    linear-gradient(135deg, rgba(15, 23, 42, 0.78), rgba(8, 13, 28, 0.44));
+}
+
+.philo-puzzle::before {
+  content: "";
+  position: absolute;
+  inset: 22px;
+  border: 1px dashed color-mix(in srgb, var(--text-primary) 11%, transparent);
+  border-radius: 24px;
+  pointer-events: none;
+}
+
+.philo-puzzle.is-wrong {
+  animation: philoPuzzleShake 360ms ease;
+}
+
+.philo-puzzle-copy {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+}
+
+.philo-puzzle-kicker {
+  width: max-content;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, #2563eb 10%, transparent);
+  color: color-mix(in srgb, var(--text-primary) 78%, #2563eb 22%);
+  font-size: 12px;
   font-weight: 900;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.philo-puzzle-copy h3 {
+  max-width: 12ch;
+  margin: 0;
   color: var(--text-primary);
-  cursor: inherit;
-  transition: color 220ms ease, text-shadow 220ms ease;
-  user-select: none;
+  font-size: clamp(30px, 4vw, 54px);
+  line-height: 0.98;
+  letter-spacing: 0;
 }
 
-.philo-side:hover .philo-word,
-.philo-side:focus-visible .philo-word,
-.philo-word.is-active {
-  color: #1f63c8;
-  text-shadow: 0 0 18px rgba(31, 99, 200, 0.2);
+.philo-puzzle-copy p {
+  max-width: 39ch;
+  margin: 18px 0 0;
+  color: color-mix(in srgb, var(--text-secondary) 74%, transparent);
+  font-size: 15px;
+  line-height: 1.75;
 }
 
-.philo-word-sub {
-  margin: 8px 0 0;
-  font-size: clamp(13px, 1.6vw, 16px);
+.philo-puzzle-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.philo-puzzle-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid color-mix(in srgb, var(--text-primary) 10%, transparent);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.36);
+  color: color-mix(in srgb, var(--text-secondary) 66%, transparent);
+  font-size: 12px;
+  font-weight: 900;
+  transition: background 240ms ease, color 240ms ease, transform 240ms ease;
+}
+
+.philo-puzzle-step.is-complete {
+  background: linear-gradient(135deg, #22d3ee, #2563eb);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.18);
+}
+
+.philo-puzzle-hint {
+  min-height: 52px;
+  font-weight: 700;
+}
+
+.philo-puzzle.is-wrong .philo-puzzle-hint {
+  color: #dc2626;
+}
+
+.philo-puzzle.is-solved .philo-puzzle-hint {
+  color: #047857;
+}
+
+.philo-puzzle-reset {
+  width: max-content;
+  margin-top: 8px;
+  padding: 12px 18px;
+  border: 1px solid rgba(37, 99, 235, 0.22);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(34, 211, 238, 0.95), rgba(37, 99, 235, 0.95));
+  color: #ffffff;
+  font-weight: 900;
+  box-shadow: 0 16px 34px rgba(37, 99, 235, 0.18);
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+.philo-puzzle-reset:hover,
+.philo-puzzle-reset:focus-visible {
+  filter: brightness(1.04);
+  box-shadow: 0 20px 42px rgba(37, 99, 235, 0.24);
+  transform: translateY(-2px);
+}
+
+.philo-puzzle-board {
+  position: relative;
+  min-height: 410px;
+  border-radius: 24px;
+  background:
+    linear-gradient(color-mix(in srgb, var(--text-primary) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--text-primary) 5%, transparent) 1px, transparent 1px);
+  background-size: 38px 38px;
+  overflow: hidden;
+}
+
+.philo-circuit-board {
+  background:
+    radial-gradient(circle at center, rgba(34, 211, 238, 0.08), transparent 34%),
+    linear-gradient(color-mix(in srgb, var(--text-primary) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--text-primary) 6%, transparent) 1px, transparent 1px);
+  background-size: auto, 34px 34px, 34px 34px;
+}
+
+.philo-decoder-board {
+  background:
+    repeating-linear-gradient(0deg, color-mix(in srgb, var(--text-primary) 4%, transparent) 0 1px, transparent 1px 18px),
+    repeating-linear-gradient(90deg, color-mix(in srgb, var(--text-primary) 4%, transparent) 0 1px, transparent 1px 18px),
+    radial-gradient(circle at center, rgba(236, 72, 153, 0.08), transparent 36%);
+}
+
+.philo-pathway-board {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(18px, 2.4vw, 28px);
+  background:
+    radial-gradient(circle at 52% 48%, rgba(34, 211, 238, 0.09), transparent 28%),
+    linear-gradient(135deg, color-mix(in srgb, var(--text-primary) 5%, transparent), transparent 42%);
+}
+
+.philo-gridlock-board {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) minmax(118px, 0.5fr) minmax(160px, 1fr);
+  gap: clamp(14px, 2vw, 24px);
+  align-items: center;
+  padding: clamp(18px, 2.6vw, 34px);
+  background:
+    linear-gradient(color-mix(in srgb, var(--text-primary) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--text-primary) 4%, transparent) 1px, transparent 1px),
+    radial-gradient(circle at center, rgba(34, 211, 238, 0.08), transparent 38%);
+  background-size: 30px 30px, 30px 30px, auto;
+}
+
+.philo-decoder-board::before {
+  background:
+    radial-gradient(circle at 42% 38%, rgba(34, 211, 238, 0.16), transparent 24%),
+    radial-gradient(circle at 58% 42%, rgba(236, 72, 153, 0.12), transparent 26%);
+}
+
+.philo-circuit-board::before {
+  background:
+    linear-gradient(90deg, transparent 0 8%, rgba(37, 99, 235, 0.12) 8% 8.4%, transparent 8.4% 100%),
+    linear-gradient(0deg, transparent 0 18%, rgba(34, 211, 238, 0.1) 18% 18.4%, transparent 18.4% 100%),
+    radial-gradient(circle, rgba(37, 99, 235, 0.13), transparent 62%);
+}
+
+.philo-puzzle-board::before,
+.philo-puzzle-board::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.philo-puzzle-board::before {
+  inset: 15%;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.12), transparent 62%);
+  filter: blur(18px);
+}
+
+.philo-puzzle-board::after {
+  left: 50%;
+  top: 50%;
+  width: 76%;
+  height: 62%;
+  border: 1px solid color-mix(in srgb, var(--text-primary) 8%, transparent);
+  transform: translate(-50%, -50%) rotate(-8deg);
+}
+
+.philo-circuit-board::before {
+  background:
+    linear-gradient(90deg, transparent 0 8%, rgba(37, 99, 235, 0.12) 8% 8.4%, transparent 8.4% 100%),
+    linear-gradient(0deg, transparent 0 18%, rgba(34, 211, 238, 0.1) 18% 18.4%, transparent 18.4% 100%),
+    radial-gradient(circle, rgba(37, 99, 235, 0.13), transparent 62%);
+}
+
+.philo-decoder-board::before {
+  background:
+    radial-gradient(circle at 42% 38%, rgba(34, 211, 238, 0.16), transparent 24%),
+    radial-gradient(circle at 58% 42%, rgba(236, 72, 153, 0.12), transparent 26%);
+}
+
+.philo-circuit-board::after {
+  width: 70%;
+  height: 54%;
+  border-color: rgba(34, 211, 238, 0.12);
+  border-radius: 32px;
+  transform: translate(-50%, -50%) rotate(0deg);
+}
+
+.philo-decoder-board::after {
+  width: min(420px, 70%);
+  height: 176px;
+  border-color: rgba(236, 72, 153, 0.16);
+  border-radius: 24px;
+  transform: translate(-50%, -50%) rotate(0deg);
+}
+
+.philo-decoder-display {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  display: grid;
+  gap: 13px;
+  place-items: center;
+  width: min(420px, 72%);
+  min-height: 190px;
+  padding: 24px;
+  border: 1px solid color-mix(in srgb, var(--text-primary) 10%, transparent);
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--bg-primary) 74%, transparent), color-mix(in srgb, var(--bg-primary) 42%, transparent));
+  box-shadow:
+    inset 0 0 30px rgba(34, 211, 238, 0.08),
+    0 26px 60px rgba(15, 23, 42, 0.1);
+  transform: translate(-50%, -50%);
+}
+
+.philo-decoder-display::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 1px dashed color-mix(in srgb, var(--text-primary) 12%, transparent);
+  border-radius: 18px;
+  pointer-events: none;
+}
+
+.philo-decoder-word {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: clamp(8px, 1.3vw, 14px);
+  font-size: clamp(42px, 6vw, 76px);
+  font-weight: 950;
+  line-height: 0.88;
+  color: color-mix(in srgb, var(--text-primary) 22%, transparent);
+}
+
+.philo-decoder-word span {
+  display: inline-grid;
+  place-items: center;
+  width: clamp(34px, 5vw, 58px);
+  height: clamp(48px, 6.5vw, 78px);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--text-primary) 5%, transparent);
+  transition:
+    background 260ms ease,
+    color 260ms ease,
+    box-shadow 260ms ease,
+    transform 260ms ease;
+}
+
+.philo-decoder-word span.is-decoded {
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.22), rgba(236, 72, 153, 0.16));
+  color: var(--text-primary);
+  box-shadow: 0 0 26px rgba(34, 211, 238, 0.16);
+  transform: translateY(-3px);
+}
+
+.philo-decoder-divider {
+  position: relative;
+  z-index: 1;
+  width: min(230px, 68%);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.5), rgba(236, 72, 153, 0.5), transparent);
+}
+
+.philo-decoder-display p {
+  position: relative;
+  z-index: 1;
+  margin: 0;
   color: color-mix(in srgb, var(--text-secondary) 72%, transparent);
-  font-weight: 600;
-  letter-spacing: 0.01em;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.philo-canvas-wrap {
-  width: min(440px, 100%);
-  height: clamp(230px, 32vw, 320px);
-  margin-top: 10px;
+.philo-decoder.is-solved .philo-decoder-display {
+  box-shadow:
+    inset 0 0 32px rgba(34, 211, 238, 0.12),
+    0 0 48px rgba(34, 211, 238, 0.16),
+    0 26px 60px rgba(15, 23, 42, 0.1);
 }
 
-.philo-canvas {
-  display: block;
+.philo-circuit-chip {
+  position: absolute;
+  z-index: 2;
+  width: 68px;
+  height: 48px;
+  border: 1px solid rgba(37, 99, 235, 0.16);
+  border-radius: 12px;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 8px, rgba(37, 99, 235, 0.1) 8px 10px),
+    color-mix(in srgb, var(--bg-primary) 48%, transparent);
+  box-shadow: inset 0 0 18px rgba(34, 211, 238, 0.08);
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.philo-circuit-chip::before,
+.philo-circuit-chip::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.16);
+}
+
+.philo-circuit-chip::before {
+  top: 13px;
+}
+
+.philo-circuit-chip::after {
+  bottom: 13px;
+}
+
+.philo-circuit-chip-a {
+  left: 12%;
+  top: 16%;
+}
+
+.philo-circuit-chip-b {
+  right: 11%;
+  top: 13%;
+}
+
+.philo-circuit-chip-c {
+  left: 42%;
+  bottom: 8%;
+}
+
+.philo-puzzle-lines {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   width: 100%;
   height: 100%;
+  pointer-events: none;
+}
+
+.philo-line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-width: 1.4;
+}
+
+.philo-line-ghost {
+  stroke: color-mix(in srgb, var(--text-secondary) 22%, transparent);
+  stroke-dasharray: 1.5 3.2;
+}
+
+.philo-line-active {
+  stroke: #06b6d4;
+  stroke-width: 2.2;
+  filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.62));
+  stroke-dasharray: 120;
+  stroke-dashoffset: 120;
+  animation: philoLineDraw 620ms ease forwards;
+}
+
+.philo-line-active-mid {
+  stroke: #2563eb;
+  filter: drop-shadow(0 0 8px rgba(37, 99, 235, 0.58));
+}
+
+.philo-line-active-end {
+  stroke: #ec4899;
+  filter: drop-shadow(0 0 8px rgba(236, 72, 153, 0.55));
+}
+
+.philo-puzzle-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: clamp(112px, 13vw, 148px);
+  height: clamp(112px, 13vw, 148px);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 36% 30%, #ffffff 0 12%, #67e8f9 26%, #2563eb 58%, #111827 100%);
+  color: #ffffff;
+  box-shadow:
+    0 0 0 12px rgba(255, 255, 255, 0.36),
+    0 0 44px rgba(37, 99, 235, 0.32);
+  transform: translate(-50%, -50%);
+  transition: transform 360ms ease, box-shadow 360ms ease;
+}
+
+.philo-puzzle.is-solved .philo-puzzle-core {
+  transform: translate(-50%, -50%) scale(1.08);
+  box-shadow:
+    0 0 0 18px rgba(255, 255, 255, 0.42),
+    0 0 54px rgba(34, 211, 238, 0.44),
+    0 0 82px rgba(236, 72, 153, 0.28);
+}
+
+.philo-circuit.is-solved .philo-puzzle-core {
+  background:
+    radial-gradient(circle at 36% 30%, #ffffff 0 11%, #67e8f9 24%, #22c55e 48%, #2563eb 72%, #111827 100%);
+}
+
+.philo-circuit.is-wrong .philo-puzzle-core {
+  box-shadow:
+    0 0 0 12px rgba(255, 255, 255, 0.3),
+    0 0 38px rgba(220, 38, 38, 0.24);
+}
+
+.philo-core-ring {
+  position: absolute;
+  inset: -16px;
+  border: 1px solid rgba(37, 99, 235, 0.18);
+  border-radius: inherit;
+  animation: philoCoreSpin 8s linear infinite;
+}
+
+.philo-core-ring::before,
+.philo-core-ring::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 0 18px rgba(34, 211, 238, 0.9);
+}
+
+.philo-core-ring::before {
+  left: 12%;
+  top: 11%;
+}
+
+.philo-core-ring::after {
+  right: 10%;
+  bottom: 13%;
+}
+
+.philo-puzzle-core strong {
+  margin-top: 8px;
+  font-size: clamp(26px, 3.2vw, 40px);
+  line-height: 1;
+}
+
+.philo-puzzle-core small {
+  margin-top: -18px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.78;
+}
+
+.philo-node {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  z-index: 4;
+  display: grid;
+  gap: 4px;
+  min-width: 124px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--text-primary) 10%, transparent);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--bg-primary) 76%, transparent);
+  color: var(--text-primary);
+  text-align: left;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.08);
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition:
+    background 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    color 220ms ease,
+    transform 220ms ease;
+}
+
+.philo-circuit .philo-node {
+  min-width: 116px;
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--bg-primary) 82%, transparent), color-mix(in srgb, var(--bg-primary) 52%, transparent));
+}
+
+.philo-circuit .philo-node::before,
+.philo-circuit .philo-node::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 2px;
+  background: color-mix(in srgb, var(--text-secondary) 18%, transparent);
+  transform: translateY(-50%);
+}
+
+.philo-circuit .philo-node::before {
+  left: -18px;
+}
+
+.philo-circuit .philo-node::after {
+  right: -18px;
+}
+
+.philo-node:hover,
+.philo-node:focus-visible,
+.philo-node.is-next {
+  border-color: rgba(37, 99, 235, 0.34);
+  box-shadow: 0 22px 44px rgba(37, 99, 235, 0.16);
+  transform: translate(-50%, -50%) translateY(-4px);
+}
+
+.philo-node.is-selected {
+  border-color: transparent;
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  color: #ffffff;
+  box-shadow: 0 22px 44px rgba(37, 99, 235, 0.22);
+}
+
+.philo-circuit .philo-node.is-selected::before,
+.philo-circuit .philo-node.is-selected::after {
+  background: #67e8f9;
+  box-shadow: 0 0 14px rgba(34, 211, 238, 0.7);
+}
+
+.philo-circuit.is-solved .philo-node.is-selected {
+  background: linear-gradient(135deg, #0891b2, #2563eb, #22c55e);
+}
+
+.philo-decoder .philo-node {
+  min-width: 116px;
+  border-radius: 999px;
+  text-align: center;
+}
+
+.philo-decoder .philo-node::before {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border: 1px solid color-mix(in srgb, var(--text-primary) 8%, transparent);
+  border-radius: inherit;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.philo-decoder .philo-node:hover::before,
+.philo-decoder .philo-node:focus-visible::before,
+.philo-decoder .philo-node.is-next::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.philo-decoder .philo-node.is-selected {
+  background: linear-gradient(135deg, #06b6d4, #ec4899);
+  box-shadow: 0 18px 42px rgba(236, 72, 153, 0.18);
+}
+
+.philo-pathway-map {
+  position: absolute;
+  inset: 9% 7%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.philo-route {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  height: 4px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text-secondary) 18%, transparent);
+  transform-origin: left center;
+}
+
+.philo-route::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #06b6d4, #2563eb, #f59e0b);
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: opacity 260ms ease, transform 760ms cubic-bezier(.2, .8, .2, 1);
+}
+
+.philo-route.is-active::before {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.philo-route-code {
+  top: 26%;
+  transform: rotate(-9deg);
+}
+
+.philo-route-design {
+  top: 50%;
+}
+
+.philo-route-creation {
+  top: 74%;
+  transform: rotate(9deg);
+}
+
+.philo-route-dot {
+  position: absolute;
+  z-index: 2;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.28), 0 0 28px rgba(37, 99, 235, 0.28);
+}
+
+.philo-route-dot-start {
+  left: 4%;
+  top: 49%;
+}
+
+.philo-route-dot-end {
+  right: 4%;
+  top: 49%;
+  opacity: 0.52;
+  transition: opacity 260ms ease, box-shadow 260ms ease;
+}
+
+.philo-route-dot-end.is-active {
+  opacity: 1;
+  box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.32), 0 0 42px rgba(245, 158, 11, 0.36);
+}
+
+.philo-route-traveler {
+  position: absolute;
+  left: 4%;
+  top: 49%;
+  z-index: 4;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 34% 28%, #ffffff 0 18%, #67e8f9 36%, #2563eb 100%);
+  box-shadow: 0 0 28px rgba(37, 99, 235, 0.42);
+  transform: translate(-3px, -3px);
+  transition: left 760ms cubic-bezier(.2, .8, .2, 1), top 760ms cubic-bezier(.2, .8, .2, 1);
+}
+
+.philo-route-traveler.is-code {
+  left: 84%;
+  top: 35%;
+}
+
+.philo-route-traveler.is-design {
+  left: 84%;
+  top: 50%;
+}
+
+.philo-route-traveler.is-creation {
+  left: 84%;
+  top: 65%;
+  background: radial-gradient(circle at 34% 28%, #ffffff 0 18%, #fde68a 34%, #06b6d4 62%, #2563eb 100%);
+}
+
+.philo-path-options {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(10px, 1.6vw, 16px);
+  width: 100%;
+  max-width: 720px;
+}
+
+.philo-path-card {
+  min-height: 210px;
+  padding: 18px;
+  border: 1px solid color-mix(in srgb, var(--text-primary) 10%, transparent);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--bg-primary) 72%, transparent);
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    background 220ms ease;
+}
+
+.philo-path-card:hover,
+.philo-path-card:focus-visible {
+  border-color: rgba(37, 99, 235, 0.28);
+  box-shadow: 0 24px 52px rgba(37, 99, 235, 0.14);
+  transform: translateY(-5px);
+}
+
+.philo-path-card.is-selected {
+  border-color: rgba(220, 38, 38, 0.28);
+  background: color-mix(in srgb, #fecaca 22%, var(--bg-primary));
+}
+
+.philo-path-card.is-correct {
+  border-color: transparent;
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  color: #ffffff;
+  box-shadow: 0 24px 60px rgba(37, 99, 235, 0.24);
+}
+
+.philo-path-card span {
+  display: block;
+  margin-bottom: 16px;
+  color: color-mix(in srgb, currentColor 78%, transparent);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.philo-path-card strong {
+  display: block;
+  font-size: clamp(20px, 2.4vw, 28px);
+  line-height: 1.05;
+}
+
+.philo-path-card small {
+  display: block;
+  margin-top: 16px;
+  color: currentColor;
+  font-size: 13px;
+  line-height: 1.55;
+  opacity: 0.7;
+}
+
+.philo-path-reveal {
+  position: absolute;
+  left: 50%;
+  bottom: 8%;
+  z-index: 5;
+  display: grid;
+  gap: 5px;
+  width: min(520px, 78%);
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--bg-primary) 84%, transparent);
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(37, 99, 235, 0.16);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 16px);
+  transition: opacity 320ms ease, transform 320ms ease;
+}
+
+.philo-path-reveal.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.philo-path-reveal span {
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.philo-path-reveal strong {
+  color: var(--text-primary);
+  font-size: clamp(16px, 2vw, 22px);
+  line-height: 1.25;
+}
+
+.philo-gridlock-column {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  gap: 14px;
+}
+
+.philo-gridlock-label {
+  color: color-mix(in srgb, var(--text-secondary) 72%, transparent);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.philo-grid-card {
+  min-height: 92px;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--text-primary) 10%, transparent);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--bg-primary) 76%, transparent);
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    background 220ms ease,
+    box-shadow 220ms ease,
+    opacity 220ms ease;
+}
+
+.philo-grid-card:hover,
+.philo-grid-card:focus-visible,
+.philo-grid-card.is-selected {
+  border-color: rgba(37, 99, 235, 0.32);
+  box-shadow: 0 22px 46px rgba(37, 99, 235, 0.14);
+  transform: translateY(-4px);
+}
+
+.philo-grid-card.is-selected {
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.16), color-mix(in srgb, var(--bg-primary) 76%, transparent));
+}
+
+.philo-grid-card.is-matched {
+  border-color: transparent;
+  background: linear-gradient(135deg, #06b6d4, #2563eb);
+  color: #ffffff;
+  box-shadow: 0 22px 48px rgba(37, 99, 235, 0.2);
+}
+
+.philo-grid-card strong {
+  display: block;
+  font-size: clamp(18px, 2vw, 25px);
+  line-height: 1.08;
+  overflow-wrap: anywhere;
+}
+
+.philo-grid-card small {
+  display: block;
+  margin-top: 10px;
+  color: currentColor;
+  font-size: 12px;
+  line-height: 1.45;
+  opacity: 0.68;
+}
+
+.philo-gridlock-core {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: clamp(104px, 10vw, 134px);
+  height: clamp(104px, 10vw, 134px);
+  margin: 0 auto;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 34% 30%, #ffffff 0 14%, #67e8f9 30%, #2563eb 68%, #111827 100%);
+  color: #ffffff;
+  box-shadow:
+    0 0 0 12px rgba(255, 255, 255, 0.28),
+    0 0 42px rgba(37, 99, 235, 0.26);
+  transition: transform 320ms ease, box-shadow 320ms ease;
+}
+
+.philo-gridlock-core::before,
+.philo-gridlock-core::after {
+  content: "";
+  position: absolute;
+  inset: -18px;
+  border: 1px solid rgba(34, 211, 238, 0.18);
+  border-radius: inherit;
+  animation: philoCoreSpin 8s linear infinite;
+}
+
+.philo-gridlock-core::after {
+  inset: -28px;
+  border-color: rgba(34, 197, 94, 0.14);
+  animation-direction: reverse;
+}
+
+.philo-gridlock-core.is-open {
+  transform: scale(1.08);
+  box-shadow:
+    0 0 0 16px rgba(255, 255, 255, 0.32),
+    0 0 48px rgba(34, 211, 238, 0.32),
+    0 0 74px rgba(34, 197, 94, 0.24);
+}
+
+.philo-gridlock-core span {
+  font-size: clamp(28px, 3vw, 38px);
+  font-weight: 950;
+}
+
+.philo-gridlock-core strong {
+  margin-top: -22px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.philo-gridlock-beam {
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  top: 50%;
+  z-index: 1;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.26), rgba(34, 197, 94, 0.22), transparent);
+  pointer-events: none;
+}
+
+.philo-grid-reveal {
+  position: absolute;
+  left: 50%;
+  bottom: 8%;
+  z-index: 5;
+  display: grid;
+  gap: 5px;
+  width: min(520px, 78%);
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--bg-primary) 84%, transparent);
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(37, 99, 235, 0.16);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 16px);
+  transition: opacity 320ms ease, transform 320ms ease;
+}
+
+.philo-grid-reveal.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.philo-grid-reveal span {
+  color: #047857;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.philo-grid-reveal strong {
+  color: var(--text-primary);
+  font-size: clamp(16px, 2vw, 22px);
+  line-height: 1.25;
+}
+
+.philo-node span {
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.philo-node small {
+  color: currentColor;
+  font-size: 11px;
+  line-height: 1.28;
+  opacity: 0.68;
+}
+
+@keyframes philoPuzzleShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-8px);
+  }
+
+  50% {
+    transform: translateX(8px);
+  }
+
+  75% {
+    transform: translateX(-5px);
+  }
+}
+
+@keyframes philoLineDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes philoCoreSpin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* MISSION / VISION */
@@ -600,167 +1653,6 @@
   }
 }
 
-/* TEAM */
-.innovators-section {
-  background: transparent;
-}
-
-.innovators-section .section-title {
-  margin-bottom: clamp(28px, 4vw, 42px);
-  font-size: clamp(30px, 3.2vw, 46px);
-  letter-spacing: -0.02em;
-}
-
-.team-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(18px, 2.4vw, 30px);
-  max-width: 1180px;
-  margin: 0 auto;
-}
-
-.team-card {
-  position: relative;
-  min-height: 350px;
-  padding: 30px 26px 24px;
-  border-radius: 24px;
-  background: var(--surface-glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--surface-border);
-  border-top: 1px solid var(--surface-border-strong);
-  border-left: 1px solid var(--surface-highlight);
-  box-shadow: 0 18px 40px -10px rgba(0, 0, 0, 0.12), inset 0 0 15px rgba(255, 255, 255, 0.16);
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  overflow: hidden;
-  transition:
-    transform 0.45s ease,
-    box-shadow 0.45s ease,
-    border-color 0.45s ease,
-    background-color 0.45s ease;
-}
-
-.team-card::before {
-  content: "";
-  position: absolute;
-  inset: -35% -12% auto;
-  height: 64%;
-  background: radial-gradient(
-    70% 70% at 50% 50%,
-    rgba(131, 188, 255, 0.25),
-    transparent 78%
-  );
-  opacity: 0;
-  transition: opacity 0.45s ease;
-  pointer-events: none;
-}
-
-.team-img-wrapper {
-  width: 118px;
-  height: 118px;
-  border-radius: 999px;
-  margin: 0 0 18px;
-  overflow: hidden;
-  background: linear-gradient(160deg, color-mix(in srgb, var(--surface-glass-strong) 78%, #ffffff 22%), color-mix(in srgb, var(--surface-glass-soft) 84%, #dbeafe 16%));
-  box-shadow:
-    0 10px 24px rgba(24, 74, 136, 0.16),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.65);
-}
-
-.team-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.team-card h3 {
-  margin: 2px 0 7px;
-  font-size: clamp(20px, 1.5vw, 24px);
-  font-weight: 900;
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
-}
-
-.team-role {
-  margin: 0;
-  color: var(--primary);
-  font-weight: 800;
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.team-desc {
-  margin: 13px 0 22px;
-  color: color-mix(in srgb, var(--text-secondary) 88%, transparent);
-  line-height: 1.6;
-  font-size: 15px;
-  max-width: 30ch;
-  flex: 1;
-}
-
-.team-btn {
-  height: 38px;
-  padding: 0 18px;
-  border: 1px solid rgba(96, 157, 245, 0.34);
-  border-radius: 999px;
-  background: var(--surface-glass-strong);
-  color: color-mix(in srgb, var(--primary) 88%, white 12%);
-  font-weight: 800;
-  font-size: 13px;
-  letter-spacing: 0.02em;
-  cursor: pointer;
-  transition:
-    transform 0.35s ease,
-    color 0.35s ease,
-    background-color 0.35s ease,
-    border-color 0.35s ease,
-    box-shadow 0.35s ease;
-}
-
-.team-btn::after {
-  content: " ->";
-  opacity: 0.68;
-}
-
-.team-card:hover {
-  transform: translateY(-8px);
-  border-color: rgba(132, 191, 255, 0.64);
-  box-shadow:
-    0 22px 52px rgba(15, 47, 89, 0.17),
-    0 0 0 1px rgba(186, 221, 255, 0.24);
-}
-
-.team-card:hover::before {
-  opacity: 1;
-}
-
-.team-card:hover .team-img {
-  transform: scale(1.06);
-}
-
-.team-card:hover .team-btn {
-  color: #f4f9ff;
-  background: linear-gradient(120deg, rgba(40, 107, 199, 0.95), rgba(74, 148, 249, 0.95));
-  border-color: rgba(119, 186, 255, 0.82);
-  box-shadow: 0 10px 22px rgba(42, 108, 195, 0.26);
-}
-
-.team-card > * {
-  position: relative;
-  z-index: 2;
-}
-
-@media (max-width: 1024px) {
-  .team-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
 /* RESPONSIVE */
 @media (max-width: 768px) {
   .about-hero {
@@ -771,17 +1663,123 @@
     margin-bottom: 22px;
   }
 
-  .philo-dual-layout {
+  .philo-puzzle {
     grid-template-columns: 1fr;
-    gap: 24px;
+    min-height: 0;
+    padding: 18px;
+    border-radius: 22px;
   }
 
-  .philo-word {
-    font-size: clamp(34px, 11vw, 48px);
+  .philo-puzzle::before {
+    inset: 12px;
+    border-radius: 17px;
   }
 
-  .philo-canvas-wrap {
-    height: clamp(210px, 56vw, 290px);
+  .philo-puzzle-copy {
+    text-align: center;
+  }
+
+  .philo-puzzle-kicker,
+  .philo-puzzle-reset {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .philo-puzzle-copy h3,
+  .philo-puzzle-copy p {
+    max-width: none;
+  }
+
+  .philo-puzzle-steps {
+    justify-content: center;
+  }
+
+  .philo-puzzle-board {
+    min-height: 500px;
+  }
+
+  .philo-node {
+    min-width: 108px;
+    max-width: 130px;
+    padding: 10px 12px;
+  }
+
+  .philo-node span {
+    font-size: 13px;
+  }
+
+  .philo-node small {
+    font-size: 10px;
+  }
+
+  .philo-pathway-board {
+    min-height: 640px;
+    padding: 16px;
+  }
+
+  .philo-pathway-map {
+    inset: 5% 8%;
+  }
+
+  .philo-path-options {
+    grid-template-columns: 1fr;
+    align-self: start;
+    padding-top: 28px;
+  }
+
+  .philo-path-card {
+    min-height: 0;
+    padding: 16px;
+  }
+
+  .philo-path-card span {
+    margin-bottom: 8px;
+  }
+
+  .philo-path-card small {
+    margin-top: 8px;
+  }
+
+  .philo-path-reveal {
+    bottom: 20px;
+    width: calc(100% - 32px);
+  }
+
+  .philo-gridlock-board {
+    grid-template-columns: 1fr;
+    min-height: 760px;
+    align-content: start;
+    padding: 18px;
+  }
+
+  .philo-gridlock-column {
+    gap: 10px;
+  }
+
+  .philo-grid-card {
+    min-height: 0;
+    padding: 14px;
+  }
+
+  .philo-gridlock-core {
+    width: 104px;
+    height: 104px;
+    margin: 10px auto;
+  }
+
+  .philo-gridlock-beam {
+    left: 50%;
+    right: auto;
+    top: 14%;
+    bottom: 14%;
+    width: 2px;
+    height: auto;
+    transform: translateX(-50%);
+  }
+
+  .philo-grid-reveal {
+    bottom: 18px;
+    width: calc(100% - 32px);
   }
 
   .mv-word-cloud {
@@ -807,31 +1805,6 @@
 
   .mv-card {
     min-height: clamp(320px, 76vw, 400px);
-  }
-
-  .innovators-section .section-title {
-    margin-bottom: 26px;
-  }
-
-  .team-grid {
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
-
-  .team-card {
-    min-height: 0;
-    padding: 24px 20px 20px;
-    border-radius: 20px;
-  }
-
-  .team-img-wrapper {
-    width: 102px;
-    height: 102px;
-    margin-bottom: 14px;
-  }
-
-  .team-desc {
-    margin-bottom: 18px;
   }
 
   .ph-card-sub {
