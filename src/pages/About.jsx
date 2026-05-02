@@ -2,25 +2,53 @@
 import { useEffect, useRef, useState } from "react";
 import "./About.css";
 
-import s1 from "../assets/s1.png";
-import s2 from "../assets/s2.png";
-import s3 from "../assets/s3.png";
-import meImg from "../assets/me.png";
-import pusiImg from "../assets/pusi.png";
-import asiyaImg from "../assets/asiya.png";
-
-
 import heroImg from "../assets/first.png";
 import blurImg from "../assets/h.png";
 
 import missionIcon from "../assets/mission.png";
 import visionIcon from "../assets/vision.png";
 
-const PHILO_DOT_COUNT = 170;
 const VISION_TEXT =
   "To become a trusted global ecosystem where digital solutions, creative media, and technology education converge to inspire new beginnings.";
 const MISSION_TEXT =
   "To empower businesses and students alike by building reliable, ethical, and innovative digital experiences that bridge the gap between imagination and reality.";
+const PHILOSOPHY_MATCH_QUESTIONS = [
+  {
+    id: "mind",
+    symbol: "Idea Brain",
+    answer: "Intelligence",
+    note: "Smart thinking before any build starts",
+    options: ["Creativity", "Intelligence", "Decoration"],
+  },
+  {
+    id: "spark",
+    symbol: "Launch Spark",
+    answer: "New Creation",
+    note: "The moment a fresh idea comes alive",
+    options: ["New Creation", "Maintenance", "Shortcut"],
+  },
+  {
+    id: "bridge",
+    symbol: "Solution Bridge",
+    answer: "Solutions",
+    note: "Connects imagination with real results",
+    options: ["Noise", "Solutions", "Speed"],
+  },
+  {
+    id: "compass",
+    symbol: "Vision Compass",
+    answer: "Direction",
+    note: "Points every decision toward purpose",
+    options: ["Direction", "Trend", "Guesswork"],
+  },
+  {
+    id: "core",
+    symbol: "Trust Core",
+    answer: "Reliability",
+    note: "Keeps the product stable and dependable",
+    options: ["Hype", "Reliability", "Luck"],
+  },
+];
 
 function buildCloudTokens(text, seed = 1) {
   const words = text.split(" ");
@@ -132,161 +160,16 @@ function buildCloudTokens(text, seed = 1) {
   });
 }
 
-function makeScatterTargets(count, width, height, margin = 24) {
-  const points = [];
-  for (let i = 0; i < count; i += 1) {
-    points.push({
-      x: margin + Math.random() * (width - margin * 2),
-      y: margin + Math.random() * (height - margin * 2),
-    });
-  }
-  return points;
-}
-
-function makeBulbTargets(count, width, height) {
-  const points = [];
-  const minDim = Math.min(width, height);
-  const cx = width * 0.5;
-  const cy = height * 0.39;
-  const globeRx = minDim * 0.24;
-  const globeRy = minDim * 0.29;
-  const neckTop = cy + globeRy * 0.72;
-  const neckBottom = neckTop + minDim * 0.11;
-  const neckHalfWTop = minDim * 0.05;
-  const neckHalfWBottom = minDim * 0.075;
-  const baseTop = neckBottom + minDim * 0.012;
-  const baseBottom = baseTop + minDim * 0.11;
-  const baseHalfW = minDim * 0.13;
-
-  const globeEdgeCount = Math.floor(count * 0.28);
-  const globeFillCount = Math.floor(count * 0.4);
-  const neckCount = Math.floor(count * 0.14);
-  const baseCount = Math.floor(count * 0.18);
-
-  for (let i = 0; i < globeEdgeCount; i += 1) {
-    const angle = (i / globeEdgeCount) * Math.PI * 2;
-    const jitter = 0.95 + Math.random() * 0.08;
-    points.push({
-      x: cx + Math.cos(angle) * globeRx * jitter,
-      y: cy + Math.sin(angle) * globeRy * jitter,
-    });
-  }
-
-  for (let i = 0; i < globeFillCount; i += 1) {
-    const angle = Math.random() * Math.PI * 2;
-    const r = Math.sqrt(Math.random());
-    points.push({
-      x: cx + Math.cos(angle) * globeRx * r,
-      y: cy + Math.sin(angle) * globeRy * r,
-    });
-  }
-
-  for (let i = 0; i < neckCount; i += 1) {
-    const t = i / Math.max(1, neckCount - 1);
-    const halfW = neckHalfWTop + (neckHalfWBottom - neckHalfWTop) * t;
-    const y = neckTop + (neckBottom - neckTop) * t;
-    points.push({
-      x: cx - halfW + Math.random() * (halfW * 2),
-      y,
-    });
-  }
-
-  for (let i = 0; i < baseCount; i += 1) {
-    const y = baseTop + Math.random() * (baseBottom - baseTop);
-    const roundT = (y - baseTop) / Math.max(1, baseBottom - baseTop);
-    const squeeze = 0.93 - Math.abs(roundT - 0.5) * 0.22;
-    const halfW = baseHalfW * squeeze;
-    points.push({
-      x: cx - halfW + Math.random() * (halfW * 2),
-      y,
-    });
-  }
-
-  while (points.length < count) {
-    points.push({
-      x: cx + (Math.random() - 0.5) * minDim * 0.08,
-      y: baseTop + Math.random() * (baseBottom - baseTop),
-    });
-  }
-
-  return points;
-}
-
-function makeStarTargets(count, width, height) {
-  const points = [];
-  const minDim = Math.min(width, height);
-  const cx = width * 0.5;
-  const cy = height * 0.5;
-  const outerR = minDim * 0.29;
-  const innerR = minDim * 0.118;
-  const starVertices = [];
-
-  for (let i = 0; i < 10; i += 1) {
-    const angle = -Math.PI / 2 + (i * Math.PI) / 5;
-    const radius = i % 2 === 0 ? outerR : innerR;
-    starVertices.push({
-      x: cx + Math.cos(angle) * radius,
-      y: cy + Math.sin(angle) * radius,
-    });
-  }
-
-  const edgeCount = Math.floor(count * 0.62);
-  for (let i = 0; i < edgeCount; i += 1) {
-    const edge = i % starVertices.length;
-    const a = starVertices[edge];
-    const b = starVertices[(edge + 1) % starVertices.length];
-    const t = i / edgeCount;
-    points.push({
-      x: a.x + (b.x - a.x) * t,
-      y: a.y + (b.y - a.y) * t,
-    });
-  }
-
-  const innerRingCount = Math.floor(count * 0.23);
-  for (let i = 0; i < innerRingCount; i += 1) {
-    const angle = (i / innerRingCount) * Math.PI * 2;
-    const radius = innerR * (0.64 + Math.random() * 0.18);
-    points.push({
-      x: cx + Math.cos(angle) * radius,
-      y: cy + Math.sin(angle) * radius,
-    });
-  }
-
-  for (let i = edgeCount; i < count; i += 1) {
-    const angle = Math.random() * Math.PI * 2;
-    const radius = Math.sqrt(Math.random()) * innerR * 0.7;
-    points.push({
-      x: cx + Math.cos(angle) * radius,
-      y: cy + Math.sin(angle) * radius,
-    });
-  }
-
-  return points;
-}
-
-
-
 export default function About() {
   const wrapRef = useRef(null);
-  const nuraWrapRef = useRef(null);
-  const nuraCanvasRef = useRef(null);
-  const nuraModeRef = useRef("scatter");
-  const novaWrapRef = useRef(null);
-  const novaCanvasRef = useRef(null);
-  const novaModeRef = useRef("scatter");
-  const mobileTimerRef = useRef(null);
-  const mvZoneRef = useRef(null);
-  const mvIconTimerRef = useRef(null);
-  const isCoarsePointerRef = useRef(false);
 
   // typing starts when About is visible
   const [started, setStarted] = useState(false);
-  const [activeWord, setActiveWord] = useState("");
-  const [mvActiveSide, setMvActiveSide] = useState("");
-  const [mvIconSide, setMvIconSide] = useState("");
-
-  const visionTokens = buildCloudTokens(VISION_TEXT, 2);
-  const missionTokens = buildCloudTokens(MISSION_TEXT, 7);
+  const [matchQuestionIndex, setMatchQuestionIndex] = useState(() =>
+    Math.floor(Math.random() * PHILOSOPHY_MATCH_QUESTIONS.length)
+  );
+  const [selectedMeaning, setSelectedMeaning] = useState("");
+  const [puzzleStatus, setPuzzleStatus] = useState("idle");
 
   const titleFull = "More Than\nJust Code.";
   const paraFull =
@@ -295,48 +178,33 @@ export default function About() {
   const [tTitle, setTTitle] = useState("");
   const [tPara, setTPara] = useState("");
 
-  const setNuraMode = (mode) => {
-    nuraModeRef.current = mode;
-    setActiveWord(mode === "bulb" ? "nura" : "");
-  };
+  const activeMatchQuestion = PHILOSOPHY_MATCH_QUESTIONS[matchQuestionIndex];
+  const puzzleSolved = puzzleStatus === "solved";
 
-  const setNovaMode = (mode) => {
-    novaModeRef.current = mode;
-    setActiveWord(mode === "star" ? "nova" : "");
-  };
+  const handleMeaningChoice = (meaning) => {
+    if (puzzleSolved) return;
+    setSelectedMeaning(meaning);
 
-  const pulseSideOnTap = (side) => {
-    if (mobileTimerRef.current) window.clearTimeout(mobileTimerRef.current);
-    if (side === "nura") {
-      nuraModeRef.current = "bulb";
-      novaModeRef.current = "scatter";
-      setActiveWord("nura");
-    } else {
-      novaModeRef.current = "star";
-      nuraModeRef.current = "scatter";
-      setActiveWord("nova");
+    if (meaning !== activeMatchQuestion.answer) {
+      setPuzzleStatus("wrong");
+      window.setTimeout(() => setPuzzleStatus("idle"), 650);
+      return;
     }
 
-    mobileTimerRef.current = window.setTimeout(() => {
-      nuraModeRef.current = "scatter";
-      novaModeRef.current = "scatter";
-      setActiveWord("");
-    }, 1800);
+    setPuzzleStatus("solved");
   };
 
-  const activateMvSide = (side) => {
-    if (mvIconTimerRef.current) window.clearTimeout(mvIconTimerRef.current);
-    setMvActiveSide(side);
-    setMvIconSide("");
-    mvIconTimerRef.current = window.setTimeout(() => {
-      setMvIconSide(side);
-    }, 460);
-  };
-
-  const deactivateMv = () => {
-    if (mvIconTimerRef.current) window.clearTimeout(mvIconTimerRef.current);
-    setMvActiveSide("");
-    setMvIconSide("");
+  const resetPuzzle = () => {
+    setMatchQuestionIndex((current) => {
+      if (PHILOSOPHY_MATCH_QUESTIONS.length <= 1) return current;
+      let next = current;
+      while (next === current) {
+        next = Math.floor(Math.random() * PHILOSOPHY_MATCH_QUESTIONS.length);
+      }
+      return next;
+    });
+    setSelectedMeaning("");
+    setPuzzleStatus("idle");
   };
 
   useEffect(() => {
@@ -383,126 +251,6 @@ export default function About() {
     return () => clearInterval(titleTimer);
   }, [started]);
 
-  useEffect(() => {
-    const setupField = ({
-      canvas,
-      wrap,
-      modeRef,
-      shapeMode,
-      shapeTargetsFactory,
-      color,
-    }) => {
-      if (!canvas || !wrap) return () => {};
-      const context = canvas.getContext("2d");
-      if (!context) return () => {};
-
-      const particles = [];
-      let scatterTargets = [];
-      let shapeTargets = [];
-      let stageWidth = 280;
-      let stageHeight = 260;
-      let raf = 0;
-
-      const setCanvasSize = () => {
-        const rect = wrap.getBoundingClientRect();
-        const width = Math.max(240, Math.floor(rect.width));
-        const height = Math.max(240, Math.floor(rect.height));
-        stageWidth = width;
-        stageHeight = height;
-        const dpr = window.devicePixelRatio || 1;
-
-        canvas.width = Math.floor(width * dpr);
-        canvas.height = Math.floor(height * dpr);
-        canvas.style.width = `${width}px`;
-        canvas.style.height = `${height}px`;
-        context.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-        scatterTargets = makeScatterTargets(PHILO_DOT_COUNT, width, height, 16);
-        shapeTargets = shapeTargetsFactory(PHILO_DOT_COUNT, width, height);
-
-        particles.length = 0;
-        for (let i = 0; i < PHILO_DOT_COUNT; i += 1) {
-          particles.push({
-            x: scatterTargets[i].x,
-            y: scatterTargets[i].y,
-            r: 0.85 + Math.random() * 1.45,
-            alpha: 0.22 + Math.random() * 0.42,
-          });
-        }
-      };
-
-      const draw = () => {
-        context.clearRect(0, 0, stageWidth, stageHeight);
-        const targetSet =
-          modeRef.current === shapeMode ? shapeTargets : scatterTargets;
-
-        for (let i = 0; i < particles.length; i += 1) {
-          const p = particles[i];
-          const t = targetSet[i] || scatterTargets[i];
-          p.x += (t.x - p.x) * 0.085;
-          p.y += (t.y - p.y) * 0.085;
-          context.beginPath();
-          context.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          context.fillStyle = `rgba(${color}, ${p.alpha})`;
-          context.fill();
-        }
-
-        raf = window.requestAnimationFrame(draw);
-      };
-
-      setCanvasSize();
-      draw();
-      window.addEventListener("resize", setCanvasSize);
-
-      return () => {
-        window.removeEventListener("resize", setCanvasSize);
-        if (raf) window.cancelAnimationFrame(raf);
-      };
-    };
-
-    const cleanupNura = setupField({
-      canvas: nuraCanvasRef.current,
-      wrap: nuraWrapRef.current,
-      modeRef: nuraModeRef,
-      shapeMode: "bulb",
-      shapeTargetsFactory: makeBulbTargets,
-      color: "24, 83, 160",
-    });
-
-    const cleanupNova = setupField({
-      canvas: novaCanvasRef.current,
-      wrap: novaWrapRef.current,
-      modeRef: novaModeRef,
-      shapeMode: "star",
-      shapeTargetsFactory: makeStarTargets,
-      color: "33, 96, 188",
-    });
-
-    return () => {
-      cleanupNura();
-      cleanupNova();
-      if (mobileTimerRef.current) window.clearTimeout(mobileTimerRef.current);
-    };
-  }, []);
-
-  useEffect(() => {
-    isCoarsePointerRef.current = window.matchMedia(
-      "(hover: none), (pointer: coarse)"
-    ).matches;
-  }, []);
-
-  useEffect(() => {
-    const handlePointerDown = (event) => {
-      if (!isCoarsePointerRef.current || !mvActiveSide) return;
-      const zone = mvZoneRef.current;
-      if (!zone) return;
-      if (!zone.contains(event.target)) deactivateMv();
-    };
-
-    document.addEventListener("pointerdown", handlePointerDown);
-    return () => document.removeEventListener("pointerdown", handlePointerDown);
-  }, [mvActiveSide]);
-
   return (
     <div className="about-page landing-panel landing-about-panel" id="about" ref={wrapRef}>
       {/* HERO */}
@@ -537,70 +285,85 @@ export default function About() {
         </div>
       </section>
 
-      {/* PHILOSOPHY (INTERACTIVE DOT FIELD) */}
+      {/* PHILOSOPHY (MINI LOGIC GRID PUZZLE) */}
       <section className="philosophy-section philo-modern-section">
         <div className="philo-modern-header">
-          <h2 className="ph-card-title">The Philosophy Behind the Name</h2>
+          <h2 className="ph-card-title">Now we start small game</h2>
           <p className="ph-card-sub">
-            Combining Intelligence with the spark of new creation
+            Pick the correct meaning and unlock the idea.
           </p>
         </div>
-        <div className="philo-dual-layout">
-          <div
-            className="philo-side"
-            role="button"
-            tabIndex={0}
-            aria-label="Nura philosophy interaction"
-            onMouseEnter={() => setNuraMode("bulb")}
-            onMouseLeave={() => setNuraMode("scatter")}
-            onFocus={() => setNuraMode("bulb")}
-            onBlur={() => setNuraMode("scatter")}
-            onClick={() => pulseSideOnTap("nura")}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                pulseSideOnTap("nura");
-              }
-            }}
-          >
-            <span className={`philo-word ${activeWord === "nura" ? "is-active" : ""}`}>
-              Nura
-            </span>
-            <p className="philo-word-sub">Knowledge & Energy</p>
-            <div className="philo-canvas-wrap" ref={nuraWrapRef} aria-hidden="true">
-              <canvas ref={nuraCanvasRef} className="philo-canvas" />
+
+        <div className={`philo-puzzle philo-gridlock ${puzzleStatus === "wrong" ? "is-wrong" : ""} ${puzzleSolved ? "is-solved" : ""}`}>
+          <div className="philo-puzzle-copy">
+            <span className="philo-puzzle-kicker">Logic grid</span>
+            <h3>Match today&apos;s symbol with its hidden meaning.</h3>
+            <p>
+              One puzzle appears at a time. Refresh the page or reset the puzzle to get another symbol from the set.
+            </p>
+
+            <div className="philo-puzzle-steps" aria-label="Path progress">
+              <span className="philo-puzzle-step is-complete">
+                {matchQuestionIndex + 1}/5
+              </span>
+              <span className={`philo-puzzle-step ${puzzleSolved ? "is-complete" : ""}`}>
+                {puzzleSolved ? "Matched" : "Waiting"}
+              </span>
             </div>
+
+            <p className="philo-puzzle-hint">
+              {puzzleSolved
+                ? `${activeMatchQuestion.symbol} means ${activeMatchQuestion.answer}.`
+                : puzzleStatus === "wrong"
+                  ? "That pair does not belong together. Try another meaning."
+                  : "Choose the meaning that belongs to the symbol."}
+            </p>
+
+            <button className="philo-puzzle-reset" onClick={resetPuzzle} type="button">
+              Reset puzzle
+            </button>
           </div>
 
-          <div
-            className="philo-side"
-            role="button"
-            tabIndex={0}
-            aria-label="Nova philosophy interaction"
-            onMouseEnter={() => setNovaMode("star")}
-            onMouseLeave={() => setNovaMode("scatter")}
-            onFocus={() => setNovaMode("star")}
-            onBlur={() => setNovaMode("scatter")}
-            onClick={() => pulseSideOnTap("nova")}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                pulseSideOnTap("nova");
-              }
-            }}
-          >
-            <span className={`philo-word ${activeWord === "nova" ? "is-active" : ""}`}>
-              Nova
-            </span>
-            <p className="philo-word-sub">New Beginnings</p>
-            <div className="philo-canvas-wrap" ref={novaWrapRef} aria-hidden="true">
-              <canvas ref={novaCanvasRef} className="philo-canvas" />
+          <div className="philo-puzzle-board philo-gridlock-board" aria-label="Interactive logic grid puzzle">
+            <div className="philo-gridlock-beam" aria-hidden="true" />
+
+            <div className="philo-gridlock-column">
+              <span className="philo-gridlock-label">Symbol</span>
+              <article className={`philo-grid-card philo-grid-symbol is-selected ${puzzleSolved ? "is-matched" : ""}`}>
+                <strong>{activeMatchQuestion.symbol}</strong>
+                <small>{activeMatchQuestion.note}</small>
+              </article>
+            </div>
+
+            <div className={`philo-gridlock-core ${puzzleSolved ? "is-open" : ""}`} aria-hidden="true">
+              <span>{puzzleSolved ? "1/1" : "0/1"}</span>
+              <strong>{puzzleSolved ? "Unlocked" : "Locked"}</strong>
+            </div>
+
+            <div className="philo-gridlock-column">
+              <span className="philo-gridlock-label">Meanings</span>
+              {activeMatchQuestion.options.map((meaning) => (
+                <button
+                  className={`philo-grid-card philo-grid-meaning ${selectedMeaning === meaning ? "is-selected" : ""} ${puzzleSolved && meaning === activeMatchQuestion.answer ? "is-matched" : ""}`}
+                  key={meaning}
+                  onClick={() => handleMeaningChoice(meaning)}
+                  type="button"
+                >
+                  <strong>{meaning}</strong>
+                  <small>Match with today&apos;s symbol</small>
+                </button>
+              ))}
+            </div>
+
+            <div className={`philo-grid-reveal ${puzzleSolved ? "is-visible" : ""}`}>
+              <span>NuraNova logic</span>
+              <strong>{activeMatchQuestion.symbol} unlocks {activeMatchQuestion.answer}</strong>
             </div>
           </div>
         </div>
       </section>
 
-      {/* MISSION & VISION */}
+      {/* Future use: Mission & Vision section kept here intentionally.
       <section className="mission-vision-section" ref={mvZoneRef}>
         <div className={`mv-cards ${mvActiveSide ? `has-active active-${mvActiveSide}` : ""}`}>
           <article
@@ -692,44 +455,8 @@ export default function About() {
           </article>
         </div>
       </section>
+      */}
 
-
-      {/* INNOVATORS */}
-      <section className="innovators-section">
-        <h2 className="section-title">Meet the Innovators</h2>
-
-        <div className="team-grid">
-          <div className="team-card team-pop">
-            <div className="team-img-wrapper">
-              <img src={meImg}  alt="Team member 1" className="team-img" />
-            </div>
-            <h3>S.T.Weerathunga (CEO)</h3>
-            <p className="team-role">Software Engineer (OUSL)</p>
-            <p className="team-desc">Visionary leader guiding innovation</p>
-            <button className="team-btn">View Profile</button>
-          </div>
-
-          <div className="team-card team-pop">
-            <div className="team-img-wrapper">
-               <img src={pusiImg} alt="Team member 1" className="team-img" />
-            </div>
-            <h3>R.K.D.S.Rajapaksha (COO)</h3>
-            <p className="team-role">Software Engineer (OUSL)</p>
-            <p className="team-desc">Operational excellence driver</p>
-            <button className="team-btn">View Profile</button>
-          </div>
-
-          <div className="team-card team-pop">
-            <div className="team-img-wrapper">
-              <img src={asiyaImg} alt="Team member 3" className="team-img" />
-            </div>
-            <h3>R.M.Kawshal (CTO)</h3>
-            <p className="team-role">Software Engineer (OUSL)</p>
-            <p className="team-desc">Tech architect and strategist</p>
-            <button className="team-btn">View Profile</button>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
