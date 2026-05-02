@@ -1,6 +1,6 @@
 import "./Home.css";
 import heroTitleArrow from "../assets/hero-title-arrow.png";
-import heroTitleArrowDark from "../assets/hero-title-arrow-dark.png";
+import arrowDark from "../assets/arrow.dark.png";
 import FloatingIcons from "../components/FloatingIcons";
 
 export default function Home() {
@@ -25,7 +25,7 @@ export default function Home() {
 
             <div className="heroImageWrap heroImageWrapDark">
               <img
-                src={heroTitleArrowDark}
+                src={arrowDark}
                 alt="Building Digital Experiences"
                 className="hero-title-img hero-title-img-dark"
               />

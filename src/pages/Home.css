@@ -221,7 +221,8 @@
 @media (max-width: 560px) {
   /* Hide combined title+arrow image on mobile */
   .heroImageWrap,
-  .heroImageWrapDark {
+  .heroImageWrapDark,
+  [data-theme="dark"] .heroImageWrapDark {
     display: none;
   }
 
