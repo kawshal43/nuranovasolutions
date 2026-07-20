@@ -28,12 +28,12 @@
 ========================= */
 .home-hero {
   position: relative;
-  min-height: 100vh;
-  min-height: 100svh;
-  padding-top: var(--navH);
-  padding-bottom: 56px;
-  display: grid;
-  place-items: center;
+  min-height: clamp(640px, 82svh, 820px);
+  padding-top: calc(var(--navH) + clamp(20px, 4vw, 48px));
+  padding-bottom: clamp(40px, 6vw, 64px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
   overflow: hidden;
   background: transparent;
 }
@@ -59,14 +59,14 @@
 .heroInner {
   position: relative;
   text-align: center;
-  padding: 28px 0 20px;
+  padding: clamp(12px, 2vw, 22px) 0 8px;
 }
 
 .kicker {
   font-size: 13px;
   font-weight: 700;
   color: var(--text-muted);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 /* =========================
@@ -76,7 +76,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0 auto 24px;
+  margin: 0 auto 18px;
 }
 
 .hero-title-img {
@@ -111,7 +111,7 @@
    CTA
 ========================= */
 .btnRow {
-  margin-top: 18px;
+  margin-top: 14px;
   display: flex;
   justify-content: center;
 }
@@ -138,14 +138,14 @@
 }
 
 .leadStrong {
-  margin-top: 40px;
+  margin-top: 26px;
   font-size: 14px;
   font-weight: 900;
   color: var(--text-secondary);
 }
 
 .lead {
-  margin: 10px auto 0;
+  margin: 8px auto 0;
   max-width: 640px;
   font-size: 13px;
   line-height: 1.65;
@@ -195,17 +195,27 @@
 }
 
 @media (max-width: 768px) {
+  .home-hero {
+    min-height: auto;
+    padding-top: calc(var(--navH) + 20px);
+    padding-bottom: 42px;
+  }
+
+  .heroInner {
+    padding-top: 8px;
+  }
+
   .hero-title-img {
     width: 520px;
     max-width: 90%;
   }
 
   .btnRow {
-    margin-top: 10px;
+    margin-top: 12px;
   }
 
   .leadStrong {
-    margin-top: 34px;
+    margin-top: 22px;
   }
 }
 
@@ -227,14 +237,14 @@
   }
 
   .btnRow {
-    margin-top: 28px;
+    margin-top: 22px;
   }
 
   .leadStrong {
-    margin-top: 30px;
+    margin-top: 20px;
   }
 
   .home-section {
-    padding-bottom: 64px;
+    padding-bottom: 44px;
   }
 }
