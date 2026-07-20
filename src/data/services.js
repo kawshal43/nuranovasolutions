@@ -240,9 +240,9 @@ export const serviceCatalog = [
   },
   {
     slug: "video-production-editing",
-    title: "3D Animations & VFX",
+    title: "Digital & AI Creations",
     description:
-      "3D animation, motion design, and visual effects for modern storytelling.",
+      "AI-powered films, digital visuals, and creative content built for modern storytelling.",
     image: "/services/video.png",
     eyebrow: "Cinematic storytelling",
     subtitle:

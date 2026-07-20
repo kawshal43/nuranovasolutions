@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { getServiceBySlug } from "../data/services";
 import EducationPlatform from "./EducationPlatform";
+import CreativeServiceDetail from "./CreativeServiceDetail";
 import ServiceHeroScene from "../components/ServiceHeroScene";
 import "./ServiceDetail.css";
 
@@ -81,6 +82,10 @@ export default function ServiceDetail() {
 
   if (service.slug === "education-tutorials") {
     return <EducationPlatform service={service} />;
+  }
+
+  if (["video-production-editing", "photography-services"].includes(service.slug)) {
+    return <CreativeServiceDetail service={service} />;
   }
 
   return (
