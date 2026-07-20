@@ -173,7 +173,6 @@ export default function About() {
   );
   const [openReason, setOpenReason] = useState(null);
   const [websiteType, setWebsiteType] = useState("business");
-  const [websiteTier, setWebsiteTier] = useState("basic");
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 768px)");
@@ -250,7 +249,11 @@ export default function About() {
     });
   };
 
-  const activeWebsitePackage = WEBSITE_PACKAGES[websiteType].packages[websiteTier];
+  const formatOriginalPrice = (price) => {
+    const currentPrice = Number(price.replace(/\D/g, ""));
+    const originalPrice = Math.round(currentPrice / 0.85 / 100) * 100;
+    return `LKR ${originalPrice.toLocaleString("en-US")}`;
+  };
 
   return (
     <section className={`about-page landing-panel landing-about-panel ${started ? "is-visible" : ""}`} id="about" ref={wrapRef}>
@@ -369,10 +372,7 @@ export default function About() {
                     <button
                       className={websiteType === key ? "is-active" : ""}
                       key={key}
-                      onClick={() => {
-                        setWebsiteType(key);
-                        setWebsiteTier("basic");
-                      }}
+                      onClick={() => setWebsiteType(key)}
                       type="button"
                     >
                       {category.label}
@@ -380,43 +380,34 @@ export default function About() {
                   ))}
                 </div>
 
-                <div aria-label="Package level" className="web-package-tiers" role="group">
-                  {Object.keys(WEBSITE_PACKAGES[websiteType].packages).map((tier) => (
-                    <button
-                      className={websiteTier === tier ? "is-active" : ""}
-                      key={tier}
-                      onClick={() => setWebsiteTier(tier)}
-                      type="button"
-                    >
-                      {tier}
-                    </button>
+                <div className="web-price-grid" key={websiteType}>
+                  {Object.entries(WEBSITE_PACKAGES[websiteType].packages).map(([tier, websitePackage]) => (
+                    <article className={`web-price-card ${tier === "premium" ? "is-premium" : ""}`} key={tier}>
+                      <span className="web-price-discount">15% OFF</span>
+                      <header>
+                        <span>{tier === "premium" ? "★ Best Value" : `${tier} package`}</span>
+                        <h3>{websitePackage.name}</h3>
+                        <p>{websitePackage.bestFor}</p>
+                      </header>
+
+                      <div className="web-price-amount">
+                        <small>{formatOriginalPrice(websitePackage.price)}</small>
+                        <strong>{websitePackage.price}</strong>
+                        <span>Limited offer price</span>
+                      </div>
+
+                      <div className="web-price-included">Domain, hosting &amp; SSL included</div>
+
+                      <ul>
+                        {websitePackage.features.map((feature) => (
+                          <li key={feature}>
+                            <i aria-hidden="true">✓</i>
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </article>
                   ))}
-                </div>
-
-                <div className="web-package-content" key={`${websiteType}-${websiteTier}`}>
-                  <div className="web-package-summary">
-                    <div>
-                      <span>{activeWebsitePackage.recommended ? "★ Recommended" : "Website package"}</span>
-                      <h3>{activeWebsitePackage.name}</h3>
-                      <p>{activeWebsitePackage.bestFor}</p>
-                    </div>
-                    <strong>{activeWebsitePackage.price}</strong>
-                  </div>
-
-                  <div className="web-package-divider">
-                    <span>Package details</span>
-                    <small>Domain + hosting + SSL included</small>
-                  </div>
-
-                  <ul className="web-package-features">
-                    {activeWebsitePackage.features.map((feature) => (
-                      <li key={feature}>
-                        <i aria-hidden="true">✓</i>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-
                 </div>
             </div>
           </div>
