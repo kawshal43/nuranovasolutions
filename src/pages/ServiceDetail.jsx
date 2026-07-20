@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { getServiceBySlug } from "../data/services";
 import EducationPlatform from "./EducationPlatform";
@@ -32,6 +32,10 @@ export default function ServiceDetail() {
   const activePreview =
     activePreviewIndex === null ? null : portfolioProjects[activePreviewIndex] ?? null;
 
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [slug]);
+
   useEffect(() => {
     const page = pageRef.current;
     if (!page) return;
@@ -63,8 +67,12 @@ export default function ServiceDetail() {
   }, [slug]);
 
   useEffect(() => {
-    setOpenFaq(null);
-    setActivePreviewIndex(null);
+    const resetTimer = window.setTimeout(() => {
+      setOpenFaq(null);
+      setActivePreviewIndex(null);
+    }, 0);
+
+    return () => window.clearTimeout(resetTimer);
   }, [slug]);
 
   useEffect(() => {
