@@ -18,7 +18,8 @@ export default function Home() {
             <div className="heroImageWrap">
               <img
                 src={heroTitleArrow}
-                alt="Building Digital Experiences"
+                alt=""
+                aria-hidden="true"
                 className="hero-title-img"
               />
             </div>
@@ -26,12 +27,12 @@ export default function Home() {
             <div className="heroImageWrap heroImageWrapDark">
               <img
                 src={arrowDark}
-                alt="Building Digital Experiences"
+                alt=""
+                aria-hidden="true"
                 className="hero-title-img hero-title-img-dark"
               />
             </div>
 
-            {/* Mobile fallback title */}
             <h1 className="mobileHeroTitle">
               Building Digital <br />
               Experiences
@@ -40,9 +41,13 @@ export default function Home() {
             <div className="btnRow">
               <button
                 className="btn btnHero"
-                onClick={() =>
-                  document.getElementById("service-page")?.scrollIntoView({ behavior: "smooth" })
-                }
+                onClick={() => {
+                  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                  document.getElementById("service-page")?.scrollIntoView({
+                    behavior: reduceMotion ? "auto" : "smooth",
+                  });
+                }}
+                type="button"
               >
                 Explore More
               </button>

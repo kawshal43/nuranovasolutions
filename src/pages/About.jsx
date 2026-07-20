@@ -1,260 +1,260 @@
-// src/pages/About.jsx
 import { useEffect, useRef, useState } from "react";
 import "./About.css";
 
 import heroImg from "../assets/first.png";
 import blurImg from "../assets/h.png";
 
-import missionIcon from "../assets/mission.png";
-import visionIcon from "../assets/vision.png";
+const TITLE = "More Than\nJust Code.";
+const DESCRIPTION =
+  'NuraNova Solutions is not just a company; it\'s a philosophy, a mindset, and a promise behind every line of code.';
 
-const VISION_TEXT =
-  "To become a trusted global ecosystem where digital solutions, creative media, and technology education converge to inspire new beginnings.";
-const MISSION_TEXT =
-  "To empower businesses and students alike by building reliable, ethical, and innovative digital experiences that bridge the gap between imagination and reality.";
-const PHILOSOPHY_MATCH_QUESTIONS = [
+const CAPABILITIES = [
+  "Software",
+  "Web & Apps",
+  "Photography",
+  "AI Video",
+  "Design",
+  "Marketing",
+];
+
+const REASONS = [
   {
-    id: "mind",
-    symbol: "Idea Brain",
-    answer: "Intelligence",
-    note: "Smart thinking before any build starts",
-    options: ["Creativity", "Intelligence", "Decoration"],
+    number: "01",
+    title: "Many talents. One team.",
+    text: "Developers, designers, media creators, photographers, and marketers work together around one clear goal.",
+    accent: "blue",
   },
   {
-    id: "spark",
-    symbol: "Launch Spark",
-    answer: "New Creation",
-    note: "The moment a fresh idea comes alive",
-    options: ["New Creation", "Maintenance", "Shortcut"],
+    number: "02",
+    title: "Everything stays connected.",
+    text: "Your website, app, visuals, AI video, photography, and marketing feel like one brand—not separate pieces.",
+    accent: "violet",
   },
   {
-    id: "bridge",
-    symbol: "Solution Bridge",
-    answer: "Solutions",
-    note: "Connects imagination with real results",
-    options: ["Noise", "Solutions", "Speed"],
+    number: "03",
+    title: "Modern by default.",
+    text: "We use current technology and smarter creative workflows to build work that is fast, relevant, and ready to grow.",
+    accent: "cyan",
   },
   {
-    id: "compass",
-    symbol: "Vision Compass",
-    answer: "Direction",
-    note: "Points every decision toward purpose",
-    options: ["Direction", "Trend", "Guesswork"],
+    number: "04",
+    title: "Clear at every step.",
+    text: "Easy discussions, regular progress updates, and a team that stays available keep your project simple to manage.",
+    accent: "pink",
   },
   {
-    id: "core",
-    symbol: "Trust Core",
-    answer: "Reliability",
-    note: "Keeps the product stable and dependable",
-    options: ["Hype", "Reliability", "Luck"],
+    number: "05",
+    title: "Ownership from start to finish.",
+    text: "We focus fully on every assignment, take responsibility for the details, and carry the work through to delivery.",
+    accent: "orange",
+  },
+  {
+    number: "06",
+    title: "More value in one package.",
+    text: "Flexible combination packages and reasonable pricing make it easier to access the right skills without managing many providers.",
+    accent: "green",
   },
 ];
 
-function buildCloudTokens(text, seed = 1) {
-  const words = text.split(" ");
-  const orbitalAngles = [
-    330, 30, 300, 60, 0, 180, 240, 120, 210, 150, 270, 90, 345, 15, 315, 45,
-    285, 75, 255, 105, 225, 135, 195, 165,
-  ];
-  const rings = [
-    { rx: 118, ry: 86 },
-    { rx: 142, ry: 104 },
-    { rx: 164, ry: 120 },
-  ];
-  const placed = [];
-  const usedSlots = new Set();
-  const slotCandidates = [];
-
-  rings.forEach((ring, ringIndex) => {
-    orbitalAngles.forEach((angle, angleIndex) => {
-      const rad = (angle * Math.PI) / 180;
-      slotCandidates.push({
-        x: Math.cos(rad) * ring.rx,
-        y: Math.sin(rad) * ring.ry,
-        slotId: `${ringIndex}-${angleIndex}`,
-      });
-    });
-  });
-
-  const isBlocked = (x, y, width, height, padX = 15, padY = 10) => {
-    const anchorHalfW = 116;
-    const anchorHalfH = 54;
-    if (
-      Math.abs(x) < anchorHalfW + width * 0.5 &&
-      Math.abs(y) < anchorHalfH + height * 0.5
-    ) {
-      return true;
-    }
-
-    for (let i = 0; i < placed.length; i += 1) {
-      const p = placed[i];
-      const overlapX = Math.abs(x - p.x) < (width + p.width) * 0.5 + padX;
-      const overlapY = Math.abs(y - p.y) < (height + p.height) * 0.5 + padY;
-      if (overlapX && overlapY) return true;
-    }
-
-    return false;
-  };
-
-  for (let index = 0; index < words.length; index += 1) {
-    const word = words[index];
-    const width = Math.max(40, Math.min(118, word.length * 8.2));
-    const height = 20;
-    const start = (seed * 5 + index * 7) % slotCandidates.length;
-    let chosen = null;
-
-    for (let step = 0; step < slotCandidates.length; step += 1) {
-      const candidate = slotCandidates[(start + step) % slotCandidates.length];
-      if (usedSlots.has(candidate.slotId)) continue;
-      if (!isBlocked(candidate.x, candidate.y, width, height)) {
-        chosen = { ...candidate, width, height };
-        usedSlots.add(candidate.slotId);
-        break;
-      }
-    }
-
-    if (!chosen) {
-      const overflowScales = [1.08, 1.16, 1.24];
-      for (let scaleIndex = 0; scaleIndex < overflowScales.length; scaleIndex += 1) {
-        const scale = overflowScales[scaleIndex];
-        for (let angleStep = 0; angleStep < orbitalAngles.length; angleStep += 1) {
-          const angle = orbitalAngles[(index + angleStep + seed) % orbitalAngles.length];
-          const rad = (angle * Math.PI) / 180;
-          const x = Math.cos(rad) * rings[2].rx * scale;
-          const y = Math.sin(rad) * rings[2].ry * scale;
-          if (!isBlocked(x, y, width, height, 12, 8)) {
-            chosen = { x, y, width, height };
-            break;
-          }
-        }
-        if (chosen) break;
-      }
-    }
-
-    if (!chosen) {
-      // Final deterministic guard: keep layout stable even for very narrow viewports.
-      const angle = orbitalAngles[(index * 3 + seed) % orbitalAngles.length];
-      const rad = (angle * Math.PI) / 180;
-      chosen = {
-        x: Math.cos(rad) * rings[2].rx * 1.26,
-        y: Math.sin(rad) * rings[2].ry * 1.26,
-        width,
-        height,
-      };
-    }
-
-    placed.push(chosen);
-  }
-
-  return words.map((word, index) => {
-    const point = placed[index];
-    const rotate = (((index + seed) % 6) - 2.5) * 0.6;
-    const floatDelay = ((index * 73 + seed * 37) % 1000) / 1000;
-    return {
-      word,
-      driftX: point.x,
-      driftY: point.y,
-      rotate,
-      floatDelay,
-    };
-  });
-}
+const WEBSITE_PACKAGES = {
+  business: {
+    label: "Business Websites",
+    packages: {
+      basic: {
+        name: "Business Basic",
+        price: "LKR 39,900",
+        bestFor: "Best for small businesses",
+        features: [
+          "Up to 5 pages",
+          "Mobile-responsive design",
+          "Home, About, Services/Menu, Gallery and Contact pages",
+          "Contact form and WhatsApp button",
+          "Google Maps and social-media links",
+          "Basic SEO setup",
+          "First-year domain, hosting and SSL",
+          "1 month support",
+        ],
+      },
+      medium: {
+        name: "Business Medium",
+        price: "LKR 49,900",
+        bestFor: "Best for online orders",
+        features: [
+          "Everything in Business Basic",
+          "Up to 15 products or menu items",
+          "Online orders",
+          "Cart or order-request form",
+          "Cash on delivery or bank transfer",
+          "Product or menu management",
+          "Admin dashboard",
+          "2 months support",
+        ],
+      },
+      premium: {
+        name: "Business Premium",
+        price: "LKR 69,900",
+        bestFor: "Best for full online selling",
+        recommended: true,
+        features: [
+          "Everything in Business Medium",
+          "Up to 30 products or menu items",
+          "Online payment integration",
+          "Full e-commerce system",
+          "Customer reviews",
+          "Discount coupons",
+          "Order management and status tracking",
+          "3 months support",
+        ],
+      },
+    },
+  },
+  hospitality: {
+    label: "Hotel / Villa / Cabana",
+    packages: {
+      basic: {
+        name: "Hotel Basic",
+        price: "LKR 49,900",
+        bestFor: "Best for small properties",
+        features: [
+          "Up to 6 pages",
+          "Mobile-responsive design",
+          "Home, About, Rooms, Gallery and Contact pages",
+          "Room or property showcase",
+          "Amenities section",
+          "Contact form and WhatsApp button",
+          "Google Maps, social links and basic SEO",
+          "First-year domain, hosting and SSL",
+          "1 month support",
+        ],
+      },
+      medium: {
+        name: "Hotel Medium",
+        price: "LKR 79,900",
+        bestFor: "Best for booking inquiries",
+        features: [
+          "Everything in Hotel Basic",
+          "Up to 15 rooms, villas or cabanas",
+          "Booking inquiry form",
+          "Individual room pages and image gallery",
+          "Seasonal rates or packages",
+          "Inquiry management",
+          "Admin dashboard and Google review section",
+          "2 months support",
+        ],
+      },
+      premium: {
+        name: "Hotel Premium",
+        price: "LKR 119,900",
+        bestFor: "Best for full online booking",
+        recommended: true,
+        features: [
+          "Everything in Hotel Medium",
+          "Full online booking system",
+          "Availability calendar",
+          "Online payment integration",
+          "Up to 30 units",
+          "Customer reviews and promotional offers",
+          "Booking-status management",
+          "Optional multilingual setup",
+          "3 months support",
+        ],
+      },
+    },
+  },
+};
 
 export default function About() {
   const wrapRef = useRef(null);
-
-  // typing starts when About is visible
   const [started, setStarted] = useState(false);
-  const [matchQuestionIndex, setMatchQuestionIndex] = useState(() =>
-    Math.floor(Math.random() * PHILOSOPHY_MATCH_QUESTIONS.length)
+  const [typedTitle, setTypedTitle] = useState("");
+  const [typedDescription, setTypedDescription] = useState("");
+  const [compactCards, setCompactCards] = useState(() =>
+    typeof window !== "undefined" ? window.matchMedia("(max-width: 768px)").matches : false,
   );
-  const [selectedMeaning, setSelectedMeaning] = useState("");
-  const [puzzleStatus, setPuzzleStatus] = useState("idle");
-
-  const titleFull = "More Than\nJust Code.";
-  const paraFull =
-    'NuraNova Solutions is not just a company; It\'s a philosophy, a mindset, and a promise regarding "The Code".';
-
-  const [tTitle, setTTitle] = useState("");
-  const [tPara, setTPara] = useState("");
-
-  const activeMatchQuestion = PHILOSOPHY_MATCH_QUESTIONS[matchQuestionIndex];
-  const puzzleSolved = puzzleStatus === "solved";
-
-  const handleMeaningChoice = (meaning) => {
-    if (puzzleSolved) return;
-    setSelectedMeaning(meaning);
-
-    if (meaning !== activeMatchQuestion.answer) {
-      setPuzzleStatus("wrong");
-      window.setTimeout(() => setPuzzleStatus("idle"), 650);
-      return;
-    }
-
-    setPuzzleStatus("solved");
-  };
-
-  const resetPuzzle = () => {
-    setMatchQuestionIndex((current) => {
-      if (PHILOSOPHY_MATCH_QUESTIONS.length <= 1) return current;
-      let next = current;
-      while (next === current) {
-        next = Math.floor(Math.random() * PHILOSOPHY_MATCH_QUESTIONS.length);
-      }
-      return next;
-    });
-    setSelectedMeaning("");
-    setPuzzleStatus("idle");
-  };
+  const [openReason, setOpenReason] = useState(null);
+  const [websiteType, setWebsiteType] = useState("business");
+  const [websiteTier, setWebsiteTier] = useState("basic");
 
   useEffect(() => {
-    const el = wrapRef.current;
-    if (!el) return;
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const handleChange = (event) => {
+      setCompactCards(event.matches);
+      if (!event.matches) setOpenReason(null);
+    };
 
-    const obs = new IntersectionObserver(
-      (entries) => {
-        if (entries[0]?.isIntersecting) {
-          setStarted(true);
-          obs.disconnect();
-        }
-      },
-      { threshold: 0.25 }
-    );
-
-    obs.observe(el);
-    return () => obs.disconnect();
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
   useEffect(() => {
-    if (!started) return;
+    const element = wrapRef.current;
+    if (!element) return undefined;
 
-    let i = 0;
-    let j = 0;
-    setTTitle("");
-    setTPara("");
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setStarted(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.25 },
+    );
 
-    const titleTimer = setInterval(() => {
-      i++;
-      setTTitle(titleFull.slice(0, i));
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
-      if (i >= titleFull.length) {
-        clearInterval(titleTimer);
+  useEffect(() => {
+    if (!started) return undefined;
 
-        const paraTimer = setInterval(() => {
-          j++;
-          setTPara(paraFull.slice(0, j));
-          if (j >= paraFull.length) clearInterval(paraTimer);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) {
+      const revealTimer = window.setTimeout(() => {
+        setTypedTitle(TITLE);
+        setTypedDescription(DESCRIPTION);
+      }, 0);
+      return () => window.clearTimeout(revealTimer);
+    }
+
+    let titleIndex = 0;
+    let descriptionIndex = 0;
+    let descriptionTimer;
+
+    const titleTimer = window.setInterval(() => {
+      titleIndex += 1;
+      setTypedTitle(TITLE.slice(0, titleIndex));
+
+      if (titleIndex >= TITLE.length) {
+        window.clearInterval(titleTimer);
+        descriptionTimer = window.setInterval(() => {
+          descriptionIndex += 1;
+          setTypedDescription(DESCRIPTION.slice(0, descriptionIndex));
+          if (descriptionIndex >= DESCRIPTION.length) {
+            window.clearInterval(descriptionTimer);
+          }
         }, 20);
       }
     }, 45);
 
-    return () => clearInterval(titleTimer);
+    return () => {
+      window.clearInterval(titleTimer);
+      if (descriptionTimer) window.clearInterval(descriptionTimer);
+    };
   }, [started]);
 
+  const scrollToContact = () => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.getElementById("contact")?.scrollIntoView({
+      behavior: reduceMotion ? "auto" : "smooth",
+      block: "start",
+    });
+  };
+
+  const activeWebsitePackage = WEBSITE_PACKAGES[websiteType].packages[websiteTier];
+
   return (
-    <div className="about-page landing-panel landing-about-panel" id="about" ref={wrapRef}>
-      {/* HERO */}
-      <section className="about-hero">
+    <section className={`about-page landing-panel landing-about-panel ${started ? "is-visible" : ""}`} id="about" ref={wrapRef}>
+      <div className="about-hero">
         <div
           className="about-blur-bg"
           style={{ backgroundImage: `url(${blurImg})` }}
@@ -262,201 +262,166 @@ export default function About() {
         />
 
         <div className="about-hero-content">
-          <h1 className="about-title">
-            {tTitle}
-            {started && <span className="caret">|</span>}
-          </h1>
+          <h2 className="about-title" aria-label={TITLE.replace("\n", " ")}>
+            <span aria-hidden="true">{typedTitle}</span>
+            {started && <span className="about-caret" aria-hidden="true">|</span>}
+          </h2>
 
-          <p className="about-desc">
-            {tPara}
-            {started && <span className="caret">|</span>}
+          <p className="about-desc" aria-label={DESCRIPTION}>
+            <span aria-hidden="true">{typedDescription}</span>
+            {started && <span className="about-caret" aria-hidden="true">|</span>}
           </p>
 
-          <button className="about-btn">Contact US</button>
+          <button className="about-btn" onClick={scrollToContact} type="button">
+            Contact Us
+          </button>
         </div>
 
         <div className="about-hero-img">
           <img
             src={heroImg}
-            alt="NuraNova intro"
-            className={`hero-illustration ${started ? "floating" : ""}`}
+            alt="NuraNova digital creativity illustration"
+            className={`about-hero-illustration ${started ? "is-floating" : ""}`}
             draggable="false"
           />
         </div>
-      </section>
+      </div>
 
-      {/* PHILOSOPHY (MINI LOGIC GRID PUZZLE) */}
-      <section className="philosophy-section philo-modern-section">
-        <div className="philo-modern-header">
-          <h2 className="ph-card-title">Now we start small game</h2>
-          <p className="ph-card-sub">
-            Pick the correct meaning and unlock the idea.
+      <section className="why-us" aria-labelledby="why-us-title">
+        <div className="why-us-orbit" aria-hidden="true" />
+
+        <header className="why-us-heading">
+          <span className="why-us-eyebrow">Why choose NuraNova?</span>
+          <h2 id="why-us-title">
+            One team. Every capability.
+            <span> One easier journey.</span>
+          </h2>
+          <p>
+            Everything your business needs—technology, creative, and marketing—from one trusted team.
           </p>
+        </header>
+
+        <div className="why-us-capabilities" aria-label="Our connected digital capabilities">
+          {CAPABILITIES.map((capability, index) => (
+            <span key={capability} style={{ "--chip-index": index }}>
+              <i aria-hidden="true" />
+              {capability}
+            </span>
+          ))}
         </div>
 
-        <div className={`philo-puzzle philo-gridlock ${puzzleStatus === "wrong" ? "is-wrong" : ""} ${puzzleSolved ? "is-solved" : ""}`}>
-          <div className="philo-puzzle-copy">
-            <span className="philo-puzzle-kicker">Logic grid</span>
-            <h3>Match today&apos;s symbol with its hidden meaning.</h3>
-            <p>
-              One puzzle appears at a time. Refresh the page or reset the puzzle to get another symbol from the set.
-            </p>
+        <div className="why-us-grid">
+          {REASONS.map((reason, index) => (
+            <article
+              className={`why-card why-card-${reason.accent} ${openReason === reason.number ? "is-open" : ""}`}
+              key={reason.number}
+              style={{ "--card-index": index }}
+            >
+              <button
+                aria-controls={`why-card-details-${reason.number}`}
+                aria-expanded={!compactCards || openReason === reason.number}
+                className="why-card-toggle"
+                disabled={!compactCards}
+                onClick={() => setOpenReason((current) => (current === reason.number ? null : reason.number))}
+                type="button"
+              >
+                <span className="why-card-number">{reason.number}</span>
+                <h3>{reason.title}</h3>
+                <span className="why-card-indicator" aria-hidden="true">
+                  <i />
+                </span>
+              </button>
+              <div className="why-card-details" id={`why-card-details-${reason.number}`}>
+                <p>{reason.text}</p>
+              </div>
+            </article>
+          ))}
+        </div>
 
-            <div className="philo-puzzle-steps" aria-label="Path progress">
-              <span className="philo-puzzle-step is-complete">
-                {matchQuestionIndex + 1}/5
-              </span>
-              <span className={`philo-puzzle-step ${puzzleSolved ? "is-complete" : ""}`}>
-                {puzzleSolved ? "Matched" : "Waiting"}
-              </span>
-            </div>
-
-            <p className="philo-puzzle-hint">
-              {puzzleSolved
-                ? `${activeMatchQuestion.symbol} means ${activeMatchQuestion.answer}.`
-                : puzzleStatus === "wrong"
-                  ? "That pair does not belong together. Try another meaning."
-                  : "Choose the meaning that belongs to the symbol."}
-            </p>
-
-            <button className="philo-puzzle-reset" onClick={resetPuzzle} type="button">
-              Reset puzzle
-            </button>
+        <div className="why-us-statement">
+          <div>
+            <span>Your idea</span>
+            <strong>One focused team</strong>
           </div>
+          <i aria-hidden="true">→</i>
+          <p>
+            <strong>Less coordination.</strong> More consistency, clearer communication, and better value from brief to launch.
+          </p>
+          <button className="why-us-cta" onClick={scrollToContact} type="button">
+            Build with our team
+            <span aria-hidden="true">↗</span>
+          </button>
+        </div>
+      </section>
 
-          <div className="philo-puzzle-board philo-gridlock-board" aria-label="Interactive logic grid puzzle">
-            <div className="philo-gridlock-beam" aria-hidden="true" />
+      <section className="project-start" aria-labelledby="project-start-title">
+        <header className="project-start-heading">
+          <span>Website packages</span>
+          <h2 id="project-start-title">Find the right website package.</h2>
+          <p>Choose your website type, compare packages, and see what is included.</p>
+        </header>
 
-            <div className="philo-gridlock-column">
-              <span className="philo-gridlock-label">Symbol</span>
-              <article className={`philo-grid-card philo-grid-symbol is-selected ${puzzleSolved ? "is-matched" : ""}`}>
-                <strong>{activeMatchQuestion.symbol}</strong>
-                <small>{activeMatchQuestion.note}</small>
-              </article>
-            </div>
+        <div className="project-browser">
+          <div className="project-path-panel">
+            <div className="web-package-selector">
+                <div aria-label="Website type" className="web-package-types" role="group">
+                  {Object.entries(WEBSITE_PACKAGES).map(([key, category]) => (
+                    <button
+                      className={websiteType === key ? "is-active" : ""}
+                      key={key}
+                      onClick={() => {
+                        setWebsiteType(key);
+                        setWebsiteTier("basic");
+                      }}
+                      type="button"
+                    >
+                      {category.label}
+                    </button>
+                  ))}
+                </div>
 
-            <div className={`philo-gridlock-core ${puzzleSolved ? "is-open" : ""}`} aria-hidden="true">
-              <span>{puzzleSolved ? "1/1" : "0/1"}</span>
-              <strong>{puzzleSolved ? "Unlocked" : "Locked"}</strong>
-            </div>
+                <div aria-label="Package level" className="web-package-tiers" role="group">
+                  {Object.keys(WEBSITE_PACKAGES[websiteType].packages).map((tier) => (
+                    <button
+                      className={websiteTier === tier ? "is-active" : ""}
+                      key={tier}
+                      onClick={() => setWebsiteTier(tier)}
+                      type="button"
+                    >
+                      {tier}
+                    </button>
+                  ))}
+                </div>
 
-            <div className="philo-gridlock-column">
-              <span className="philo-gridlock-label">Meanings</span>
-              {activeMatchQuestion.options.map((meaning) => (
-                <button
-                  className={`philo-grid-card philo-grid-meaning ${selectedMeaning === meaning ? "is-selected" : ""} ${puzzleSolved && meaning === activeMatchQuestion.answer ? "is-matched" : ""}`}
-                  key={meaning}
-                  onClick={() => handleMeaningChoice(meaning)}
-                  type="button"
-                >
-                  <strong>{meaning}</strong>
-                  <small>Match with today&apos;s symbol</small>
-                </button>
-              ))}
-            </div>
+                <div className="web-package-content" key={`${websiteType}-${websiteTier}`}>
+                  <div className="web-package-summary">
+                    <div>
+                      <span>{activeWebsitePackage.recommended ? "★ Recommended" : "Website package"}</span>
+                      <h3>{activeWebsitePackage.name}</h3>
+                      <p>{activeWebsitePackage.bestFor}</p>
+                    </div>
+                    <strong>{activeWebsitePackage.price}</strong>
+                  </div>
 
-            <div className={`philo-grid-reveal ${puzzleSolved ? "is-visible" : ""}`}>
-              <span>NuraNova logic</span>
-              <strong>{activeMatchQuestion.symbol} unlocks {activeMatchQuestion.answer}</strong>
+                  <div className="web-package-divider">
+                    <span>Package details</span>
+                    <small>Domain + hosting + SSL included</small>
+                  </div>
+
+                  <ul className="web-package-features">
+                    {activeWebsitePackage.features.map((feature) => (
+                      <li key={feature}>
+                        <i aria-hidden="true">✓</i>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+
+                </div>
             </div>
           </div>
         </div>
       </section>
-
-      {/* Future use: Mission & Vision section kept here intentionally.
-      <section className="mission-vision-section" ref={mvZoneRef}>
-        <div className={`mv-cards ${mvActiveSide ? `has-active active-${mvActiveSide}` : ""}`}>
-          <article
-            className={`mv-card mv-card-vision ${mvActiveSide === "vision" ? "is-active" : ""} ${mvActiveSide && mvActiveSide !== "vision" ? "is-dimmed" : ""}`}
-            onMouseEnter={() => activateMvSide("vision")}
-            onMouseLeave={() => deactivateMv()}
-            onFocus={() => activateMvSide("vision")}
-            onBlur={() => deactivateMv()}
-            onClick={() => {
-              if (!isCoarsePointerRef.current) return;
-              if (mvActiveSide === "vision") deactivateMv();
-              else activateMvSide("vision");
-            }}
-            role="button"
-            tabIndex={0}
-            aria-label="Vision interaction area"
-          >
-            <div
-              className={`mv-icon-box icon mv-icon-vision ${mvIconSide === "vision" ? "is-visible" : ""}`}
-              aria-hidden="true"
-            >
-              <img className="mv-icon-img" src={visionIcon} alt="Vision" />
-            </div>
-            <h3 className="mv-anchor">Our Vision</h3>
-            <p className={`mv-word-cloud ${mvActiveSide === "vision" ? "is-hidden" : ""}`}>
-              {visionTokens.map((token, index) => (
-                <span
-                  key={`vision-${index}`}
-                  className="mv-word-token"
-                  style={{
-                    "--i": index,
-                    "--dx": `${token.driftX}px`,
-                    "--dy": `${token.driftY}px`,
-                    "--rot": `${token.rotate}deg`,
-                    "--fd": `${token.floatDelay}s`,
-                  }}
-                >
-                  {token.word}
-                </span>
-              ))}
-            </p>
-            <p className={`mv-paragraph ${mvActiveSide === "vision" ? "is-visible" : ""}`}>
-              {VISION_TEXT}
-            </p>
-          </article>
-
-          <article
-            className={`mv-card mv-card-mission ${mvActiveSide === "mission" ? "is-active" : ""} ${mvActiveSide && mvActiveSide !== "mission" ? "is-dimmed" : ""}`}
-            onMouseEnter={() => activateMvSide("mission")}
-            onMouseLeave={() => deactivateMv()}
-            onFocus={() => activateMvSide("mission")}
-            onBlur={() => deactivateMv()}
-            onClick={() => {
-              if (!isCoarsePointerRef.current) return;
-              if (mvActiveSide === "mission") deactivateMv();
-              else activateMvSide("mission");
-            }}
-            role="button"
-            tabIndex={0}
-            aria-label="Mission interaction area"
-          >
-            <div
-              className={`mv-icon-box icon mv-icon-mission ${mvIconSide === "mission" ? "is-visible" : ""}`}
-              aria-hidden="true"
-            >
-              <img className="mv-icon-img" src={missionIcon} alt="Mission" />
-            </div>
-            <h3 className="mv-anchor">Our Mission</h3>
-            <p className={`mv-word-cloud ${mvActiveSide === "mission" ? "is-hidden" : ""}`}>
-              {missionTokens.map((token, index) => (
-                <span
-                  key={`mission-${index}`}
-                  className="mv-word-token"
-                  style={{
-                    "--i": index,
-                    "--dx": `${token.driftX}px`,
-                    "--dy": `${token.driftY}px`,
-                    "--rot": `${token.rotate}deg`,
-                    "--fd": `${token.floatDelay}s`,
-                  }}
-                >
-                  {token.word}
-                </span>
-              ))}
-            </p>
-            <p className={`mv-paragraph ${mvActiveSide === "mission" ? "is-visible" : ""}`}>
-              {MISSION_TEXT}
-            </p>
-          </article>
-        </div>
-      </section>
-      */}
-
-    </div>
+    </section>
   );
 }
