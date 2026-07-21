@@ -49,15 +49,36 @@ const PHOTO_CATEGORIES = [
     kicker: "Portraits with mood and movement",
     description: "Creative outdoor portraits shaped with natural light, thoughtful direction, and a distinct visual mood.",
     images: [
+      { src: `${PHOTO_ROOT}/1%20(1).jpg`, alt: "Creative model story in a green field", shape: "portrait" },
+      { src: `${PHOTO_ROOT}/1%20(3).jpg`, alt: "Creative portrait session", shape: "portrait" },
       { src: `${PHOTO_ROOT}/1%20(5).jpg`, alt: "Outdoor model portrait in a white dress beneath a dramatic sky", shape: "wide" },
-      { src: `${PHOTO_ROOT}/1%20(8).jpg`, alt: "Seated outdoor model portrait with a cinematic background", shape: "portrait" },
-      { src: `${PHOTO_ROOT}/1%20(1).jpg`, alt: "Three-image creative model story in a green field", shape: "portrait" },
-      { src: `${PHOTO_ROOT}/1%20(7).jpg`, alt: "Three-image outdoor fashion portrait story", shape: "portrait" },
-      { src: `${PHOTO_ROOT}/1%20(6).jpg`, alt: "Close outdoor model portrait in soft natural light", shape: "wide" },
     ],
   },
-  { id: "birthday", label: "Birthday Shoot", kicker: "Birthday stories coming soon", description: "A colourful new collection is being prepared.", images: [] },
+  {
+    id: "birthday",
+    label: "Birthday Shoot",
+    kicker: "Colourful moments, beautifully remembered",
+    description: "Joyful birthday portraits and celebration stories filled with personality, colour, and natural expression.",
+    images: [
+      { src: `${PHOTO_ROOT}/1%20(2).jpg`, alt: "Colourful birthday portrait story", shape: "wide" },
+      { src: `${PHOTO_ROOT}/1%20(4).jpg`, alt: "Birthday portrait in a soft pink setting", shape: "portrait" },
+      { src: `${PHOTO_ROOT}/1%20(6).jpg`, alt: "Natural-light birthday portrait", shape: "wide" },
+      { src: `${PHOTO_ROOT}/1%20(7).jpg`, alt: "Creative birthday portrait story", shape: "portrait" },
+      { src: `${PHOTO_ROOT}/1%20(8).jpg`, alt: "Cinematic birthday portrait", shape: "portrait" },
+    ],
+  },
   { id: "wedding", label: "Wedding Shoot", kicker: "Wedding stories coming soon", description: "A timeless new collection is being prepared.", images: [] },
+];
+
+const PHOTO_HERO_REEL = [
+  { src: `${PHOTO_ROOT}/1%20(1).jpg`, alt: "Model shoot frame one" },
+  { src: `${PHOTO_ROOT}/1%20(2).jpg`, alt: "Birthday shoot frame two" },
+  { src: `${PHOTO_ROOT}/1%20(3).jpg`, alt: "Model shoot frame three" },
+  { src: `${PHOTO_ROOT}/1%20(4).jpg`, alt: "Birthday shoot frame four" },
+  { src: `${PHOTO_ROOT}/1%20(5).jpg`, alt: "Model shoot frame five" },
+  { src: `${PHOTO_ROOT}/1%20(6).jpg`, alt: "Birthday shoot frame six" },
+  { src: `${PHOTO_ROOT}/1%20(7).jpg`, alt: "Birthday shoot frame seven" },
+  { src: `${PHOTO_ROOT}/1%20(8).jpg`, alt: "Birthday shoot frame eight" },
 ];
 
 function PhotographyPortfolio() {
@@ -78,7 +99,16 @@ function PhotographyPortfolio() {
   return (
     <main className="photo-portfolio">
       <section className="photo-hero" aria-labelledby="photo-page-title">
-        <img className="photo-hero-image" src={`${PHOTO_ROOT}/1%20(5).jpg`} alt="Creative outdoor portrait photographed by NuraNova" fetchPriority="high" />
+        <div className="photo-hero-reel" aria-label="Selected NuraNova photography">
+          <div className="photo-hero-track">
+            {[...PHOTO_HERO_REEL, ...PHOTO_HERO_REEL].map((photo, index) => (
+              <figure aria-hidden={index >= PHOTO_HERO_REEL.length} key={`${photo.src}-${index}`}>
+                <img className="photo-reel-backdrop" src={photo.src} alt="" aria-hidden="true" decoding="async" />
+                <img className="photo-reel-image" src={photo.src} alt={index < PHOTO_HERO_REEL.length ? photo.alt : ""} fetchPriority={index === 0 ? "high" : "auto"} decoding="async" />
+              </figure>
+            ))}
+          </div>
+        </div>
         <div className="photo-hero-shade" aria-hidden="true" />
         <div className="photo-hero-copy">
           <span className="photo-hero-index">Photography / Sri Lanka</span>

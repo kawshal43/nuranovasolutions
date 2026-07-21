@@ -196,7 +196,7 @@ export default function About() {
           observer.disconnect();
         }
       },
-      { threshold: 0.25 },
+      { threshold: 0.01, rootMargin: "0px 0px -8% 0px" },
     );
 
     observer.observe(element);
