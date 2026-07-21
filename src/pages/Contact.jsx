@@ -1,6 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import "./Contact.css";
 
+const CONTACT_EMAIL = "nuranovasolutions@gmail.com";
+const CONTACT_PHONE_DISPLAY = "+94 78 294 0117";
+const CONTACT_PHONE_HREF = "+94782940117";
+const CONTACT_WHATSAPP_HREF = "https://wa.me/94782940117";
+const CONTACT_LOCATION_HREF = "https://www.google.com/maps/search/?api=1&query=Colombo%2C%20Sri%20Lanka";
+const CONTACT_LOCATION = "Colombo, Sri Lanka";
+
 function ContactHeroIllustration() {
     return (
         <svg
@@ -118,6 +125,11 @@ export default function Contact() {
     const heroSubtitleLineTwo = "inquiries or collaborations.";
     const heroButtonText = "Contact Us";
     const socialLinks = [
+        {
+            href: CONTACT_WHATSAPP_HREF,
+            icon: icons.whatsapp,
+            label: "WhatsApp",
+        },
         {
             href: "https://www.linkedin.com/in/nuranova-solutions-b791403b4/",
             icon: icons.linkedin,
@@ -264,9 +276,11 @@ export default function Contact() {
     };
 
     useEffect(() => {
+        const likeTimers = likeTimersRef.current;
+
         return () => {
-            likeTimersRef.current.forEach((timer) => clearTimeout(timer));
-            likeTimersRef.current.clear();
+            likeTimers.forEach((timer) => clearTimeout(timer));
+            likeTimers.clear();
         };
     }, []);
 
@@ -307,11 +321,17 @@ export default function Contact() {
         let cancelled = false;
         const timers = [];
 
-        setTypedHeroTitle("");
-        setTypedHeroLineOne("");
-        setTypedHeroLineTwo("");
-        setTypedHeroButton("");
-        setIsHeroButtonVisible(false);
+        timers.push(
+            window.setTimeout(() => {
+                if (!cancelled) {
+                    setTypedHeroTitle("");
+                    setTypedHeroLineOne("");
+                    setTypedHeroLineTwo("");
+                    setTypedHeroButton("");
+                    setIsHeroButtonVisible(false);
+                }
+            }, 0)
+        );
 
         const queueTyping = (text, setter, startAt, speed) => {
             for (let i = 1; i <= text.length; i += 1) {
@@ -395,23 +415,37 @@ export default function Contact() {
                             <h3 className="c-card-title">Contact information</h3>
 
                             <div className="c-info">
-                                <div className="c-info-row">
+                                <a
+                                    className="c-info-row c-info-link"
+                                    href={`mailto:${CONTACT_EMAIL}`}
+                                    aria-label={`Email ${CONTACT_EMAIL}`}
+                                >
                                     <span className="c-ico">{icons.mail}</span>
                                     <span className="c-info-label">Email</span>
-                                    <span className="c-info-value">nuranovasolutions@gmail.com</span>
-                                </div>
+                                    <span className="c-info-value">{CONTACT_EMAIL}</span>
+                                </a>
 
-                                <div className="c-info-row">
+                                <a
+                                    className="c-info-row c-info-link"
+                                    href={`tel:${CONTACT_PHONE_HREF}`}
+                                    aria-label={`Call ${CONTACT_PHONE_DISPLAY}`}
+                                >
                                     <span className="c-ico">{icons.phone}</span>
                                     <span className="c-info-label">Phone</span>
-                                    <span className="c-info-value">+94 78 294 0117</span>
-                                </div>
+                                    <span className="c-info-value">{CONTACT_PHONE_DISPLAY}</span>
+                                </a>
 
-                                <div className="c-info-row">
+                                <a
+                                    className="c-info-row c-info-link"
+                                    href={CONTACT_LOCATION_HREF}
+                                    aria-label={`Open location for ${CONTACT_LOCATION}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
                                     <span className="c-ico">{icons.pin}</span>
                                     <span className="c-info-label">Location</span>
-                                    <span className="c-info-value">Colombo, Sri Lanka</span>
-                                </div>
+                                    <span className="c-info-value">{CONTACT_LOCATION}</span>
+                                </a>
                             </div>
 
                             <div className="c-social">
@@ -664,6 +698,26 @@ const icons = {
             />
         </svg>
     ),
+    whatsapp: (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+                d="M12 20a7.5 7.5 0 0 0 3.8-1l3.7 1-1-3.6A7.5 7.5 0 1 0 12 20Z"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <path
+                d="M9.3 9.4c.2-.5.4-.6.6-.6h.5c.2 0 .4 0 .5.4l.5 1.3c.1.3.1.5-.1.7l-.4.5c.5.9 1.2 1.6 2.1 2.1l.5-.4c.2-.2.4-.2.7-.1l1.3.5c.4.1.4.3.4.5v.5c0 .2-.1.5-.6.6-.5.1-1.6.1-3.1-.6-1.3-.6-2.7-2-3.3-3.3-.7-1.5-.7-2.6-.6-3.1Z"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    ),
     twitter: (
         <svg viewBox="0 0 24 24" aria-hidden="true">
             <path
@@ -710,3 +764,5 @@ function getInitials(name) {
         .map((part) => part.charAt(0).toUpperCase())
         .join("");
 }
+
+

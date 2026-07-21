@@ -56,17 +56,22 @@ function ThemeIcon({ theme }) {
 export default function Navbar({ theme, onToggleTheme }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState("home");
   const [pillStyle, setPillStyle] = useState({ opacity: 0 });
   const [user, setUser] = useState(null);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(76);
+  const [isTopBarHidden, setIsTopBarHidden] = useState(false);
+  const [isBottomNavVisible, setIsBottomNavVisible] = useState(false);
 
   const navRefs = useRef([]);
   const headerRef = useRef(null);
   const accountMenuRef = useRef(null);
   const pendingScrollRef = useRef(null);
+  const firstRootLoadRef = useRef(true);
+  const initialHashHandledRef = useRef(false);
+  const lastScrollYRef = useRef(0);
+  const mobileNavDismissUntilRef = useRef(0);
 
   const loadSession = useCallback(async () => {
     try {
@@ -81,7 +86,7 @@ export default function Navbar({ theme, onToggleTheme }) {
   }, []);
 
   useEffect(() => {
-    loadSession();
+    void Promise.resolve().then(loadSession);
 
     const handleAuthChanged = () => {
       loadSession();
@@ -90,32 +95,6 @@ export default function Navbar({ theme, onToggleTheme }) {
     window.addEventListener("nuranova-auth-changed", handleAuthChanged);
     return () => window.removeEventListener("nuranova-auth-changed", handleAuthChanged);
   }, [loadSession]);
-
-  useEffect(() => {
-    const onResize = () => {
-      if (window.innerWidth >= 768) setMenuOpen(false);
-    };
-
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-
-  useEffect(() => {
-    if (!menuOpen) return undefined;
-
-    const onKeyDown = (event) => {
-      if (event.key === "Escape") setMenuOpen(false);
-    };
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [menuOpen]);
 
   useEffect(() => {
     if (!accountMenuOpen) {
@@ -146,14 +125,79 @@ export default function Navbar({ theme, onToggleTheme }) {
   }, [accountMenuOpen]);
 
   useEffect(() => {
-    if (location.pathname.startsWith("/services/")) {
-      setActive("service-page");
-      return;
-    }
+    let frame = null;
 
-    const hash = location.hash.replace("#", "");
-    setActive(hash || "home");
-  }, [location.hash, location.pathname]);
+    const syncTopBar = () => {
+      frame = null;
+
+      if (window.innerWidth >= 768) {
+        lastScrollYRef.current = window.scrollY;
+        setIsTopBarHidden(false);
+        setIsBottomNavVisible(false);
+        return;
+      }
+
+      const nextScrollY = Math.max(window.scrollY, 0);
+      const lastScrollY = lastScrollYRef.current;
+      const delta = nextScrollY - lastScrollY;
+
+      if (nextScrollY <= 12 || delta < -8) {
+        setIsTopBarHidden(false);
+        setIsBottomNavVisible(false);
+      } else if (delta > 8 && nextScrollY > headerHeight) {
+        setIsTopBarHidden(true);
+        setIsBottomNavVisible(Date.now() >= mobileNavDismissUntilRef.current);
+        setAccountMenuOpen(false);
+      }
+
+      lastScrollYRef.current = nextScrollY;
+    };
+
+    const scheduleSync = () => {
+      if (frame !== null) {
+        return;
+      }
+
+      frame = window.requestAnimationFrame(syncTopBar);
+    };
+
+    lastScrollYRef.current = window.scrollY;
+    window.addEventListener("scroll", scheduleSync, { passive: true });
+    window.addEventListener("resize", scheduleSync);
+
+    return () => {
+      if (frame !== null) {
+        window.cancelAnimationFrame(frame);
+      }
+
+      window.removeEventListener("scroll", scheduleSync);
+      window.removeEventListener("resize", scheduleSync);
+    };
+  }, [headerHeight]);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      if (location.pathname.startsWith("/services/")) {
+        setActive("service-page");
+        return;
+      }
+
+      const hash = location.hash.replace("#", "");
+      if (firstRootLoadRef.current) {
+        firstRootLoadRef.current = false;
+        if (hash) {
+          window.history.replaceState({}, "", `${location.pathname}${location.search}`);
+          window.scrollTo({ top: 0, behavior: "auto" });
+        }
+        setActive("home");
+        return;
+      }
+
+      setActive(hash || "home");
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [location.hash, location.pathname, location.search]);
 
   const updateActiveSection = useCallback(() => {
     if (location.pathname !== "/") {
@@ -166,11 +210,26 @@ export default function Navbar({ theme, onToggleTheme }) {
     }
 
     const navHeight = headerRef.current?.offsetHeight || headerHeight || 70;
-    const viewportTrigger = Math.min(Math.max(window.innerHeight * 0.3, 120), 240);
+    const viewportTrigger = Math.min(Math.max(window.innerHeight * 0.16, 80), 150);
     const scrollMarker = window.scrollY + navHeight + viewportTrigger;
     const pageHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
     const isNearBottom = window.scrollY + window.innerHeight >= pageHeight - 8;
     const pendingTargetId = pendingScrollRef.current;
+    const homeSection = sections.find((section) => section.id === "home");
+
+    if (!pendingTargetId && homeSection) {
+      const homeBottom = homeSection.offsetTop + homeSection.offsetHeight;
+      const topZoneEnd = Math.max(navHeight + 48, homeBottom - viewportTrigger);
+      if (window.scrollY + navHeight < topZoneEnd) {
+        setActive((current) => (current === "home" ? current : "home"));
+        return;
+      }
+    }
+
+    if (!pendingTargetId && window.scrollY <= 16) {
+      setActive((current) => (current === "home" ? current : "home"));
+      return;
+    }
 
     if (pendingTargetId) {
       const pendingTarget = sections.find((section) => section.id === pendingTargetId);
@@ -221,6 +280,10 @@ export default function Navbar({ theme, onToggleTheme }) {
 
   const handleClick = useCallback(
     (id) => {
+      if (typeof window !== "undefined" && window.innerWidth < 768) {
+        mobileNavDismissUntilRef.current = Date.now() + 1200;
+      }
+
       if (location.pathname !== "/") {
         window.location.href = `/#${id}`;
         return;
@@ -237,7 +300,8 @@ export default function Navbar({ theme, onToggleTheme }) {
       }, 50);
 
       setActive(id);
-      setMenuOpen(false);
+      setIsTopBarHidden(false);
+      setIsBottomNavVisible(false);
       setAccountMenuOpen(false);
     },
     [location.pathname, scrollToSection]
@@ -248,6 +312,11 @@ export default function Navbar({ theme, onToggleTheme }) {
 
     const hash = location.hash.replace("#", "");
     if (!hash) return undefined;
+
+    if (!initialHashHandledRef.current) {
+      initialHashHandledRef.current = true;
+      return undefined;
+    }
 
     pendingScrollRef.current = hash;
     let tries = 0;
@@ -280,7 +349,7 @@ export default function Navbar({ theme, onToggleTheme }) {
       frame = window.requestAnimationFrame(syncActiveSection);
     };
 
-    updateActiveSection();
+    scheduleSync();
     window.addEventListener("scroll", scheduleSync, { passive: true });
     window.addEventListener("resize", scheduleSync);
     window.addEventListener("load", scheduleSync);
@@ -309,11 +378,14 @@ export default function Navbar({ theme, onToggleTheme }) {
     const anchor = li.querySelector("a");
     if (!anchor) return;
 
+    const pillPaddingX = 4;
+    const pillPaddingY = 2;
+
     setPillStyle({
-      left: li.offsetLeft + anchor.offsetLeft,
-      top: li.offsetTop + anchor.offsetTop + 2,
-      width: anchor.offsetWidth,
-      height: anchor.offsetHeight - 4,
+      left: li.offsetLeft + anchor.offsetLeft - pillPaddingX,
+      top: li.offsetTop + anchor.offsetTop - pillPaddingY,
+      width: anchor.offsetWidth + pillPaddingX * 2,
+      height: anchor.offsetHeight + pillPaddingY * 2,
       opacity: 1,
     });
   }, [active]);
@@ -326,7 +398,7 @@ export default function Navbar({ theme, onToggleTheme }) {
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", movePill);
     };
-  }, [menuOpen, movePill]);
+  }, [movePill]);
 
   useLayoutEffect(() => {
     const header = headerRef.current;
@@ -366,13 +438,11 @@ export default function Navbar({ theme, onToggleTheme }) {
 
   function openProfile(tab = "information") {
     setAccountMenuOpen(false);
-    setMenuOpen(false);
     navigate(`/services/education-tutorials?panel=profile&tab=${tab}`);
   }
 
   function openEducationWorkspace(workspace) {
     setAccountMenuOpen(false);
-    setMenuOpen(false);
     navigate(`/services/education-tutorials?workspace=${workspace}`);
   }
 
@@ -382,7 +452,11 @@ export default function Navbar({ theme, onToggleTheme }) {
     <>
       <div aria-hidden="true" className="navbar-spacer" style={{ height: `${headerHeight}px` }} />
 
-      <header className="navbar" ref={headerRef} style={{ "--navbar-height": `${headerHeight}px` }}>
+      <header
+        className={`navbar ${isTopBarHidden ? "is-mobile-hidden" : ""}`}
+        ref={headerRef}
+        style={{ "--navbar-height": `${headerHeight}px` }}
+      >
         <div className="navbar-container">
           <div className="brand" onClick={() => handleClick("home")}>
             <img src="/Logo.PNG" alt="Logo" className="brand-logo" />
@@ -392,7 +466,7 @@ export default function Navbar({ theme, onToggleTheme }) {
             </div>
           </div>
 
-          <ul className={`nav-links ${menuOpen ? "open" : ""}`}>
+          <ul className="nav-links">
             <div className="nav-pill" style={pillStyle} />
 
             {ITEMS.map((item, index) => (
@@ -483,22 +557,55 @@ export default function Navbar({ theme, onToggleTheme }) {
               </div>
             ) : null}
 
-            <button
-              className={`menu-btn ${menuOpen ? "is-open" : ""}`}
-              aria-label="Toggle menu"
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((value) => !value)}
-              type="button"
-            >
-              <span className="bar" />
-              <span className="bar" />
-              <span className="bar" />
-            </button>
           </div>
-
-          {menuOpen ? <div className="nav-overlay" onClick={() => setMenuOpen(false)} /> : null}
         </div>
       </header>
+
+      <nav
+        className={`mobile-bottom-nav ${isBottomNavVisible ? "is-visible" : ""}`}
+        aria-label="Mobile primary navigation"
+      >
+        {ITEMS.slice(0, 2).map((item) => (
+          <a
+            key={item.id}
+            href={`#${item.id}`}
+            aria-current={active === item.id ? "page" : undefined}
+            className={active === item.id ? "active" : ""}
+            onClick={(event) => {
+              event.preventDefault();
+              handleClick(item.id);
+            }}
+          >
+            {item.name}
+          </a>
+        ))}
+
+        <button
+          aria-label="Go to home"
+          className="mobile-nav-logo"
+          onClick={() => handleClick("home")}
+          type="button"
+        >
+          <img src="/Logo.PNG" alt="" aria-hidden="true" />
+        </button>
+
+        {ITEMS.slice(2).map((item) => (
+          <a
+            key={item.id}
+            href={`#${item.id}`}
+            aria-current={active === item.id ? "page" : undefined}
+            className={active === item.id ? "active" : ""}
+            onClick={(event) => {
+              event.preventDefault();
+              handleClick(item.id);
+            }}
+          >
+            {item.name}
+          </a>
+        ))}
+      </nav>
     </>
   );
 }
+
+
