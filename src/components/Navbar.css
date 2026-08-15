@@ -48,6 +48,14 @@
   opacity: 0.82;
 }
 
+[data-theme="dark"] .navbar {
+  box-shadow: 0 10px 24px rgba(2, 8, 23, 0.18);
+}
+
+[data-theme="dark"] .navbar::before {
+  opacity: 0;
+}
+
 .navbar-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -412,6 +420,16 @@
   border: 0;
   background: transparent;
   box-shadow: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.theme-toggle:focus,
+.theme-toggle:focus-visible,
+.theme-toggle:active {
+  outline: none;
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .theme-toggle-track {
@@ -465,6 +483,12 @@
   box-shadow:
     0 10px 24px rgba(15, 23, 42, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.theme-toggle:focus:not(:focus-visible) .theme-toggle-track,
+.theme-toggle:active .theme-toggle-track {
+  outline: none;
+  box-shadow: var(--surface-shadow-soft);
 }
 
 /* Disable hover on touch */

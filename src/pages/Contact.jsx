@@ -148,16 +148,7 @@ export default function Contact() {
         subject: "",
         message: "",
     });
-    const [comments, setComments] = useState([
-        {
-            id: 1,
-            author: "Amara Thennakoon",
-            time: "4 hours ago",
-            text: "This is a great initiative! Looking forward to collaborating with you.",
-            likes: 0,
-            replies: [],
-        },
-    ]);
+    const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
     const [activeReplyId, setActiveReplyId] = useState(null);
     const [replyDrafts, setReplyDrafts] = useState({});
