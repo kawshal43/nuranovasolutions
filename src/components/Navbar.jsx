@@ -391,14 +391,41 @@ export default function Navbar({ theme, onToggleTheme }) {
   }, [active]);
 
   useLayoutEffect(() => {
+    const scheduleMovePill = () => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(movePill);
+      });
+    };
+
     const frame = requestAnimationFrame(movePill);
+    const navLinks = headerRef.current?.querySelector(".nav-links");
+    const activeIndex = ITEMS.findIndex((item) => item.id === active);
+    const activeAnchor = navRefs.current[activeIndex]?.querySelector("a");
+    const resizeObserver =
+      typeof ResizeObserver !== "undefined" ? new ResizeObserver(scheduleMovePill) : null;
+
+    if (resizeObserver) {
+      if (navLinks) resizeObserver.observe(navLinks);
+      if (activeAnchor) resizeObserver.observe(activeAnchor);
+    }
+
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(scheduleMovePill).catch(() => {});
+    }
+
     window.addEventListener("resize", movePill);
+    window.addEventListener("load", scheduleMovePill);
+    window.addEventListener("pageshow", scheduleMovePill);
+    scheduleMovePill();
 
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", movePill);
+      window.removeEventListener("load", scheduleMovePill);
+      window.removeEventListener("pageshow", scheduleMovePill);
+      resizeObserver?.disconnect();
     };
-  }, [movePill]);
+  }, [active, movePill]);
 
   useLayoutEffect(() => {
     const header = headerRef.current;
@@ -498,6 +525,8 @@ export default function Navbar({ theme, onToggleTheme }) {
               aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               className="theme-toggle"
               onClick={onToggleTheme}
+              onMouseDown={(event) => event.preventDefault()}
+              onPointerUp={(event) => event.currentTarget.blur()}
               type="button"
             >
                 <span className="theme-toggle-track">
